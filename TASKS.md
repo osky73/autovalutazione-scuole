@@ -39,16 +39,31 @@ intercettare errori di sintassi/require prima di spendere una build.
 Completati e in produzione:
 - [x] Migrazione completa del repository su GitHub (era vuoto/parziale, ora rispecchia esattamente
       la produzione — 39 file verificati byte-per-byte via SHA1 contro il deployment live)
-- [x] Nascosto (non rimosso) il blocco "🤖 Chiedo l'aiuto dell'AI" in `views/social-conferma.ejs`
-      (`style="display:none"` sul div `.ai-blocco`). Le route server `/social/:id/ai-aiuto` e
-      `/social/:id/ai-estrai` sono rimaste attive (non è stato chiesto di rimuoverle, solo di
-      nascondere la UI) — da reintrodurre lato UI quando richiesto.
 - [x] Nuovo sottotitolo landing page (`views/landing.ejs`, `p.lead`): "Uno strumento gratuito per
       analizzare in pochi minuti l'efficacia della comunicazione web e delle attività di web
       marketing della tua attività."
 - [x] Struttura di deploy: eliminata l'ambiguità "due aree di deploy" — l'alias di fallback
       `autoanalisi-scuole-osky2.vercel.app` ora reindirizza (307) a `autoanalisi-scuole.vercel.app`,
-      che resta l'unico URL da usare/comunicare. Vedi sezione in cima al file.
+      che resta l'unico URL da usare/comunicare. Vedi sezione in cima al file. Verificato che il
+      redirect sopravvive a un nuovo deploy in produzione (controllato via `list_aliases` dopo il
+      deploy del 2026-09-29 con la correzione del modello Gemini, vedi punto sotto).
+- [x] Reintroduzione dell'aiuto AI con provider Gemini: chiave `GOOGLE_GENERATIVE_AI_API_KEY`
+      fornita dal cliente e impostata su Vercel come env var "sensitive". Il blocco UI
+      "🤖 Chiedo l'aiuto dell'AI" in `views/social-conferma.ejs` è di nuovo visibile (rimosso il
+      `display:none` che l'aveva nascosto in una richiesta precedente, poi superata da quella
+      successiva del cliente di reintrodurlo con Gemini).
+      **Bug scoperto e risolto durante la verifica**: il modello inizialmente usato
+      (`gemini-2.0-flash`) risultava dismesso da Google ("no longer available"); testato con una
+      deployment di debug separata (non in produzione, mai promossa/aliasata) per bypassare il
+      blocco di rete della sandbox verso `generativelanguage.googleapis.com`. Aggiornato
+      `lib/social/ai.js` al modello `gemini-3.8-flash` (indicato da Google stesso come sostituto).
+      Con questo nome il modello viene riconosciuto e la chiamata parte correttamente — l'unico
+      errore residuo osservato durante i test è stato "modello sovraccarico, riprova più tardi"
+      (`AI_RetryError`), un problema temporaneo lato Google e non di configurazione. Deployato in
+      produzione (commit `5cc9376`). **Da fare in una sessione futura**: rifare un test end-to-end
+      reale dal sito in produzione (pulsante "🤖 Chiedo l'aiuto dell'AI" su un canale social vero,
+      sia percorso testo/URL sia screenshot) per confermare che non sia solo il problema di
+      sovraccarico temporaneo già osservato.
 
 Non recuperabili dal vecchio deployment (solo file di test, nessun impatto runtime):
 `lib/social/metrics.test.js` e `test/fixture-site.js` sono referenziabili per SHA nei deploy Vercel
@@ -226,39 +241,7 @@ Indicazioni implementative (da decidere durante lo sviluppo):
   vista di punteggio finale, non ancora identificata come singolo file — verificare `lib/score.js`
   per capire come sono strutturati gli altri criteri e seguirne lo schema).
 
-### 3. Reintroduzione dell'aiuto AI — provider Gemini (IN ATTESA SOLO DELLA CHIAVE)
-
-AGGIORNATO 2026-09-29, due volte: prima richiesto con chiave Claude/Anthropic dedicata, poi il
-cliente ha chiesto di riusare invece Gemini (paga già Google AI Studio / Vertex AI direttamente,
-non tramite Vercel AI Gateway). Codice già scritto e pushato (commit `4b6adc8`):
-
-- `lib/social/ai.js`: `ottieniModello()` ora prova, in ordine, `GOOGLE_GENERATIVE_AI_API_KEY`
-  (pacchetto `@ai-sdk/google`, modello `gemini-2.0-flash`) → `ANTHROPIC_API_KEY` → `AI_GATEWAY_API_KEY`
-  (gateway Vercel, invariato). `providerDisponibile()` aggiornato di conseguenza.
-- `package.json`: aggiunta la dipendenza `"@ai-sdk/google": "^1.2.0"`.
-- `views/social-conferma.ejs`: rimosso `style="display:none"` dal blocco `.ai-blocco` — la UI
-  "🤖 Chiedo l'aiuto dell'AI" è di nuovo visibile nel codice.
-- `lib/social/extract.js` e `lib/social/assess.js` non richiedono modifiche: usano già l'interfaccia
-  agnostica-al-provider di Vercel AI SDK (`generateObject`), quindi funzionano automaticamente con
-  qualunque modello ritornato da `ottieniModello()`.
-
-**L'UNICA cosa che manca è la chiave**: il cliente ha detto di avere una chiave API Gemini presa
-direttamente da Google AI Studio o Google Cloud (Vertex AI) — NON tramite il Vercel AI Gateway.
-Quando la fornisce:
-1. Impostarla su Vercel come env var di progetto `GOOGLE_GENERATIVE_AI_API_KEY`
-   (`mcp__Vercel__create_project_env`), target production/preview/development, marcata
-   sensitive/encrypted come le altre chiavi già presenti (`GOOGLE_MAPS_API_KEY`, `YOUTUBE_API_KEY`).
-2. Deployare (il codice è già pronto e pushato, basta un deploy Vercel che lo includa — verificare
-   con `git log`/`git diff` che non ci sia altro lavoro non ancora deployato da includere insieme).
-3. Fare un test end-to-end del flusso "Chiedo l'aiuto dell'AI" su un canale social reale (sia
-   percorso testo/URL pubblico sia percorso screenshot caricato) prima di dichiarare il task concluso.
-4. Verificare in produzione che il pulsante sia visibile e funzionante.
-
-Se in una sessione futura la chiave non è ancora stata fornita: non sollecitare di nuovo in ogni
-sessione, verificare semplicemente se è comparsa tra le env var del progetto (`filter_project_envs`)
-e, se sì, procedere con i passi 2-4; se no, saltare questo task e passare al successivo utile.
-
-### 4. Andamento social negli ultimi 3 mesi (riferimento temporale)
+### 3. Andamento social negli ultimi 3 mesi (riferimento temporale)
 
 Richiesto dal cliente il 2026-09-29: attualmente l'analisi dei canali social (`lib/social.js`,
 `lib/social/youtube-analysis.js`, `lib/social/metrics.js`) produce solo uno snapshot puntuale
@@ -288,6 +271,17 @@ cliente oltre alla richiesta):
 - Prima di implementare, vale la pena chiedere conferma al cliente su quale livello di sforzo/
   automazione si aspetta (calcolo automatico solo per YouTube, vs. richiedere dati storici manuali
   per gli altri canali), perché le due strade hanno costi di sviluppo molto diversi.
+
+### 4. Verifica end-to-end dell'aiuto AI (Gemini) in produzione
+
+Il codice e la chiave sono a posto e deployati (vedi "Completati" in cima), ma finora è stato
+verificato solo con una chiamata di test diretta a `generateObject`/`estraiDati` da una deployment
+di debug (non dall'interfaccia utente). Da fare in una prossima sessione, quando ci sono margine di
+tempo/token: aprire il wizard in produzione fino allo step "Canali social indicati sul sito", premere
+"🤖 Chiedo l'aiuto dell'AI" su un canale reale (sia il percorso automatico testo/URL sia quello con
+screenshot caricato) e controllare che i dati vengano estratti e mostrati correttamente. Se ricompare
+l'errore "modello sovraccarico" (`AI_RetryError`) più volte a distanza di ore, vale la pena
+raccontarlo al cliente/segnalarlo, perché a quel punto non sarebbe più un problema transitorio.
 
 ## Note per le sessioni schedulate automatiche
 
