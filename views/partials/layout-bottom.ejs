@@ -1,0 +1,11 @@
+  <% if (typeof sessione !== 'undefined' && sessione) { %>
+    <footer class="note">
+      <%= sessione.scuola %> · Passaggio <%= step %> di 8 · Piattaforma di autoanalisi web per scuole
+      <br /><a href="/" style="color:inherit;">↺ Torna all'inizio</a>
+    </footer>
+  <% } else { %>
+    <footer class="note">Passaggio <%= step %> di 8 · Piattaforma di autoanalisi web per scuole</footer>
+  <% } %>
+</div>
+</body>
+</html>

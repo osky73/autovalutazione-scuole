@@ -1,0 +1,10 @@
+{
+  "name": "autoanalisi-scuole",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": { "lib": "lib", "test": "test" },
+  "scripts": { "start": "node server.js", "fixture": "node test/fixture-site.js", "test": "node --test lib/**/*.test.js" },
+  "keywords": [], "author": "", "license": "ISC",
+  "dependencies": { "@ai-sdk/anthropic": "^1.2.0", "ai": "^4.3.0", "cheerio": "^1.2.0", "ejs": "^6.0.1", "express": "^5.2.1", "zod": "^3.24.0" }
+}

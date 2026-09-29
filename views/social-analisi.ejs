@@ -1,0 +1,195 @@
+<%- include('partials/layout-top', { titolo: 'Analisi canali social', step: 8 }) %>
+
+<style>
+  .valutazione-card { background: var(--brand-light); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+  .valutazione-score { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+  .valutazione-score .numero { font-size: 2rem; font-weight: 800; color: var(--brand); }
+  .valutazione-liste { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 12px; }
+  .valutazione-liste > div { flex: 1; min-width: 220px; }
+  .valutazione-liste h3 { font-size: 0.85rem; margin: 0 0 6px; }
+  .valutazione-liste ul { margin: 0; padding-left: 18px; font-size: 0.88rem; }
+  .avviso-ai { color: var(--mid); font-size: 0.78rem; display: block; margin-top: 4px; }
+  .ai-fonte-nota { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .gbp-card { background: var(--brand-light); border-radius: 12px; padding: 18px 20px; margin-bottom: 20px; }
+  .gbp-riga { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+  .gbp-riga:last-child { border-bottom: none; }
+  .gbp-riga .meta { color: var(--muted); font-size: 0.8rem; }
+</style>
+
+<h1>Analisi dei canali social</h1>
+<p class="lead">Frequenza dei contenuti, interazioni medie (like + commenti) e follower dei canali confermati, con lo stesso metro (verde/arancione/rosso) usato per l'audit tecnico. Dove disponibile, i dati sono numeri reali recuperati con l'aiuto dell'AI o dalle API pubbliche; altrimenti sono le fasce indicate a mano.</p>
+
+<% if (valutazione) { %>
+  <div class="valutazione-card">
+    <div class="valutazione-score">
+      <span class="numero"><%= valutazione.score %></span>
+      <span class="muted">/ 100 — valutazione complessiva della presenza social</span>
+    </div>
+    <p style="margin:0 0 6px;"><%= valutazione.summary %></p>
+    <div class="valutazione-liste">
+      <% if (valutazione.puntiForza && valutazione.puntiForza.length) { %>
+        <div>
+          <h3>Punti di forza</h3>
+          <ul><% valutazione.puntiForza.forEach(function(p) { %><li><%= p %></li><% }) %></ul>
+        </div>
+      <% } %>
+      <% if (valutazione.puntiDeboli && valutazione.puntiDeboli.length) { %>
+        <div>
+          <h3>Punti deboli</h3>
+          <ul><% valutazione.puntiDeboli.forEach(function(p) { %><li><%= p %></li><% }) %></ul>
+        </div>
+      <% } %>
+      <% if (valutazione.raccomandazioni && valutazione.raccomandazioni.length) { %>
+        <div>
+          <h3>Raccomandazioni</h3>
+          <ul><% valutazione.raccomandazioni.forEach(function(p) { %><li><%= p %></li><% }) %></ul>
+        </div>
+      <% } %>
+    </div>
+  </div>
+<% } %>
+
+<div class="card">
+  <% if (!canali.length) { %>
+    <p class="muted">Nessun canale social da analizzare per questa scuola.</p>
+  <% } else { %>
+    <% canali.forEach(function(c) {
+         var freqDaAI = c.frequenzaEtichetta && c.frequenzaEtichetta.indexOf("rilevato dall'AI") !== -1;
+         var interazioniDaAI = c.interazioniEtichetta && c.interazioniEtichetta.indexOf("rilevato dall'AI") !== -1;
+    %>
+      <h2><%= c.label %> <span class="muted" style="font-weight:400; font-size:0.8rem;">— <a href="<%= c.url %>" target="_blank" rel="noopener"><%= c.url %></a></span></h2>
+
+      <% if (c.platform === 'youtube') { %>
+        <% if (!c.disponibile || !c.youtube) { %>
+          <div class="indicator-row">
+            <div>
+              <div>Dati non disponibili</div>
+              <div class="meta"><%= c.motivo || 'Non è stato possibile analizzare il canale YouTube.' %></div>
+            </div>
+            <span class="pill assente">Non disponibile</span>
+          </div>
+        <% } else { %>
+          <% var y = c.youtube; %>
+          <div class="indicator-row">
+            <div><div>Video totali pubblicati</div><div class="meta"><%= y.videoTotali != null ? y.videoTotali + ' video' : 'dato non disponibile' %></div></div>
+            <span class="pill <%= y.livelloVideoTotali ? y.livelloVideoTotali.toLowerCase() : 'assente' %>"><%= y.livelloVideoTotali || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div><div>Ultimo video pubblicato</div><div class="meta"><%= y.ultimoVideoIso ? new Date(y.ultimoVideoIso).toLocaleDateString('it-IT') + ' (' + y.giorniUltimoVideo + ' giorni fa)' : 'dato non disponibile' %></div></div>
+            <span class="pill <%= y.livelloUltimoVideo ? y.livelloUltimoVideo.toLowerCase() : 'assente' %>"><%= y.livelloUltimoVideo || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div><div>Iscritti</div><div class="meta"><%= y.iscritti != null ? y.iscritti + ' iscritti' : 'dato non disponibile' %></div></div>
+            <span class="pill <%= y.livelloIscritti ? y.livelloIscritti.toLowerCase() : 'assente' %>"><%= y.livelloIscritti || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div><div>Media visualizzazioni (ultimi video)</div><div class="meta"><%= y.mediaVisualizzazioni != null ? y.mediaVisualizzazioni + ' visualizzazioni medie' : 'dato non disponibile' %></div></div>
+            <span class="pill <%= y.livelloVisualizzazioni ? y.livelloVisualizzazioni.toLowerCase() : 'assente' %>"><%= y.livelloVisualizzazioni || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div><div>Interazioni (media per contenuto)</div><div class="meta"><%= y.mediaInterazioni != null ? y.mediaInterazioni + ' interazioni medie (like + commenti)' : 'dato non disponibile' %></div></div>
+            <span class="pill <%= y.livelloInterazioni ? y.livelloInterazioni.toLowerCase() : 'assente' %>"><%= y.livelloInterazioni || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div><div>Contenuti sui temi chiave</div><div class="meta"><%= y.temiTrovati.length ? y.temiTrovati.join(', ') : 'Nessuno tra virtual tour, interviste ai docenti, giornata tipo' %></div></div>
+            <span class="pill <%= y.livelloTemi.toLowerCase() %>"><%= y.livelloTemi %></span>
+          </div>
+          <p class="muted" style="margin-top:10px;"><%= y.notaCommunity %></p>
+        <% } %>
+      <% } else { %>
+        <% if (c.dataApertura || (c.avvisiAI && c.avvisiAI.length)) { %>
+          <p class="ai-fonte-nota">
+            <% if (c.dataApertura) { %>
+              Apertura del canale: <%= new Date(c.dataApertura).toLocaleDateString('it-IT') %><%= c.aperturaStimata ? ' (stimata)' : '' %>.
+            <% } %>
+            <% if (c.engagementRate != null) { %>
+              Engagement rate: <%= c.engagementRate %>%.
+            <% } %>
+          </p>
+          <% (c.avvisiAI || []).forEach(function(a) { %>
+            <span class="avviso-ai">⚠ <%= a %></span>
+          <% }) %>
+        <% } %>
+
+        <% if (!c.disponibile) { %>
+          <div class="indicator-row">
+            <div>
+              <div>Dati non disponibili</div>
+              <div class="meta"><%= c.motivo || 'Il canale non è raggiungibile pubblicamente per un\'analisi automatica.' %></div>
+            </div>
+            <span class="pill assente">Non disponibile</span>
+          </div>
+        <% } else { %>
+          <div class="indicator-row">
+            <div>
+              <div>Frequenza dei contenuti</div>
+              <div class="meta"><%= c.frequenzaEtichetta ? ((freqDaAI ? '' : 'Fascia indicata dalla scuola: ') + c.frequenzaEtichetta) : 'Non indicata: torna al passaggio precedente per scegliere la fascia o chiedere aiuto all\'AI' %></div>
+            </div>
+            <span class="pill <%= c.livelloFrequenza ? c.livelloFrequenza.toLowerCase() : 'assente' %>"><%= c.livelloFrequenza || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div>
+              <div>Interazioni (media per contenuto)</div>
+              <div class="meta"><%= c.interazioniEtichetta ? ((interazioniDaAI ? '' : 'Fascia indicata dalla scuola: ') + c.interazioniEtichetta) : 'Non indicata: torna al passaggio precedente per scegliere la fascia o chiedere aiuto all\'AI' %></div>
+            </div>
+            <span class="pill <%= c.livelloInterazioni ? c.livelloInterazioni.toLowerCase() : 'assente' %>"><%= c.livelloInterazioni || 'Non disponibile' %></span>
+          </div>
+          <div class="indicator-row">
+            <div>
+              <div>Follower</div>
+              <div class="meta">
+                <% if (c.meno6mesi) { %>
+                  Aperto di recente (meno di 6 mesi): dato non considerato nel giudizio<% if (c.followerAutomatico != null) { %> (~<%= c.followerAutomatico %> follower rilevati)<% } %>
+                <% } else if (c.followerFonte === 'ai') { %>
+                  <%= c.followerEtichetta %>
+                <% } else if (c.followerFonte === 'manuale') { %>
+                  Fascia indicata dalla scuola: <%= c.followerEtichetta %>
+                <% } else if (c.followerAutomatico != null) { %>
+                  <%= c.followerAutomatico %> follower (rilevati automaticamente dalla pagina pubblica)
+                <% } else { %>
+                  Non rilevabile pubblicamente dalla pagina del profilo: torna al passaggio precedente per scegliere la fascia o chiedere aiuto all'AI
+                <% } %>
+              </div>
+            </div>
+            <span class="pill <%= c.livelloFollower ? c.livelloFollower.toLowerCase() : 'assente' %>"><%= c.livelloFollower || 'Non disponibile' %></span>
+          </div>
+        <% } %>
+      <% } %>
+    <% }) %>
+
+    <p class="muted" style="margin-top:16px;">Nota: i social non offrono dati pubblici e ufficiali senza autenticazione. Quando la scuola non ha inserito il dato a mano, non ha usato l'aiuto dell'AI e la piattaforma non lo espone nella pagina pubblica, l'indicatore risulta "Non disponibile" invece di una stima inventata.</p>
+  <% } %>
+</div>
+
+<% if (gbp && gbp.stato && gbp.stato !== 'non_disponibile' && gbp.stato !== 'errore') { %>
+  <h2>Scheda Google Business Profile</h2>
+  <div class="gbp-card">
+    <% if (gbp.stato === 'assente') { %>
+      <p style="margin:0 0 8px;"><%= gbp.messaggio %></p>
+      <div class="finding" style="margin:0;"><%= gbp.findingCommerciale %></div>
+    <% } else { %>
+      <div class="valutazione-score" style="margin-bottom:6px;">
+        <span class="numero" style="font-size:1.4rem;"><%= gbp.punteggio || 'Non disponibile' %></span>
+        <span class="muted">— stato: <%= gbp.stato === 'reclamata' ? 'probabilmente gestita dalla scuola' : 'probabilmente non gestita dalla scuola' %> (stimato)</span>
+      </div>
+      <p style="margin:0 0 10px;"><%= gbp.messaggio %></p>
+      <div class="gbp-riga"><div>Categoria attività</div><div class="meta"><%= gbp.criteri.categoria.valore || 'non disponibile' %> — <%= gbp.criteri.categoria.etichetta %></div></div>
+      <div class="gbp-riga"><div>Orari pubblicati</div><div class="meta"><%= gbp.criteri.orari.valore %> — <%= gbp.criteri.orari.etichetta %></div></div>
+      <div class="gbp-riga"><div>Foto sulla scheda</div><div class="meta"><%= gbp.criteri.foto.valore %> foto — <%= gbp.criteri.foto.etichetta %></div></div>
+      <div class="gbp-riga"><div>Recensioni</div><div class="meta"><%= gbp.criteri.recensioni.valore.numero %> recensioni<%= gbp.criteri.recensioni.valore.media ? ', media ' + gbp.criteri.recensioni.valore.media : '' %> — <%= gbp.criteri.recensioni.etichetta %></div></div>
+      <div class="gbp-riga"><div>Scheda Evento (es. open day)</div><div class="meta"><%= gbp.criteri.evento.motivoEsclusione %></div></div>
+      <div class="gbp-riga"><div>Domande e risposte pubbliche</div><div class="meta"><%= gbp.criteri.qa.motivoEsclusione %></div></div>
+      <div class="gbp-riga"><div>Frequenza dei post pubblicati</div><div class="meta"><%= gbp.criteri.frequenzaPost.motivoEsclusione %></div></div>
+      <div class="gbp-riga"><div>Tasso di risposta alle recensioni</div><div class="meta"><%= gbp.criteri.tassoRisposteRecensioni.motivoEsclusione %></div></div>
+      <% if (gbp.findingCommerciale) { %>
+        <div class="finding" style="margin-top:12px;"><%= gbp.findingCommerciale %></div>
+      <% } %>
+    <% } %>
+  </div>
+<% } %>
+
+<div class="actions">
+  <a class="btn secondary" href="/social/<%= sessione.id %>/altri">← Indietro</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 8, sessione: sessione }) %>
