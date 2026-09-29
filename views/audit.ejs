@@ -1,0 +1,38 @@
+<%- include('partials/layout-top', { titolo: 'Audit tecnico', step: 2 }) %>
+
+<h1><%= sessione.scuola %></h1>
+<p class="lead">Audit tecnico di <a href="<%= audit.homeUrl %>" target="_blank" rel="noopener"><%= audit.homeUrl %></a> — velocità mobile, struttura SEO di base, scheda Google, ultimo contenuto pubblicato.</p>
+
+<div class="card">
+  <div class="score-badge">
+    <span class="num"><%= audit.score %></span>
+    <span class="den">/ 100 · Sito</span>
+  </div>
+  <p class="muted">Basato su <%= audit.pagineTestate %> pagine testate su <%= audit.pagineTotali %> (mediana tra le pagine, per evitare falsi positivi).</p>
+
+  <div class="worst">
+    <strong>Il dato peggiore:</strong> <%= audit.worst.label %> — <%= audit.worst.dettaglio %>
+  </div>
+
+  <h2>Dettaglio indicatori</h2>
+  <% audit.indicators.forEach(function(ind) { %>
+    <div class="indicator-row">
+      <div>
+        <div><%= ind.label %></div>
+        <div class="meta"><%= ind.dettaglio %></div>
+      </div>
+      <span class="pill <%= ind.livello.toLowerCase() %>"><%= ind.livello %></span>
+    </div>
+  <% }) %>
+
+  <% if (audit.mobileSpeed && audit.mobileSpeed.source === 'euristica') { %>
+    <p class="muted" style="margin-top:14px;">Nota: la velocità mobile è stata stimata in modo euristico (peso pagina e tempo di risposta) perché l'API PageSpeed Insights non era raggiungibile in questo momento.</p>
+  <% } %>
+</div>
+
+<div class="actions">
+  <a class="btn secondary" href="/">← Indietro</a>
+  <a class="btn btn-principale" href="/dichiarazione/<%= sessione.id %>">Continua →</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 2, sessione: sessione }) %>

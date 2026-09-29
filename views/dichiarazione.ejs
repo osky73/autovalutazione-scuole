@@ -1,0 +1,100 @@
+<%- include('partials/layout-top', { titolo: 'Le tue competenze forti', step: 3 }) %>
+
+<h1>Su quali competenze si basa l'identità web della tua scuola?</h1>
+<p class="lead">Scegli fino a 5 competenze tra quelle in elenco, oppure aggiungine di tue in testo libero. Nel passaggio successivo le confrontiamo con ciò che il sito comunica davvero.</p>
+
+<form method="POST" action="/dichiarazione/<%= sessione.id %>" id="form-dichiarazione">
+  <div class="card">
+    <div class="theme-list" id="theme-list">
+      <% temi.forEach(function(t) { %>
+        <label class="theme-chip">
+          <input type="checkbox" name="dichiarati" value="<%= t.key %>" class="tema-checkbox" />
+          <%= t.label %>
+        </label>
+      <% }) %>
+    </div>
+
+    <div class="theme-list" id="extra-list"></div>
+
+    <label for="nuova-competenza">Aggiungi una competenza</label>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <input type="text" id="nuova-competenza" placeholder="es. danza" style="margin-bottom:0;" />
+      <button type="button" id="btn-aggiungi" class="btn secondary" style="white-space:nowrap;">+ Aggiungi</button>
+    </div>
+    <p class="muted" id="limite-avviso" style="display:none;">Hai raggiunto il massimo di 5 competenze: deseleziona o rimuovi qualcosa per aggiungerne un'altra.</p>
+  </div>
+
+  <div class="actions">
+    <a class="btn secondary" href="/audit/<%= sessione.id %>">← Indietro</a>
+    <button type="submit" class="btn btn-principale">Continua →</button>
+  </div>
+</form>
+
+<script>
+  var MAX = 5;
+  var extraList = document.getElementById('extra-list');
+  var avviso = document.getElementById('limite-avviso');
+  var input = document.getElementById('nuova-competenza');
+  var btnAggiungi = document.getElementById('btn-aggiungi');
+
+  function checkboxes() {
+    return Array.prototype.slice.call(document.querySelectorAll('.tema-checkbox'));
+  }
+
+  function conteggioSelezionate() {
+    var checked = checkboxes().filter(function (c) { return c.checked; }).length;
+    var extra = extraList.querySelectorAll('input[name="extra"]').length;
+    return checked + extra;
+  }
+
+  function aggiorna() {
+    var pieno = conteggioSelezionate() >= MAX;
+    avviso.style.display = pieno ? 'block' : 'none';
+    checkboxes().forEach(function (c) { if (!c.checked) c.disabled = pieno; });
+    btnAggiungi.disabled = pieno;
+    input.disabled = pieno;
+  }
+
+  function aggiungiCompetenza() {
+    var val = input.value.trim();
+    if (!val || conteggioSelezionate() >= MAX) return;
+
+    var chip = document.createElement('label');
+    chip.className = 'theme-chip';
+
+    var hidden = document.createElement('input');
+    hidden.type = 'hidden';
+    hidden.name = 'extra';
+    hidden.value = val;
+
+    var rimuovi = document.createElement('span');
+    rimuovi.className = 'muted';
+    rimuovi.style.cursor = 'pointer';
+    rimuovi.title = 'Rimuovi';
+    rimuovi.textContent = ' ✕';
+    rimuovi.addEventListener('click', function () {
+      chip.remove();
+      aggiorna();
+    });
+
+    chip.appendChild(hidden);
+    chip.appendChild(document.createTextNode(val));
+    chip.appendChild(rimuovi);
+    extraList.appendChild(chip);
+
+    input.value = '';
+    aggiorna();
+  }
+
+  btnAggiungi.addEventListener('click', aggiungiCompetenza);
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      aggiungiCompetenza();
+    }
+  });
+  checkboxes().forEach(function (c) { c.addEventListener('change', aggiorna); });
+  aggiorna();
+</script>
+
+<%- include('partials/layout-bottom', { step: 3, sessione: sessione }) %>

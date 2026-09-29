@@ -1,0 +1,17 @@
+<%- include('partials/layout-top', { titolo: 'Località', step: 5 }) %>
+
+<h1>In che città si trova <%= sessione.scuola %>?</h1>
+<p class="lead">Non siamo riusciti a individuare automaticamente la città dal sito. Indicala per completare il controllo del posizionamento su Google.</p>
+
+<form method="POST" action="/posizionamento/<%= sessione.id %>/localita">
+  <div class="card">
+    <label for="localita">Città</label>
+    <input type="text" id="localita" name="localita" placeholder="es. Milano" required />
+  </div>
+  <div class="actions">
+    <a class="btn secondary" href="/verifica/<%= sessione.id %>">← Indietro</a>
+    <button type="submit" class="btn btn-principale">Continua →</button>
+  </div>
+</form>
+
+<%- include('partials/layout-bottom', { step: 5, sessione: sessione }) %>

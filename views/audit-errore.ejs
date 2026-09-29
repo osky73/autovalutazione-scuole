@@ -1,0 +1,13 @@
+<%- include('partials/layout-top', { titolo: 'Sito non raggiungibile', step: 2 }) %>
+
+<h1><%= sessione.scuola %></h1>
+<div class="card">
+  <div class="finding">
+    <strong>Non riusciamo a raggiungere il sito.</strong><br />
+    <%= errore %>
+  </div>
+  <p class="muted">Verifica che l'indirizzo <%= sessione.url %> sia corretto e riprova.</p>
+  <a class="btn" href="/">← Torna alla landing</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 2, sessione: sessione }) %>

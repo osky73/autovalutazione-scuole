@@ -1,0 +1,25 @@
+<%- include('partials/layout-top', { titolo: 'Inizia', step: 1 }) %>
+
+<h1>Quanto è forte la comunicazione web della tua scuola?</h1>
+<p class="lead">Un'analisi gratuita in pochi minuti: velocità del sito, visibilità su Google, social e conversione. Nessuna registrazione per iniziare.</p>
+
+<form method="POST" action="/avvia">
+  <div class="card">
+    <% if (typeof errore !== 'undefined' && errore) { %>
+      <div class="finding"><strong>Non ci siamo:</strong> <%= errore %></div>
+    <% } %>
+    <label for="scuola">Nome della scuola</label>
+    <input type="text" id="scuola" name="scuola" placeholder="es. Istituto Comprensivo Manzoni" required
+      value="<%= typeof valori !== 'undefined' ? (valori.scuola || '') : '' %>" />
+
+    <label for="url">Indirizzo del sito web</label>
+    <input type="text" id="url" name="url" placeholder="es. www.scuolamanzoni.it" required
+      value="<%= typeof valori !== 'undefined' ? (valori.url || '') : '' %>" />
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn-principale">Avvia l'analisi →</button>
+  </div>
+</form>
+
+<%- include('partials/layout-bottom', { step: 1 }) %>

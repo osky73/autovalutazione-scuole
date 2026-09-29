@@ -270,9 +270,6 @@ function parseDatiAI(json) {
   }
 }
 
-// Passaggio 6 — "Canali social indicati sul sito": tutti i canali trovati con un
-// link sul sito, esclusi YouTube e la scheda Google Business Profile, che hanno un
-// trattamento dedicato al passaggio successivo.
 app.get('/social/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -325,9 +322,6 @@ app.post('/social/:id', (req, res) => {
   res.redirect(`/social/${sessione.id}/altri`);
 });
 
-// Passaggio 7 — "Altri canali social": YouTube (solo se trovato sul sito), la
-// scheda Google Business Profile (valutata automaticamente, senza conferma
-// manuale: è deterministica) e l'aggiunta di un canale a mano.
 app.get('/social/:id/altri', async (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -449,7 +443,6 @@ app.post('/social/:id/ai-estrai', async (req, res) => {
   }
 });
 
-// Passaggio 8 — analisi finale combinata (canali social + YouTube + GBP).
 app.get('/social/:id/analisi', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');

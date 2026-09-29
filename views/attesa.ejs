@@ -1,0 +1,31 @@
+<%- include('partials/layout-top', { titolo: titolo || 'Un attimo...', step: step }) %>
+
+<div class="card" style="text-align:center; padding:56px 24px;">
+  <div class="spinner" aria-hidden="true"></div>
+  <p id="loading-text" class="lead" style="margin-top:22px; font-weight:600;"><%= messaggi[0] %></p>
+</div>
+
+<script>
+  var messaggi = <%- JSON.stringify(messaggi) %>;
+  var i = 0;
+  var el = document.getElementById('loading-text');
+  var rotazione = setInterval(function () {
+    i = (i + 1) % messaggi.length;
+    el.textContent = messaggi[i];
+  }, 1100);
+
+  function vaiAvanti() {
+    clearInterval(rotazione);
+    window.location.href = "<%= redirectUrl %>";
+  }
+
+  <% if (typeof pollUrl !== 'undefined' && pollUrl) { %>
+    fetch("<%= pollUrl %>", { cache: 'no-store' })
+      .then(function () { vaiAvanti(); })
+      .catch(function () { vaiAvanti(); });
+  <% } else { %>
+    setTimeout(vaiAvanti, <%= fakeDelayMs || 1400 %>);
+  <% } %>
+</script>
+
+<%- include('partials/layout-bottom', { step: step, sessione: typeof sessione !== 'undefined' ? sessione : null }) %>

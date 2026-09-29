@@ -1,0 +1,45 @@
+<%- include('partials/layout-top', { titolo: 'Verifica competenze', step: 4 }) %>
+
+<h1>Coerenza tra le competenze dichiarate e i contenuti del sito</h1>
+<p class="lead">Confrontiamo le competenze che la scuola dichiara con ciò che il sito comunica davvero.</p>
+
+<div class="card">
+  <h2>Competenze dichiarate dalla scuola</h2>
+  <div class="theme-list">
+    <% sessione.dichiarati.forEach(function(t) {
+         var trovato = temi.temiTrovati.find(function(x){ return x.key === t.key; });
+    %>
+      <span class="theme-chip" style="cursor:default;">
+        <%= t.label %>
+        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %>)</span><% } else if (t.key) { %><span class="muted">(non trovato sul sito)</span><% } %>
+      </span>
+    <% }) %>
+  </div>
+
+  <% var chiaviDichiarate = new Set(sessione.dichiarati.filter(function(t){ return t.key; }).map(function(t){ return t.key; }));
+     var aggiuntive = temi.temiTrovati.filter(function(t){ return !chiaviDichiarate.has(t.key); });
+  %>
+  <h2>Competenze aggiuntive individuate nel sito</h2>
+  <% if (aggiuntive.length === 0) { %>
+    <p class="muted">Non abbiamo individuato altre competenze consolidate analizzando i contenuti del sito, rispetto a quelle dichiarate.</p>
+  <% } else { %>
+    <div class="theme-list">
+      <% aggiuntive.forEach(function(t) { %>
+        <span class="theme-chip" style="cursor:default;"><%= t.label %> <span class="muted">(<%= t.count %>)</span></span>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <% if (finding) { %>
+    <div class="finding">
+      <strong>Finding:</strong> <%= finding %>
+    </div>
+  <% } %>
+</div>
+
+<div class="actions">
+  <a class="btn secondary" href="/audit/<%= sessione.id %>">← Indietro</a>
+  <a class="btn btn-principale" href="/posizionamento/<%= sessione.id %>">Continua →</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 4, sessione: sessione }) %>
