@@ -5,8 +5,17 @@ schedulate automaticamente al mattino/pomeriggio) deve leggerlo per intero prima
 aggiornarlo (spuntando le voci fatte, annotando decisioni prese) prima di terminare.
 
 Repo: https://github.com/osky73/autovalutazione-scuole (branch `main`)
-Produzione: https://autoanalisi-scuole.vercel.app e https://autoanalisi-scuole-osky2.vercel.app
-(stesso progetto Vercel, due alias sullo stesso deployment)
+Produzione (URL unico, usare solo questo): https://autoanalisi-scuole.vercel.app
+
+C'è UN SOLO progetto Vercel (`autoanalisi-scuole`, id `prj_KT0BW5NzV1EeV8MPLdbhxOcIxDaJ`). Vercel
+assegna automaticamente a ogni progetto team anche un secondo alias di fallback nel formato
+`<progetto>-<team>.vercel.app` (qui: `autoanalisi-scuole-osky2.vercel.app`) che non è cancellabile
+via API — non è un secondo ambiente di deploy, è solo un alias tecnico. Il 2026-09-29 questo alias
+è stato impostato in redirect 307 permanente verso `autoanalisi-scuole.vercel.app`
+(`mcp__Vercel__assign_alias` con `redirect` invece di puntarlo a un deployment), così esiste
+un'unica area utilizzabile. **Non richiamare `assign_alias` su `autoanalisi-scuole-osky2.vercel.app`
+puntandolo a un deployment nei prossimi deploy**: il redirect è permanente e non va toccato/rifatto
+a ogni deploy, va lasciato così com'è.
 
 ## Come deployare
 
@@ -15,9 +24,8 @@ Il progetto Vercel NON è collegato via Git integration: i deploy si fanno con
 (referenziati per hash, senza doverne rimandare il contenuto — Vercel li ha già in blob storage da
 deploy precedenti) e `{file, data, encoding:"utf-8"}` per i file nuovi o modificati. NON passare
 `deploymentId` (si è visto essere inaffidabile nell'ereditare i file). Passare `target: "production"`.
-Dopo che lo stato è `READY` (poll con `mcp__Vercel__get_deployment`), verificare che entrambi gli
-alias puntino al nuovo deployment con `mcp__Vercel__assign_alias` (il primo alias di solito si
-aggiorna da solo, il secondo va assegnato esplicitamente).
+Dopo che lo stato è `READY` (poll con `mcp__Vercel__get_deployment`), l'alias primario
+`autoanalisi-scuole.vercel.app` si aggiorna da solo. NON toccare il secondo alias (vedi sopra).
 
 Per ottenere gli hash SHA1 dei file invariati, usare `mcp__Vercel__list_deployment_files` sull'ultimo
 deployment di produzione. In parallelo, mantenere il repository Git aggiornato con `git add/commit/push`
@@ -38,6 +46,9 @@ Completati e in produzione:
 - [x] Nuovo sottotitolo landing page (`views/landing.ejs`, `p.lead`): "Uno strumento gratuito per
       analizzare in pochi minuti l'efficacia della comunicazione web e delle attività di web
       marketing della tua attività."
+- [x] Struttura di deploy: eliminata l'ambiguità "due aree di deploy" — l'alias di fallback
+      `autoanalisi-scuole-osky2.vercel.app` ora reindirizza (307) a `autoanalisi-scuole.vercel.app`,
+      che resta l'unico URL da usare/comunicare. Vedi sezione in cima al file.
 
 Non recuperabili dal vecchio deployment (solo file di test, nessun impatto runtime):
 `lib/social/metrics.test.js` e `test/fixture-site.js` sono referenziabili per SHA nei deploy Vercel
@@ -46,6 +57,37 @@ serve, si può tentare via `get_deployment_file_contents` con l'uid noto (rischi
 grandi, vedi hash in una lista `list_deployment_files` del deployment corrente).
 
 ## Da fare — in ordine di priorità
+
+### 0. BUG PRIORITARIO — la sessione dell'utente scade/si perde spesso ("mi fa ripartire da zero")
+
+Segnalato dal cliente il 2026-09-29: durante l'uso del wizard, capita spesso di dover ricominciare
+da capo. Causa più probabile (da verificare con un test end-to-end prima di intervenire): le
+sessioni sono tenute in memoria di processo in `lib/store.js` (`const sessions = new Map()`), non in
+uno storage persistente. Su Vercel, ogni funzione serverless è stateless: un cold start, un nuovo
+deployment, uno scale-out su un'altra istanza lambda, o anche solo un periodo di inattività, azzera
+quella `Map` — la sessione (con id nell'URL) smette di esistere e l'utente si ritrova a dover
+ripartire da capo con un "sessione non trovata" o comportamento equivalente. Con un wizard a 8 step
+che può richiedere diversi minuti per l'utente (soprattutto se si ferma a leggere), è plausibile che
+capiti spesso.
+
+Passi da seguire:
+1. Confermare l'ipotesi: cercare in `server.js` dove viene gestito il caso `getSessione(id) === null`
+   (verificare se esiste già un errore friendly o se il comportamento attuale è un crash/redirect
+   silenzioso a step 1 — questo spiegherebbe il "ripartire da zero" lamentato).
+2. Soluzione da implementare: sostituire lo store in-memory con uno persistente. Opzioni, da valutare
+   per costo/complessità:
+   - **Vercel KV** (Redis-compatibile, integrazione nativa Vercel) — probabilmente l'opzione più
+     semplice da collegare al progetto esistente.
+   - In alternativa, se si vuole evitare un nuovo servizio esterno, si può codificare lo stato della
+     sessione in un cookie firmato o nell'URL stesso (query string / token), ma lo stato del wizard è
+     abbastanza corposo (HTML delle pagine scaricate, risultati di più analisi) per rendere questa
+     strada scomoda — probabilmente va bene solo come workaround rapido, non come soluzione definitiva.
+   - Verificare anche se il piano Vercel del cliente include già Vercel KV o se richiede un upgrade/
+     add-on (chiedere conferma prima di attivare qualcosa che possa avere un costo).
+3. Qualunque soluzione si scelga, mantenere la stessa interfaccia di `lib/store.js`
+   (`creaSessione`, `getSessione`) così il resto del codice non deve cambiare.
+4. Testare che una sessione sopravviva a un nuovo deployment (il caso più facile da verificare: creare
+   una sessione, fare un deploy, verificare che la sessione sia ancora leggibile).
 
 ### 1. Criterio "Aggiornamento dei contenuti / Blog" (nuovo passaggio nel wizard)
 
@@ -184,12 +226,67 @@ Indicazioni implementative (da decidere durante lo sviluppo):
   vista di punteggio finale, non ancora identificata come singolo file — verificare `lib/score.js`
   per capire come sono strutturati gli altri criteri e seguirne lo schema).
 
-### 3. Reintroduzione dell'aiuto AI (in sospeso, nessuna scadenza)
+### 3. Reintroduzione dell'aiuto AI, con chiave Claude dedicata
 
-L'utente ha detto esplicitamente "la implementeremo in un secondo momento" — non è nel backlog
-attivo, va fatto solo se/quando richiesto esplicitamente. Il codice è ancora tutto presente (solo
-nascosto via CSS), quindi la reintroduzione è semplice: rimuovere `style="display:none"` dal div
-`.ai-blocco` in `views/social-conferma.ejs`.
+AGGIORNATO 2026-09-29: il cliente ha chiesto di ripristinare la funzione di aiuto AI (scraping/
+estrazione dati social), ma installando una chiave API Claude/Anthropic dedicata invece di — o in
+aggiunta a — l'`AI_GATEWAY_API_KEY` già configurata su Vercel. `lib/social/ai.js` supporta già
+entrambe le modalità:
+```js
+function ottieniModello() {
+  if (process.env.ANTHROPIC_API_KEY) { ... return anthropic('claude-3-5-haiku-latest'); }
+  if (process.env.AI_GATEWAY_API_KEY) { ... return 'anthropic/claude-3-5-haiku'; }
+  ...
+}
+```
+quindi non serve modificare la logica di scelta del provider — basta che `ANTHROPIC_API_KEY` sia
+presente come env var sul progetto Vercel (viene già controllata per prima, ha precedenza sull'AI
+Gateway).
+
+Passi:
+1. Chiedere all'utente la chiave API Anthropic (Claude) — lui l'ha detto esplicitamente: "la chiedi
+   e te la genero". Se non è ancora stata fornita quando si esegue questo task, chiederla e fermarsi
+   in attesa; non procedere a indovinare o inventare valori.
+2. Una volta ricevuta, impostarla su Vercel come env var di progetto (`mcp__Vercel__create_project_env`
+   o `edit_project_env`), target production/preview/development, marcata sensitive/encrypted come le
+   altre chiavi già presenti (`GOOGLE_MAPS_API_KEY`, `YOUTUBE_API_KEY`).
+3. Rimuovere `style="display:none"` dal div `.ai-blocco` in `views/social-conferma.ejs` (questo è
+   l'unico cambio di codice necessario per riattivare la UI — il resto del codice era solo nascosto,
+   non rimosso).
+4. Fare un test end-to-end del flusso "Chiedo l'aiuto dell'AI" su un canale social reale prima di
+   dichiarare il task concluso.
+5. Deployare e verificare in produzione.
+
+### 4. Andamento social negli ultimi 3 mesi (riferimento temporale)
+
+Richiesto dal cliente il 2026-09-29: attualmente l'analisi dei canali social (`lib/social.js`,
+`lib/social/youtube-analysis.js`, `lib/social/metrics.js`) produce solo uno snapshot puntuale
+(follower attuali, frequenza/interazioni medie calcolate sullo storico disponibile) senza un vero
+riferimento temporale — non si vede se un canale sta crescendo, è stabile o in calo. Il cliente
+vuole che si verifichi esplicitamente l'andamento (trend) degli ultimi 3 mesi.
+
+Da chiarire/decidere in fase di sviluppo (nessuna indicazione implementativa ancora data dal
+cliente oltre alla richiesta):
+- Per YouTube (`lib/social/youtube-analysis.js`), i dati via API pubbliche permettono già di vedere
+  le date di pubblicazione degli ultimi video: si può calcolare un confronto tra la prima e la
+  seconda metà degli ultimi 3 mesi (numero di video, media interazioni) per dare un'indicazione di
+  tendenza (crescita/stabile/calo), senza bisogno di uno storico esterno.
+- Per gli altri canali (Facebook, Instagram, ecc.), i dati vengono raccolti via AI (estrazione da
+  screenshot/testo, vedi `lib/social/extract.js` e `lib/social/assess.js`) o inseriti manualmente
+  dall'utente come fasce (`lib/social.js`): non c'è uno storico multi-punto disponibile in automatico
+  — andrebbe verificato se si può chiedere all'AI di stimare l'andamento leggendo più screenshot (uno
+  per ciascuno degli ultimi 3 mesi, se l'utente li carica) oppure se ci si limita a un confronto
+  "adesso vs 3 mesi fa" basato su due rilevazioni manuali/AI fatte a distanza di tempo (soluzione più
+  realistica nel breve termine, ma richiede che l'utente rifaccia l'autovalutazione periodicamente).
+- Valutare se questo si collega al modulo GBP (`lib/social/gbp.js`), che già esclude esplicitamente
+  "frequenza dei post" come dato non disponibile senza credenziali da titolare — l'andamento a 3 mesi
+  potrebbe restare non disponibile anche lì per lo stesso motivo.
+- Il posto più naturale per un'eventuale metrica "andamento" è dentro l'oggetto che ogni canale già
+  ritorna (accanto a `frequenzaEtichetta`, `interazioniEtichetta`, ecc.), da mostrare poi nella vista
+  di analisi finale (`views/social-analisi.ejs`) accanto agli altri dati del canale.
+- Prima di implementare, vale la pena chiedere conferma al cliente su quale livello di sforzo/
+  automazione si aspetta (calcolo automatico solo per YouTube, vs. richiedere dati storici manuali
+  per gli altri canali), perché le due strade hanno costi di sviluppo molto diversi.
 
 ## Note per le sessioni schedulate automatiche
 
