@@ -226,36 +226,37 @@ Indicazioni implementative (da decidere durante lo sviluppo):
   vista di punteggio finale, non ancora identificata come singolo file — verificare `lib/score.js`
   per capire come sono strutturati gli altri criteri e seguirne lo schema).
 
-### 3. Reintroduzione dell'aiuto AI, con chiave Claude dedicata
+### 3. Reintroduzione dell'aiuto AI — provider Gemini (IN ATTESA SOLO DELLA CHIAVE)
 
-AGGIORNATO 2026-09-29: il cliente ha chiesto di ripristinare la funzione di aiuto AI (scraping/
-estrazione dati social), ma installando una chiave API Claude/Anthropic dedicata invece di — o in
-aggiunta a — l'`AI_GATEWAY_API_KEY` già configurata su Vercel. `lib/social/ai.js` supporta già
-entrambe le modalità:
-```js
-function ottieniModello() {
-  if (process.env.ANTHROPIC_API_KEY) { ... return anthropic('claude-3-5-haiku-latest'); }
-  if (process.env.AI_GATEWAY_API_KEY) { ... return 'anthropic/claude-3-5-haiku'; }
-  ...
-}
-```
-quindi non serve modificare la logica di scelta del provider — basta che `ANTHROPIC_API_KEY` sia
-presente come env var sul progetto Vercel (viene già controllata per prima, ha precedenza sull'AI
-Gateway).
+AGGIORNATO 2026-09-29, due volte: prima richiesto con chiave Claude/Anthropic dedicata, poi il
+cliente ha chiesto di riusare invece Gemini (paga già Google AI Studio / Vertex AI direttamente,
+non tramite Vercel AI Gateway). Codice già scritto e pushato (commit `4b6adc8`):
 
-Passi:
-1. Chiedere all'utente la chiave API Anthropic (Claude) — lui l'ha detto esplicitamente: "la chiedi
-   e te la genero". Se non è ancora stata fornita quando si esegue questo task, chiederla e fermarsi
-   in attesa; non procedere a indovinare o inventare valori.
-2. Una volta ricevuta, impostarla su Vercel come env var di progetto (`mcp__Vercel__create_project_env`
-   o `edit_project_env`), target production/preview/development, marcata sensitive/encrypted come le
-   altre chiavi già presenti (`GOOGLE_MAPS_API_KEY`, `YOUTUBE_API_KEY`).
-3. Rimuovere `style="display:none"` dal div `.ai-blocco` in `views/social-conferma.ejs` (questo è
-   l'unico cambio di codice necessario per riattivare la UI — il resto del codice era solo nascosto,
-   non rimosso).
-4. Fare un test end-to-end del flusso "Chiedo l'aiuto dell'AI" su un canale social reale prima di
-   dichiarare il task concluso.
-5. Deployare e verificare in produzione.
+- `lib/social/ai.js`: `ottieniModello()` ora prova, in ordine, `GOOGLE_GENERATIVE_AI_API_KEY`
+  (pacchetto `@ai-sdk/google`, modello `gemini-2.0-flash`) → `ANTHROPIC_API_KEY` → `AI_GATEWAY_API_KEY`
+  (gateway Vercel, invariato). `providerDisponibile()` aggiornato di conseguenza.
+- `package.json`: aggiunta la dipendenza `"@ai-sdk/google": "^1.2.0"`.
+- `views/social-conferma.ejs`: rimosso `style="display:none"` dal blocco `.ai-blocco` — la UI
+  "🤖 Chiedo l'aiuto dell'AI" è di nuovo visibile nel codice.
+- `lib/social/extract.js` e `lib/social/assess.js` non richiedono modifiche: usano già l'interfaccia
+  agnostica-al-provider di Vercel AI SDK (`generateObject`), quindi funzionano automaticamente con
+  qualunque modello ritornato da `ottieniModello()`.
+
+**L'UNICA cosa che manca è la chiave**: il cliente ha detto di avere una chiave API Gemini presa
+direttamente da Google AI Studio o Google Cloud (Vertex AI) — NON tramite il Vercel AI Gateway.
+Quando la fornisce:
+1. Impostarla su Vercel come env var di progetto `GOOGLE_GENERATIVE_AI_API_KEY`
+   (`mcp__Vercel__create_project_env`), target production/preview/development, marcata
+   sensitive/encrypted come le altre chiavi già presenti (`GOOGLE_MAPS_API_KEY`, `YOUTUBE_API_KEY`).
+2. Deployare (il codice è già pronto e pushato, basta un deploy Vercel che lo includa — verificare
+   con `git log`/`git diff` che non ci sia altro lavoro non ancora deployato da includere insieme).
+3. Fare un test end-to-end del flusso "Chiedo l'aiuto dell'AI" su un canale social reale (sia
+   percorso testo/URL pubblico sia percorso screenshot caricato) prima di dichiarare il task concluso.
+4. Verificare in produzione che il pulsante sia visibile e funzionante.
+
+Se in una sessione futura la chiave non è ancora stata fornita: non sollecitare di nuovo in ogni
+sessione, verificare semplicemente se è comparsa tra le env var del progetto (`filter_project_envs`)
+e, se sì, procedere con i passi 2-4; se no, saltare questo task e passare al successivo utile.
 
 ### 4. Andamento social negli ultimi 3 mesi (riferimento temporale)
 
