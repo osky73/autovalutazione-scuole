@@ -61,6 +61,31 @@ Profile della scuola.
       utile per diagnosticare più in fretta problemi futuri simili (restrizioni di chiave, billing,
       quota). Deployato in produzione (commit `45b3534`).
 
+Secondo bug segnalato dal cliente lo stesso giorno: "Ho messo nome scuola LZ e www.lazolla.it e mi hai
+trovato come scheda L.Z. Chinese Pastry Shop che è ovviamente sbagliato, nell'identificare la scheda di
+GBP devi basarti sull'indirizzo dichiarato nel sito e nel nome della scuola dichiarato nel sito, non nel
+nome dato nel passaggio 1".
+
+- [x] **Diagnosticato**: `analizzaGBP` veniva chiamato con `nomeScuola: sessione.scuola`, cioè il nome
+      digitato liberamente dall'utente al passaggio 1 del wizard — che può essere un'abbreviazione
+      ambigua (es. "LZ" invece di "Istituto La Zolla") e far matchare su Google Places un'attività
+      completamente diversa con un nome simile.
+- [x] **Corretto** aggiungendo in `lib/localita.js` una nuova funzione `estraiDatiOrganizzazione` che
+      estrae nome (e, quando disponibile, indirizzo) dell'organizzazione così come dichiarati sul sito
+      stesso della scuola, con cascata di fallback: JSON-LD schema.org (`Organization`/`School`/ecc.,
+      con controllo `@type`) → microdata schema.org → tag `<title>` della pagina (ripulito da suffissi
+      tipo "- Home"). Il risultato viene salvato in sessione (`sessione.organizzazioneSito`) e usato al
+      posto di `sessione.scuola` nella route `/social/:id/altri` di `server.js`. `analizzaGBP`
+      (`lib/social/gbp.js`) ora accetta anche un `indirizzo` opzionale e, quando disponibile, lo usa al
+      posto della sola località nella query a Google Places (più preciso, riduce ambiguità).
+- [x] **Verificato sul caso reale segnalato**: recuperato l'HTML vero di `www.lazolla.it` (nessun
+      JSON-LD presente, quindi si usa il fallback al `<title>`), confermato che `estraiDatiOrganizzazione`
+      estrae correttamente il nome reale dal titolo della pagina, poi verificato con una deployment di
+      debug (stessa tecnica delle sessioni precedenti, poi scartata con `git checkout` e il fix
+      ri-applicato) che questa query trova la scheda corretta della vera scuola "La Zolla" (Via Giulio
+      Carcano, 53, 20141 Milano) e non più la pasticceria omonima.
+- [x] **Deployato in produzione** (commit `81b9e59`, deployment `dpl_96HULYVaJfABFptiiUhgV5wXAi7E`).
+
 ## Stato al 2026-09-29
 
 Completati e in produzione:
