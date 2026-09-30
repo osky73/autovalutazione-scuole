@@ -49,8 +49,12 @@ Profile della scuola.
       `places.googleapis.com`.
 - [x] **Segnalato al cliente**: deve abilitare lui la Places API (New) su
       https://console.developers.google.com/apis/library/places.googleapis.com?project=637636767468
-      (azione lato Google Cloud Console, non eseguibile da qui). Da confermare/riverificare in una
-      prossima sessione se il cliente conferma di averla abilitata.
+      (azione lato Google Cloud Console, non eseguibile da qui).
+- [x] **Verificato dopo l'abilitazione**: il cliente ha abilitato la Places API. Riverificato con una
+      seconda deployment di debug (stessa tecnica, poi scartata) chiamando `analizzaGBP` reale su un
+      caso di prova ("Istituto Sacro Cuore", "Milano"): la ricerca ora restituisce correttamente la
+      scheda trovata (place trovato, indirizzo, foto, orari, stato "reclamata"), niente più errore
+      403. Bug risolto.
 - [x] **Migliorato `lib/social/gbp.js`**: entrambe le chiamate a Google Places (ricerca testo e
       dettagli scheda) ora loggano l'errore grezzo di Google in console e includono il messaggio
       reale di Google nell'errore restituito, invece del messaggio generico fisso di prima —
