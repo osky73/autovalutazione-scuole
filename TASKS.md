@@ -188,12 +188,39 @@ Spec completa (dal prompt originale del cliente, riportata testualmente):
 > le aree, per non scansionare due volte lo stesso sito e non mostrare numeri leggermente diversi
 > per lo stesso sito nelle due aree.
 
+**Stato al 2026-09-30 (sessione schedulata pomeridiana)**: creato e testato `lib/contenuti.js`
+(commit `751fab9`), ancora NON agganciato al wizard — incremento volutamente piccolo e
+autoconclusivo per non rischiare di lasciare un deploy a metà (vedi note in fondo al file).
+- [x] Funzione di raccolta dati condivisa `raccogliArticoli(baseUrl, pagineHtml)`: STEP 1
+      (`individuaSezione`, link nel menu/footer per testo o URL) + STEP 2 in cascata (sitemap.xml
+      tramite la nuova `getSitemapEntries()` in `lib/sitemap.js` → feed RSS/Atom su path comuni
+      → fallback su markup della pagina, `<time>`/meta/date testuali in italiano).
+- [x] Funzione di giudizio `giudicaContenuti(raccolta, { cadenzaDichiarata })`: STEP 3 (metriche:
+      ultimo articolo, conteggi 6/12 mesi, intervallo medio, gap più lungo — quest'ultimo calcolato
+      sia sui 12 mesi sia ristretto ai 6 mesi, per la regola "rallentato" dello step 4), STEP 4
+      (soglie in `SOGLIE`, regolabili), STEP 5 (confronto con cadenza dichiarata, quando la domanda
+      esisterà), STEP 6 (oggetto di output con `stato`/`messaggio`).
+- [x] `lib/sitemap.js` esteso con `getSitemapEntries()` (parsing `<loc>`/`<lastmod>`, segue un
+      eventuale `sitemapindex`), riusata invece di riscrivere il parsing da zero.
+- [x] 14 test unitari (`lib/contenuti.test.js`, `node --test`) tutti verdi; verificato anche
+      `require('./server.js')` senza errori dopo le modifiche.
+- **Nota implementativa presa**: modulo chiamato `lib/contenuti.js` (non `lib/blog.js`), proprio
+  per essere già pronto a essere riusato anche dal futuro criterio "frequenza dei contenuti"
+  (area Contenuti), come richiesto esplicitamente dal cliente nella spec.
+- **Interpretazione presa su un punto ambiguo della spec** (da rivedere in calibrazione): lo step 4
+  parla di gap più lungo "negli ultimi 6 mesi" per la regola "rallentato", mentre lo step 3 chiede
+  il gap sui 12 mesi come metrica riportata — `calcolaMetriche` calcola entrambi
+  (`gapMassimoGiorni` a 12 mesi per l'output, `gapMassimoGiorni6Mesi` usato solo internamente dal
+  giudizio). Anche il caso "ultimo articolo ≤30gg ma meno di ~1 articolo/mese negli ultimi 6 mesi"
+  (non coperto esplicitamente dalla spec) è stato trattato come "rallentato" — vedi commenti nel
+  codice.
+- **Ancora da fare** (prossima sessione): la domanda dichiarativa "Avete un piano editoriale per il
+  sito? Con quale cadenza pensate di pubblicare?" (nuovo blocco "Nurturing" nel questionario), la
+  decisione su dove/quando agganciare la chiamata nel wizard (nuovo step 9 vs sezione aggiuntiva
+  dell'audit tecnico — vedi indicazioni sotto), l'estensione di `lib/store.js` per salvare il
+  risultato in sessione, e la vista/sezione di report che lo mostra.
+
 Indicazioni implementative (da valutare/decidere durante lo sviluppo, non ancora decise):
-- Nuovo file `lib/blog.js` (o `lib/contenuti.js` se si vuole già pensarlo come modulo condiviso con
-  il futuro criterio "frequenza dei contenuti" dell'area Contenuti) con la funzione di raccolta dati
-  condivisa (es. `raccogliArticoli(baseUrl, pagineHtml)` che ritorna `{ sezioneTrovata, url, articoli:
-  [{titolo, data, fonte}] }`) + una funzione di giudizio separata che applica le soglie dello step 4
-  e produce l'oggetto di output dello step 6.
 - Dove va nel wizard: è un nuovo passaggio. Attualmente il wizard ha 8 step (vedi `server.js`):
   1 landing → 2 audit tecnico → 3 dichiarazione competenze → 4 verifica coerenza → 5 posizionamento
   → 6 social (conferma canali trovati) → 7 altri canali (YouTube/GBP/manuali) → 8 analisi social
@@ -206,7 +233,6 @@ Indicazioni implementative (da valutare/decidere durante lo sviluppo, non ancora
   pubblicare?" non esiste ancora nel questionario (`views/dichiarazione.ejs` raccoglie solo le
   competenze/temi) — va aggiunta da qualche parte, probabilmente in un nuovo blocco di domande
   dichiarative "Nurturing" (newsletter + editoriale) prima o dopo lo step "dichiarazione competenze".
-- Riusare `lib/sitemap.js` per il parsing di sitemap.xml (già esiste e gestisce `<lastmod>`).
 
 ### 2. Criterio "Newsletter"
 
