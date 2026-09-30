@@ -361,6 +361,64 @@ screenshot caricato) e controllare che i dati vengano estratti e mostrati corret
 l'errore "modello sovraccarico" (`AI_RetryError`) più volte a distanza di ore, vale la pena
 raccontarlo al cliente/segnalarlo, perché a quel punto non sarebbe più un problema transitorio.
 
+### 5. Revisione testi e UX del wizard fino al passaggio 8 (richiesta di Andrea, 2026-09-30)
+
+Elenco di modifiche puntuali richieste da Andrea sui passaggi del wizard, da pianificare e
+implementare in una prossima sessione (non ancora iniziato). Numerazione dei punti come indicata
+da Andrea (mancano i numeri 7 nella sua lista, verificare a quale schermata corrisponda quando si
+implementa).
+
+- **1) Landing/passaggio 1** — Titolo: cambiare in "La tua scuola c'è?" con "(sul web)" a capo.
+  Etichetta del bottone: "Iniziamo".
+- **2) Passaggio con l'ultimo contenuto pubblicato** — L'etichetta negativa deve diventare
+  "Troppo vecchio". Togliere il box "Il dato peggiore: Scheda Google...".
+- **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
+  sul sito della tua scuola?".
+- **4) Passaggio conferma competenze + risultati ricerche (da accorpare)**:
+  - Verificare se le competenze indicate nel testo libero dall'utente sono state trovate sul sito;
+    se non trovate, mostrare la scritta "(non trovato sul sito)" in rosso.
+  - Cambiare il titolo "Competenze aggiuntive..." togliendo la parola "aggiuntive".
+  - Aggiungere una spiegazione: abbiamo controllato i contenuti del sito e non abbiamo trovato una
+    quantità omogenea di contenuti che identificasse una competenza tra quelle standard.
+  - Accorpare in questo stesso passaggio anche l'attuale passaggio 5 (risultati delle ricerche
+    Google per le competenze/temi).
+  - In quel blocco risultati, cambiare la dicitura "Non presente nei risultati analizzati" in
+    "Non presente nei primi 10 risultati su G[oogle]".
+  - Quando l'utente aggiunge una competenza personalizzata (testo libero), il sistema deve
+    costruire delle varianti di query standard (tail, come per le competenze del vocabolario) su
+    cui effettuare la ricerca — attualmente probabilmente le competenze aggiunte a mano non hanno
+    query associate.
+- **5) Passaggio canali social trovati sul sito**:
+  - Nella spiegazione/istruzioni, togliere i riferimenti agli screenshot.
+  - I testi delle select (fasce like/follower/frequenza ecc.) devono avere lo stesso stile
+    (colore e dimensione) degli altri testi della pagina.
+  - Nei select, togliere le etichette qualitative "buono", "sufficiente", "insufficiente"; al posto
+    di "meno di", "oltre", "tra ... e ..." e "sotto" usare i simboli matematici corrispondenti
+    (es. "<", ">", "–"/intervallo, "<").
+  - Togliere il checkbox di fianco al nome del canale social trovato sul sito (probabilmente reso
+    superfluo/ridondante da altro controllo).
+- **6) Passaggio "altri canali" (YouTube + extra) e scheda GBP**:
+  - Togliere il checkbox di fianco a YouTube.
+  - Togliere "(stimato)" di fianco a "Probabilmente gestita".
+  - Cambiare "Aggiungi un altro canale" in "Aggiungi un altro canale social non trovato sul sito".
+  - **Caso scuole con più plessi/sedi**: una scuola con più plessi può avere diverse schede GBP.
+    Bisogna proporle tutte in questa schermata, con la possibilità di spuntarle/deselezionarle,
+    per permettere all'utente di "spegnere" le sedi che non sono di sua competenza o interesse.
+    Attualmente il codice (`lib/social/gbp.js`/`analizzaGBP`) restituisce una sola scheda (il primo
+    risultato di Google Places) — va esteso per restituire più candidati quando pertinente.
+  - La/e scheda/e GBP mostrate in questa schermata devono essere più sintetiche: togliere tutti i
+    criteri di valutazione dettagliati, che vanno invece riportati nella schermata successiva
+    (quella dove si dà il giudizio complessivo sui social).
+- **8) Passaggio giudizio/analisi social finale** — (manca il punto 7 nella lista di Andrea, da
+  chiarire):
+  - Se l'utente non indica i valori per un determinato social, sostituire il messaggio tecnico
+    "Il canale ha risposto con codice 400" con "Non sono state fornite o trovate indicazioni".
+  - Togliere la voce "Post della scheda Community...".
+
+Prima di implementare, conviene rileggere con Andrea la numerazione (manca il punto 7) e capire
+esattamente a quali view corrispondono i passaggi 1-8 nell'attuale flusso (`views/*.ejs`,
+`server.js`), perché la sua numerazione potrebbe non coincidere 1:1 con gli step attuali del wizard.
+
 ## Note per le sessioni schedulate automatiche
 
 - Prima di iniziare: verificare la disponibilità di token/utilizzo per la sessione (se l'informazione
