@@ -34,6 +34,29 @@ per ogni modifica: è la fonte di verità primaria adesso, il deploy Vercel la s
 Prima di ogni deploy: eseguire `node -e "require('./server.js')"` (o un test più mirato) per
 intercettare errori di sintassi/require prima di spendere una build.
 
+## Stato al 2026-09-30
+
+Segnalato dal cliente: "perché non trovi la scheda di maps della scuola?" — il modulo GBP
+(`lib/social/gbp.js`, step "altri canali" del wizard) non trovava mai la scheda Google Business
+Profile della scuola.
+
+- [x] **Diagnosticato**: la chiave `GOOGLE_MAPS_API_KEY` era corretta, ma la **Places API (New)**
+      non era abilitata sul progetto Google Cloud collegato (`637636767468`) — Google rispondeva
+      `403 SERVICE_DISABLED`. Il codice esistente mostrava però un messaggio di errore generico che
+      nascondeva questo dettaglio. Per diagnosticare è stata usata la stessa tecnica delle sessioni
+      precedenti (route di debug temporanea su una deployment preview separata, mai in produzione,
+      poi scartata con `git checkout`) per bypassare il blocco di rete della sandbox verso
+      `places.googleapis.com`.
+- [x] **Segnalato al cliente**: deve abilitare lui la Places API (New) su
+      https://console.developers.google.com/apis/library/places.googleapis.com?project=637636767468
+      (azione lato Google Cloud Console, non eseguibile da qui). Da confermare/riverificare in una
+      prossima sessione se il cliente conferma di averla abilitata.
+- [x] **Migliorato `lib/social/gbp.js`**: entrambe le chiamate a Google Places (ricerca testo e
+      dettagli scheda) ora loggano l'errore grezzo di Google in console e includono il messaggio
+      reale di Google nell'errore restituito, invece del messaggio generico fisso di prima —
+      utile per diagnosticare più in fretta problemi futuri simili (restrizioni di chiave, billing,
+      quota). Deployato in produzione (commit `45b3534`).
+
 ## Stato al 2026-09-29
 
 Completati e in produzione:
