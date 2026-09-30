@@ -2,7 +2,7 @@ const express = require('express');
 const { creaSessione, getSessione } = require('./lib/store');
 const { runAudit } = require('./lib/runAudit');
 const { estraiTemi, elencoTemi, VOCABOLARIO } = require('./lib/temi');
-const { estraiLocalita } = require('./lib/localita');
+const { estraiLocalita, estraiDatiOrganizzazione } = require('./lib/localita');
 const { verificaPosizionamentoCluster } = require('./lib/serp');
 const { discoverSocialLinks, analizzaCanali } = require('./lib/social');
 const { eseguiFetch } = require('./lib/social/fetchService');
@@ -329,8 +329,18 @@ app.get('/social/:id/altri', async (req, res) => {
 
   const youtube = (sessione.socialTrovati || []).find((c) => c.platform === 'youtube') || null;
 
+  if (sessione.organizzazioneSito === undefined) {
+    sessione.organizzazioneSito = estraiDatiOrganizzazione(sessione.pagineHtml || []);
+  }
+
   if (!sessione.gbp) {
-    sessione.gbp = await analizzaGBP({ nomeScuola: sessione.scuola, localita: sessione.localita });
+    // Usiamo il nome e l'indirizzo dichiarati sul sito stesso (schema.org / <title>), quando
+    // disponibili, invece del nome digitato liberamente dall'utente al passaggio 1: quel nome
+    // può essere un'abbreviazione o un nome ambiguo e far trovare la scheda di un'attività
+    // non correlata (es. "LZ" per "Istituto La Zolla" che matcha un'altra attività con "LZ" nel nome).
+    const nomeScuola = (sessione.organizzazioneSito && sessione.organizzazioneSito.nome) || sessione.scuola;
+    const indirizzo = sessione.organizzazioneSito && sessione.organizzazioneSito.indirizzo;
+    sessione.gbp = await analizzaGBP({ nomeScuola, localita: sessione.localita, indirizzo });
   }
 
   res.render('social-altri', { sessione, youtube, gbp: sessione.gbp });
