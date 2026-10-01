@@ -8,25 +8,29 @@
        var analizzati = r.risultatiQuery.filter(function(x){ return x.disponibile; }).map(function(x){ return x.risultatiAnalizzati || 0; });
        var maxAnalizzati = analizzati.length ? Math.max.apply(null, analizzati) : 0;
   %>
-    <div class="indicator-row">
-      <div>
-        <div><strong><%= r.label %></strong></div>
-        <div class="meta">Ricerche: <%= r.risultatiQuery.map(function(x){ return '"' + x.query + '"'; }).join(', ') %></div>
-        <% if (r.migliore) { %>
-          <div class="meta">Trovato con: "<%= r.migliore.query %>"</div>
-        <% } else if (!r.disponibile) { %>
-          <div class="meta">Google non raggiungibile per nessuna ricerca del cluster</div>
+    <div class="pos-item">
+      <div class="pos-header">
+        <strong><%= r.label %></strong>
+        <% if (!r.disponibile) { %>
+          <span class="pill assente">Non disponibile</span>
+        <% } else if (r.migliore) { %>
+          <span class="pill ottimizzato">Posizione <%= r.migliore.posizione %></span>
+        <% } else if (maxAnalizzati > 0) { %>
+          <span class="pill parziale">Non presente tra i primi <%= maxAnalizzati %> risultati</span>
+        <% } else { %>
+          <span class="pill parziale">Non presente nei risultati analizzati</span>
         <% } %>
       </div>
-      <% if (!r.disponibile) { %>
-        <span class="pill assente">Non disponibile</span>
-      <% } else if (r.migliore) { %>
-        <span class="pill ottimizzato">Posizione <%= r.migliore.posizione %></span>
-      <% } else if (maxAnalizzati > 0) { %>
-        <span class="pill parziale">Non presente tra i primi <%= maxAnalizzati %> risultati</span>
-      <% } else { %>
-        <span class="pill parziale">Non presente nei risultati analizzati</span>
+      <% if (r.migliore) { %>
+        <div class="meta">Trovato con: "<%= r.migliore.query %>"</div>
+      <% } else if (!r.disponibile) { %>
+        <div class="meta">Google non raggiungibile per nessuna ricerca del cluster</div>
       <% } %>
+      <ul class="query-list">
+        <% r.risultatiQuery.forEach(function(x) { %>
+          <li>"<%= x.query %>"</li>
+        <% }) %>
+      </ul>
     </div>
   <% }) %>
 

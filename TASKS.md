@@ -96,6 +96,24 @@ confermato delle 09:28 UTC circa). Nessuna perdita di dati per gli utenti (le se
 comunque in-memory e non persistenti, vedi punto 0 del backlog — un riavvio della funzione le avrebbe
 perse comunque).
 
+## Stato al 2026-10-01 (quarta parte) — restyling mobile della pagina "Posizionamento su Google"
+
+Andrea ha chiesto di ristrutturare la card di ogni competenza in `views/posizionamento.ejs`: prima
+nome competenza e pillola di esito erano affiancati in `.indicator-row` (flex `space-between`) con
+le query elencate in un'unica riga di testo lunga — su mobile la pillola veniva spinta a destra con
+molto spazio vuoto e il testo andava a capo in modo disordinato (vedi screenshot allegato).
+
+- [x] **Nuova struttura per card**: nome competenza + pillola nell'intestazione (`.pos-header`,
+      ancora affiancati ma senza il testo lungo accanto), poi sotto un elenco puntato (`<ul
+      class="query-list">`) con tutte le query del cluster, una per riga — molto più leggibile su
+      schermi stretti. Nuove classi CSS (`.pos-item`, `.pos-header`, `.query-list`) aggiunte in
+      `views/partials/layout-top.ejs` (condiviso da tutte le pagine, ma le nuove classi non toccano
+      quelle esistenti come `.indicator-row`, usata altrove).
+- [x] **Verificato**: `ejs.renderFile` su dati di prova, 37/37 test unitari verdi, screenshot su
+      preview a 390px di larghezza (viewport mobile) — layout pulito, nessun overflow.
+- [x] **Deployato in produzione** il 2026-10-01 (stesso meccanismo: alias
+      `autoanalisi-scuole.vercel.app` riassegnato, alias di fallback `-osky2` lasciato intatto).
+
 ## Stato al 2026-10-01 (terza parte) — 5 bug segnalati da Andrea + 2 trovati durante il test
 
 Andrea ha segnalato 5 problemi su `https://www.suoremantellate.org/`:

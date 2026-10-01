@@ -63,6 +63,13 @@
   .pill.attivo { background: #e3f4ea; color: var(--good); }
   .pill.rallentato { background: #fbf1de; color: var(--mid); }
   .pill.fermo { background: #fbeeee; color: var(--bad); }
+  .pos-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .pos-item:last-child { border-bottom: none; }
+  .pos-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 0.92rem; }
+  .pos-header strong { text-transform: capitalize; }
+  .pos-item .meta { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
+  .query-list { list-style: disc; margin: 8px 0 0; padding-left: 20px; color: var(--muted); font-size: 0.82rem; }
+  .query-list li { margin-bottom: 2px; }
   .theme-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 20px; }
   .theme-chip {
     border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; cursor: pointer;
