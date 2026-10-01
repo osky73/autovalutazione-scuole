@@ -34,6 +34,68 @@ per ogni modifica: è la fonte di verità primaria adesso, il deploy Vercel la s
 Prima di ogni deploy: eseguire `node -e "require('./server.js')"` (o un test più mirato) per
 intercettare errori di sintassi/require prima di spendere una build.
 
+**ATTENZIONE — lezione imparata il 2026-10-01 (vedi incidente sotto)**: `mcp__Vercel__list_deployment_files`
+tronca le sottodirectory oltre una certa profondità, mostrando `"[truncated: maximum depth exceeded]"`
+al posto dei file reali (es. è capitato con `lib/social/adapters/`, una sottodirectory di una
+sottodirectory). Se si copia la lista di `{file, sha}` da passare come invariati guardando solo
+l'output di `list_deployment_files`, un file "nascosto" da questo troncamento viene silenziosamente
+OMESSO dal deploy — e se quel file viene `require()`-ato in modo non condizionale da un modulo
+caricato all'avvio (es. `server.js` → `lib/social/fetchService.js` → `./adapters`), l'intera app va
+in crash su OGNI richiesta (errore Vercel "500 FUNCTION_INVOCATION_FAILED"), landing page inclusa —
+un danno enorme per un singolo file dimenticato. **Prima di considerare un deploy concluso**:
+1. Confrontare il numero di file passati nel deploy con `git ls-files` (esclusi i file non
+   deployati di proposito: `.gitignore`, `README.md`, `TASKS.md`, `package-lock.json`, i `*.test.js`).
+2. Richiamare `mcp__Vercel__list_deployment_files` sul NUOVO deployment appena creato (non su quello
+   vecchio) e controllare che non ci siano più `"[truncated: ...]"` per directory che contengono file
+   effettivamente usati dal codice — se compare, scendere nel dettaglio per quella sottodirectory
+   prima di fidarsi del deploy.
+3. Fare una verifica HTTP reale del sito dopo il deploy, non fermarsi allo stato `READY`/`aliasError:
+   null` dell'API Vercel (quello conferma solo che la BUILD è andata a buon fine, non che l'app
+   risponda davvero alle richieste — un crash a runtime per modulo mancante produce comunque uno
+   stato `READY`). Dalla sandbox di queste sessioni, `WebFetch` su `autoanalisi-scuole.vercel.app`
+   di solito fallisce per restrizioni di rete (non è un segnale di errore del sito, va ignorato come
+   falso negativo) — ma se quel fallimento riporta esplicitamente un "HTTP error: 500" nel messaggio,
+   quello sì è un segnale reale da non ignorare (è quanto è successo in questo incidente). In
+   alternativa, se disponibile, `mcp__Vercel__get_deployment_file_contents` sul nuovo deployment per
+   controllare a campione che i file required a livello di modulo dai punti di ingresso (`server.js`
+   e le sue dipendenze dirette) siano tutti presenti nella lista, non solo quelli toccati dalla
+   modifica di turno.
+
+## Incidente 2026-10-01 — sito in produzione giù per ~15 minuti (file dimenticato nel deploy)
+
+Durante il deploy del criterio Newsletter (vedi sezione "Da fare" punto 2), il file
+`lib/social/adapters/index.js` è stato omesso dalla lista `files` passata a
+`mcp__Vercel__create_deployment` per la causa descritta sopra (troncamento di `list_deployment_files`
+su una sottodirectory). Questo file è richiesto in modo non condizionale da
+`lib/social/fetchService.js` (`require('./adapters')`), a sua volta richiesto da `server.js` fin
+dall'avvio — quindi l'intera applicazione andava in crash su qualunque richiesta, inclusa la landing
+page. Il cliente (Andrea) ha segnalato "il sito non si apre" con screenshot dell'errore Vercel `500
+FUNCTION_INVOCATION_FAILED`.
+
+Risoluzione:
+1. Confermato il crash lato Vercel (screenshot del cliente + conferma indipendente tramite
+   `mcp__Vercel__get_runtime_logs`/richieste dirette).
+2. **Rollback d'emergenza** con `mcp__Vercel__request_rollback` al deployment di produzione
+   immediatamente precedente (`dpl_9yKtq6muZHyP8QXnjhwWUDa9hJpm`, solo criterio blog/contenuti, senza
+   newsletter) — **nota**: il piano Vercel in uso (Hobby/free) permette di fare rollback SOLO al
+   deployment di produzione immediatamente precedente, non a uno scelto arbitrariamente più indietro
+   (`mcp__Vercel__request_rollback` risponde "402 Payment Required... upgrade to pro" se si prova ad
+   andare oltre). Verificato via `WebFetch` che quella versione funzionava.
+3. Individuata la causa esatta confrontando l'elenco file del deployment rotto con quello del
+   deployment funzionante: mancava `lib/social/adapters/index.js`.
+4. Rifatto il deploy completo (stessi file del deploy newsletter rotto + il file mancante), verificato
+   che `list_deployment_files` ora mostri la sottodirectory `adapters` popolata, e **riassegnato
+   manualmente l'alias primario** con `mcp__Vercel__assign_alias` (il rollback di emergenza al passo 2
+   sembra aver cambiato qualcosa nel comportamento di auto-alias: il nuovo deploy non è stato
+   aliasato automaticamente come nei deploy precedenti — verificare in futuro se questo capita anche
+   senza un rollback di mezzo).
+5. Verificato via `WebFetch` che il sito risponde di nuovo correttamente (form landing page visibile).
+
+**Sito giù per circa 20 minuti totali** (dal deploy rotto delle 09:08 UTC circa al ripristino
+confermato delle 09:28 UTC circa). Nessuna perdita di dati per gli utenti (le sessioni del wizard sono
+comunque in-memory e non persistenti, vedi punto 0 del backlog — un riavvio della funzione le avrebbe
+perse comunque).
+
 ## Stato al 2026-09-30
 
 Segnalato dal cliente: "perché non trovi la scheda di maps della scuola?" — il modulo GBP
