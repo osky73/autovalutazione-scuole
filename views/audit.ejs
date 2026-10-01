@@ -30,6 +30,32 @@
   <% } %>
 </div>
 
+<% if (audit.contenuti) { %>
+<div class="card">
+  <h2 style="margin-top:0;">Nurturing — Aggiornamento contenuti / Blog</h2>
+  <div class="indicator-row">
+    <div>
+      <div>Sezione news/blog</div>
+      <div class="meta"><%= audit.contenuti.messaggio %></div>
+    </div>
+    <span class="pill <%= audit.contenuti.stato %>"><%= audit.contenuti.stato.charAt(0).toUpperCase() + audit.contenuti.stato.slice(1) %></span>
+  </div>
+  <% if (audit.contenuti.sezioneTrovata) { %>
+    <p class="muted" style="margin-top:14px;">
+      Articoli negli ultimi 6 mesi: <%= audit.contenuti.articoli6Mesi %> ·
+      negli ultimi 12 mesi: <%= audit.contenuti.articoli12Mesi %>
+      <% if (audit.contenuti.intervalloMedioGiorni != null) { %> · intervallo medio: <%= audit.contenuti.intervalloMedioGiorni %> giorni<% } %>
+      <% if (audit.contenuti.gapMassimoGiorni != null) { %> · gap più lungo: <%= audit.contenuti.gapMassimoGiorni %> giorni<% } %>
+    </p>
+  <% } %>
+  <% if (audit.contenuti.divergenzaCadenza && audit.contenuti.divergenzaCadenza.divergente) { %>
+    <div class="finding">
+      La cadenza di pubblicazione dichiarata ("<%= audit.contenuti.divergenzaCadenza.dichiarata %>") è significativamente più frequente di quella verificata (un articolo ogni <%= audit.contenuti.divergenzaCadenza.intervalloVerificatoGiorni %> giorni in media).
+    </div>
+  <% } %>
+</div>
+<% } %>
+
 <div class="actions">
   <a class="btn secondary" href="/">← Indietro</a>
   <a class="btn btn-principale" href="/dichiarazione/<%= sessione.id %>">Continua →</a>
