@@ -345,7 +345,53 @@ Spec completa (dal prompt originale del cliente, riportata testualmente):
 > dati sono pronti sia che l'utente risponda sì che no (e per segnalare eventuali discrepanze tra
 > quanto dichiarato e quanto verificato).
 
-Indicazioni implementative (da decidere durante lo sviluppo):
+**Stato al 2026-10-01 (sessione schedulata)**: **implementato, agganciato al wizard e deployato in
+produzione** (commit `fab7b45`, deployment `dpl_9gcNEpDVX39pC5Tj9Ea8jkHJZmAY`) nella stessa sessione
+che ha completato il criterio blog/contenuti sopra.
+- [x] **Nuovo file `lib/newsletter.js`**: lista estensibile `ESP_NOTI` (array di
+      `{ chiave, etichetta, pattern: RegExp }`, sul modello di `PIATTAFORME` in `lib/social.js`) con
+      tutti gli 8 ESP della spec. `rilevaESP()` — STEP 3 — cerca i pattern in `src` di script esterni,
+      `action` di form, `src` di iframe, e come fallback nel testo di eventuali script inline
+      (per gli embed/popup di alcuni ESP che non espongono uno script esterno).
+      `rilevaCampoDichiarato()` — STEP 1 — cerca checkbox/campo email/testo con testo pertinente
+      vicino (label collegata, placeholder, aria-label, contenitore — stessa euristica di
+      `trovaTitoloVicino` in `lib/contenuti.js`). `rilevaFormStandalone()` — STEP 2 — riconosce un
+      form con 1-2 campi visibili di cui almeno uno email, più un pulsante di invio (tollera un
+      secondo campo, es. nome, per non essere troppo rigido). `analizzaNewsletter()` combina le tre
+      verifiche sulle pagine fornite e applica il giudizio STEP 4 (presente se (A OR B) AND C, con
+      le due sotto-varianti di "assente" richieste dalla spec).
+- [x] **15 test unitari** (`lib/newsletter.test.js`), tutti verdi.
+- [x] **Aggancio deciso e fatto**: come per il criterio blog, eseguito in background nello step di
+      audit tecnico esistente (step 2, dentro `lib/runAudit.js`), non in un nuovo step. A differenza
+      del criterio blog, `analizzaNewsletter` è sincrona (nessuna richiesta di rete aggiuntiva: lavora
+      solo sulle pagine già scaricate durante l'audit — home + le pagine interne individuate da
+      `lib/pages.js`, che già dà priorità a chi-siamo/iscrizioni/contatti/notizie, coerente con "home,
+      contatti, iscrizioni" della spec) — quindi chiamata direttamente, non dentro il `Promise.all` di
+      rete, ma avvolta in un try/catch con fallback a "assente" per non far fallire l'intero audit in
+      caso di HTML imprevisto. Gira indipendentemente dalla risposta dichiarata, come richiesto dalla
+      spec (la domanda dichiarativa non esiste ancora, quindi per ora il dato è sempre calcolato).
+- [x] **Vista**: nuova card "Nurturing — Newsletter" in `views/audit.ejs`, sotto quella del blog, con
+      stato (pill presente/assente — riusa le classi già esistenti nello stile, non servivano nuove
+      varianti), messaggio diagnostico e piattaforma ESP rilevata quando presente.
+- [x] **Verificato prima del deploy**: 29 test unitari totali verdi (14 blog + 15 newsletter),
+      `require('./server.js')` pulito, rendering EJS testato sui 3 stati newsletter possibili, e
+      l'intera pipeline `runAudit()` (blog + newsletter insieme) verificata end-to-end contro un sito
+      fittizio reale servito in locale via `http.createServer`.
+- [x] **Deployato in produzione**: stessa procedura SHA1/inline base64 di cui sopra; verificato
+      `readyState: READY`, `aliasError: null`, alias primario riassegnato, redirect del secondo alias
+      intatto, e lista file del nuovo deployment controllata per confermare che tutti i file
+      nuovi/modificati sono presenti con l'hash atteso.
+- **Ancora da fare** (prossima sessione, non bloccante): la domanda dichiarativa "Considerate la
+  newsletter uno strumento importante?" (stesso futuro blocco "Nurturing" del questionario, insieme
+  alla domanda sulla cadenza editoriale del criterio blog) — per ora la scansione gira sempre, come
+  previsto dalla spec per quando la domanda non è ancora stata risposta/non esiste. Da decidere anche
+  dove mostrare un'eventuale segnalazione di discrepanza "dichiarato sì ma verificato assente" una
+  volta che la domanda esisterà (probabilmente nella stessa card di `views/audit.ejs`, sul modello
+  del box di divergenza cadenza del criterio blog). Non ancora verificato un sito reale con un ESP
+  italiano/locale non in lista — la lista `ESP_NOTI` resta da arricchire man mano che se ne incontrano
+  (come indicato esplicitamente dalla spec).
+
+Indicazioni implementative originali (per riferimento, ormai superate dallo stato sopra):
 - Nuovo file `lib/newsletter.js` con: la lista estensibile di pattern ESP (array di
   `{ chiave, etichetta, pattern: RegExp }`, sul modello di `PIATTAFORME` in `lib/social.js` — stesso
   stile di codice del progetto), una funzione che riceve l'HTML delle pagine principali già raccolte
