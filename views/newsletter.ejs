@@ -1,0 +1,32 @@
+<%- include('partials/layout-top', { titolo: 'Newsletter', step: 10 }) %>
+
+<h1>Newsletter</h1>
+<p class="lead">Verifica se il sito raccoglie email per una newsletter e se quella raccolta è collegata a uno strumento di invio vero e proprio.</p>
+
+<div class="card">
+  <% if (!newsletter) { %>
+    <p class="muted">Dato non disponibile.</p>
+  <% } else { %>
+    <div class="indicator-row">
+      <div>
+        <div>Raccolta email / iscrizione</div>
+        <div class="meta"><%= newsletter.messaggio %></div>
+      </div>
+      <span class="pill <%= newsletter.stato %>"><%= newsletter.stato === 'presente' ? 'Presente' : 'Assente' %></span>
+    </div>
+    <% if (newsletter.piattaforma) { %>
+      <p class="muted" style="margin-top:14px;">Piattaforma rilevata: <%= newsletter.piattaforma %></p>
+    <% } %>
+    <% if (newsletter.stato === 'assente' && newsletter.sottocaso === 'raccolta_senza_esp') { %>
+      <div class="finding">
+        Il sito raccoglie indirizzi email (modulo o checkbox dedicata), ma non risulta collegato a nessuno strumento di invio (ESP): le email raccolte probabilmente non vengono usate — una quick win commercialmente interessante da segnalare.
+      </div>
+    <% } %>
+  <% } %>
+</div>
+
+<div class="actions">
+  <a class="btn secondary" href="/contenuti/<%= sessione.id %>">← Indietro</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 10, sessione: sessione }) %>

@@ -1,0 +1,103 @@
+<%
+function pillFrequenza(livello) {
+  if (livello === 'ottimo') return 'buono';
+  if (livello === 'sufficiente') return 'sufficiente';
+  return 'insufficiente';
+}
+function pillOttimizzazione(livello) {
+  if (livello === 'buona') return 'buono';
+  if (livello === 'parziale') return 'parziale';
+  return 'insufficiente';
+}
+%>
+<%- include('partials/layout-top', { titolo: 'Attività editoriale', step: 9 }) %>
+
+<h1>Attività editoriale (blog/news)</h1>
+<p class="lead">Verifica se il sito pubblica regolarmente contenuti aggiornati, con quale cura sono scritti e se raccontano le competenze dichiarate dalla scuola.</p>
+
+<% if (!dati.sezioneTrovata) { %>
+<div class="card">
+  <div class="indicator-row">
+    <div>
+      <div>Sezione news/blog</div>
+      <div class="meta"><%= dati.contenuti ? dati.contenuti.messaggio : 'Nessuna sezione news/blog individuata sul sito.' %></div>
+    </div>
+    <span class="pill assente">Assente</span>
+  </div>
+</div>
+<% } else { %>
+
+<div class="card">
+  <h2 style="margin-top:0;">Frequenza di pubblicazione</h2>
+  <div class="indicator-row">
+    <div>
+      <div>Ultimo articolo</div>
+      <div class="meta"><%= dati.contenuti.messaggio %></div>
+    </div>
+    <span class="pill <%= dati.contenuti.stato %>"><%= dati.contenuti.stato.charAt(0).toUpperCase() + dati.contenuti.stato.slice(1) %></span>
+  </div>
+  <% if (dati.frequenza) { %>
+  <div class="indicator-row">
+    <div>
+      <div>Ritmo editoriale (ultimi 2 mesi)</div>
+      <div class="meta">
+        <%= dati.frequenza.postsAlMese %> articoli/mese di media —
+        <% if (dati.frequenza.livello === 'ottimo') { %>1-2 post a settimana<% } %>
+        <% if (dati.frequenza.livello === 'sufficiente') { %>meno di 1 post a settimana<% } %>
+        <% if (dati.frequenza.livello === 'insufficiente') { %>un post ogni due settimane o meno<% } %>
+      </div>
+    </div>
+    <span class="pill <%= pillFrequenza(dati.frequenza.livello) %>"><%= dati.frequenza.etichetta %></span>
+  </div>
+  <% } %>
+  <% if (dati.contenuti.divergenzaCadenza && dati.contenuti.divergenzaCadenza.divergente) { %>
+    <div class="finding">
+      La cadenza di pubblicazione dichiarata ("<%= dati.contenuti.divergenzaCadenza.dichiarata %>") è significativamente più frequente di quella verificata (un articolo ogni <%= dati.contenuti.divergenzaCadenza.intervalloVerificatoGiorni %> giorni in media).
+    </div>
+  <% } %>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0;">Ottimizzazione dell'ultimo articolo</h2>
+  <% if (!dati.ottimizzazione) { %>
+    <p class="muted">Non è stato possibile analizzare l'ultimo articolo (pagina non raggiungibile o link non individuato).</p>
+  <% } else { %>
+    <div class="indicator-row">
+      <div>
+        <div>Valutazione complessiva</div>
+        <div class="meta">
+          Metadescription: <%= dati.ottimizzazione.metaDescrizioneSoloExcerpt ? 'coincide con l\'estratto del testo, non è scritta apposta' : 'personalizzata' %> ·
+          link interni: <%= dati.ottimizzazione.linkInterni %> · link esterni: <%= dati.ottimizzazione.linkEsterni %> ·
+          immagini senza nome/alt descrittivo: <%= dati.ottimizzazione.immaginiNonSignificative %> di <%= dati.ottimizzazione.immaginiTotali %>
+        </div>
+      </div>
+      <span class="pill <%= pillOttimizzazione(dati.ottimizzazione.livello) %>"><%= dati.ottimizzazione.livello.charAt(0).toUpperCase() + dati.ottimizzazione.livello.slice(1) %></span>
+    </div>
+  <% } %>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0;">Relazione con le competenze dichiarate</h2>
+  <div class="indicator-row">
+    <div>
+      <div>I contenuti del blog raccontano le competenze dichiarate?</div>
+      <div class="meta">
+        <% if (dati.relazioneCompetenze.presente) { %>
+          Temi ritrovati nel blog: <%= dati.relazioneCompetenze.temiCorrelati.join(', ') %>
+        <% } else { %>
+          Nessuna delle competenze dichiarate trova riscontro nei contenuti del blog analizzati.
+        <% } %>
+      </div>
+    </div>
+    <span class="pill <%= dati.relazioneCompetenze.presente ? 'presente' : 'assente' %>"><%= dati.relazioneCompetenze.presente ? 'Presente' : 'Assente' %></span>
+  </div>
+</div>
+
+<% } %>
+
+<div class="actions">
+  <a class="btn secondary" href="/social/<%= sessione.id %>/analisi">← Indietro</a>
+  <a class="btn btn-principale" href="/newsletter/<%= sessione.id %>">Continua →</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 9, sessione: sessione }) %>

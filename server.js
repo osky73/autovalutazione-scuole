@@ -3,6 +3,13 @@ const { creaSessione, getSessione } = require('./lib/store');
 const { runAudit } = require('./lib/runAudit');
 const { estraiTemi, elencoTemi, VOCABOLARIO } = require('./lib/temi');
 const { estraiLocalita, estraiDatiOrganizzazione } = require('./lib/localita');
+const {
+  calcolaFrequenzaEditoriale,
+  trovaUrlArticoloPiuRecente,
+  analizzaOttimizzazioneArticolo,
+  relazioneCompetenze,
+} = require('./lib/contenuti');
+const { fetchPage } = require('./lib/http');
 const { verificaPosizionamentoCluster } = require('./lib/serp');
 const { discoverSocialLinks, analizzaCanali } = require('./lib/social');
 const { eseguiFetch } = require('./lib/social/fetchService');
@@ -494,6 +501,109 @@ app.get('/social/:id/esegui', async (req, res) => {
   }
 
   res.json({ ok: true });
+});
+
+// Step 9 — "Attività editoriale" (blog/news): passaggio dedicato, richiesto da Andrea il
+// 2026-10-01 al posto della card dentro l'audit tecnico. Gira dopo l'analisi social (passaggio 8)
+// così le competenze dichiarate/confermate (passaggi 3/4/5) sono già disponibili per il terzo
+// criterio (relazione dei contenuti alle competenze). La raccolta di base (sezione trovata,
+// articoli con data) resta calcolata in background durante l'audit tecnico (sessione.audit,
+// per non riscansionare il sito); qui si aggiungono solo i tre nuovi criteri, che richiedono
+// dati non ancora disponibili in quella fase (competenze) o un fetch aggiuntivo mirato
+// (ottimizzazione dell'articolo più recente).
+app.get('/contenuti/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.socialAnalisi) return res.redirect(`/social/${sessione.id}/analisi`);
+
+  if (!sessione.attivitaEditoriale) {
+    return res.render('attesa', {
+      titolo: 'Attività editoriale',
+      step: 9,
+      sessione,
+      messaggi: [
+        'Analisi della sezione news/blog...',
+        'Verifica dell\'ottimizzazione dell\'ultimo articolo...',
+        'Confronto con le competenze dichiarate...',
+        'Quasi pronto...',
+      ],
+      pollUrl: `/contenuti/${sessione.id}/esegui`,
+      redirectUrl: `/contenuti/${sessione.id}`,
+    });
+  }
+
+  res.render('contenuti', { sessione, dati: sessione.attivitaEditoriale });
+});
+
+app.get('/contenuti/:id/esegui', async (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.status(404).json({ ok: false });
+
+  if (!sessione.attivitaEditoriale) {
+    const raccolta = (sessione.audit && sessione.audit.raccoltaContenuti) || { sezioneTrovata: false, url: null, articoli: [] };
+    const contenuti = (sessione.audit && sessione.audit.contenuti) || null;
+    const competenze = sessione.confermati || [];
+
+    if (!raccolta.sezioneTrovata) {
+      sessione.attivitaEditoriale = {
+        sezioneTrovata: false,
+        contenuti,
+        frequenza: null,
+        ottimizzazione: null,
+        urlUltimoArticolo: null,
+        relazioneCompetenze: { presente: false, temiCorrelati: [] },
+      };
+    } else {
+      const frequenza = calcolaFrequenzaEditoriale(raccolta.articoli);
+      const urlUltimoArticolo = trovaUrlArticoloPiuRecente(raccolta.articoli);
+
+      let ottimizzazione = null;
+      const pagineBlogHtml = [];
+
+      try {
+        const resListing = await fetchPage(raccolta.url, { timeoutMs: 8000 });
+        if (resListing.ok && resListing.html) pagineBlogHtml.push(resListing.html);
+      } catch (e) {
+        /* la pagina elenco non è indispensabile: la relazione competenze può basarsi anche solo sull'articolo */
+      }
+
+      if (urlUltimoArticolo) {
+        try {
+          const resArticolo = await fetchPage(urlUltimoArticolo, { timeoutMs: 8000 });
+          if (resArticolo.ok && resArticolo.html) {
+            pagineBlogHtml.push(resArticolo.html);
+            ottimizzazione = analizzaOttimizzazioneArticolo(resArticolo.html, urlUltimoArticolo);
+          }
+        } catch (e) {
+          /* ottimizzazione resta null: la vista lo segnala come non disponibile */
+        }
+      }
+
+      const relazione = relazioneCompetenze(pagineBlogHtml, competenze);
+
+      sessione.attivitaEditoriale = {
+        sezioneTrovata: true,
+        contenuti,
+        frequenza,
+        ottimizzazione,
+        urlUltimoArticolo,
+        relazioneCompetenze: relazione,
+      };
+    }
+  }
+
+  res.json({ ok: true });
+});
+
+// Step 10 — Newsletter: passaggio dedicato dopo l'attività editoriale (richiesta Andrea,
+// 2026-10-01). Il dato è già calcolato in background durante l'audit tecnico (sincrono, nessun
+// fetch aggiuntivo necessario), quindi qui si limita a mostrarlo senza passaggio di attesa.
+app.get('/newsletter/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
+
+  res.render('newsletter', { sessione, newsletter: (sessione.audit && sessione.audit.newsletter) || null });
 });
 
 app.post('/api/social/fetch', async (req, res) => {

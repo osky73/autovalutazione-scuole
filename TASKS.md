@@ -96,6 +96,83 @@ confermato delle 09:28 UTC circa). Nessuna perdita di dati per gli utenti (le se
 comunque in-memory e non persistenti, vedi punto 0 del backlog — un riavvio della funzione le avrebbe
 perse comunque).
 
+## Stato al 2026-10-01 (seconda parte) — bug blog risolto + nuovo passaggio 9/10 dedicato
+
+Andrea ha segnalato: "ho provato www.lazolla.it, ha un blog ben popolato (voce di menu 'News',
+ultimo post del 17 settembre), ma il criterio lo segnalava assente" — e ha chiesto di spostare il
+criterio blog in un passaggio dedicato (il 9°, con tre sotto-criteri: frequenza, ottimizzazione,
+relazione con le competenze dichiarate) e la newsletter nel passaggio successivo (il 10°).
+
+- [x] **Bug trovato e corretto**: il deploy del 2026-10-01 mattina che ha introdotto i criteri
+      blog/newsletter aveva referenziato `lib/sitemap.js` con l'hash SHA1 **vecchio** (quello
+      precedente all'aggiunta di `getSitemapEntries()`, introdotta nello stesso commit che ha
+      creato `lib/contenuti.js`) invece di quello nuovo. Risultato: in produzione
+      `raccogliArticoli()` chiamava una funzione inesistente sul modulo vecchio, l'eccezione
+      veniva assorbita dal `.catch()` già presente in `runAudit.js` (pensato per errori di rete,
+      non per questo), e il criterio risultava sempre "assente" — qualunque fosse il sito.
+      Nessuna modifica di codice necessaria (il codice in git era già corretto): il problema era
+      solo nel file referenziato dal deploy. **Verificato con una deployment di debug** (tecnica
+      consueta, route temporanea mai in produzione, poi rimossa) chiamando `runAudit()` reale
+      contro `https://www.lazolla.it`: con l'hash corretto di `sitemap.js` il criterio torna
+      "attivo", ultimo articolo 17/09/2026 — corrisponde esattamente al post reale segnalato da
+      Andrea. **Deployato il fix in produzione** (hotfix immediato, prima del resto del lavoro di
+      questa sessione) referenziando l'hash giusto di `lib/sitemap.js`.
+- [x] **Nuovo passaggio 9 dedicato "Attività editoriale (blog/news)"**, dopo l'analisi social
+      (passaggio 8) e prima della newsletter — non più una card dentro l'audit tecnico (rimossa da
+      `views/audit.ejs`). Nuove route `GET /contenuti/:id` (mostra il risultato o un'attesa) e
+      `GET /contenuti/:id/esegui` (calcola i tre criteri) in `server.js`; nuova vista
+      `views/contenuti.ejs`. La raccolta di base (sezione trovata, elenco articoli con
+      data/titolo/url) resta calcolata in background durante l'audit tecnico iniziale (nessuna
+      doppia scansione del sito, come richiesto dalla spec originale) — `lib/runAudit.js` ora
+      espone anche `raccoltaContenuti` (i dati grezzi, non solo le metriche aggregate) perché il
+      nuovo passaggio ne ha bisogno. Il passaggio 9 gira DOPO la dichiarazione delle competenze
+      (passaggi 3/4/5), quindi risolve anche il problema di sequenza già annotato in questo file
+      per il confronto cadenza dichiarata/verificata.
+  - [x] **Criterio "frequenza"** (nuove soglie date da Andrea): `calcolaFrequenzaEditoriale()` in
+        `lib/contenuti.js` — calcolata sugli articoli degli ultimi 60 giorni. ≥4 articoli/mese
+        (≈1-2 a settimana) = "Ottimo" (verde); ≥3 articoli/mese (meno di 1 a settimana) =
+        "Sufficiente" (arancione); altrimenti (un post ogni due settimane o meno) =
+        "Insufficiente" (rosso).
+  - [x] **Criterio "ottimizzazione"**: `analizzaOttimizzazioneArticolo()` in `lib/contenuti.js` —
+        analizza la pagina dell'articolo più recente (nuova funzione `trovaUrlArticoloPiuRecente()`
+        + fetch dedicato nella route, dato che serve solo a questo passaggio). Controlla: se la
+        meta description coincide con l'estratto del testo (non scritta apposta), numero di link
+        interni ed esterni nel corpo dell'articolo, e se le immagini hanno un `alt` significativo
+        (non vuoto, non generico tipo "DSC1234"/"img-1"). Verdetto a 3 livelli (buona/parziale/
+        scarsa → verde/arancione/rosso) in base al numero di problemi rilevati. Per catturare
+        l'URL di ogni articolo (prima non raccolto, serviva solo la data) sono state estese
+        `estraiVociDaSitemap`, `parseFeed` e `estraiVociDaMarkup` (quest'ultima con una nuova
+        `trovaUrlVicino()`, stessa euristica di `trovaTitoloVicino()` già esistente).
+  - [x] **Criterio "relazione con le competenze"**: `relazioneCompetenze()` in `lib/contenuti.js`
+        — riusa `estraiTemi()` di `lib/temi.js` (stesso vocabolario già usato per il sito nel suo
+        complesso) sulle pagine del blog (elenco + articolo più recente) e verifica se almeno una
+        delle competenze dichiarate/confermate dall'utente (passaggi 3/4/5,
+        `sessione.confermati`) trova riscontro. "Presente" (verde) / "Assente" (rosso).
+  - [x] **22 test unitari** (14 preesistenti + 8 nuovi) in `lib/contenuti.test.js`, tutti verdi.
+  - [x] **Verificato end-to-end** con un sito fittizio reale servito in locale
+        (`http.createServer`, non solo unit test con dati finti): intera pipeline
+        `runAudit → calcolaFrequenzaEditoriale → trovaUrlArticoloPiuRecente → fetchPage →
+        analizzaOttimizzazioneArticolo → relazioneCompetenze` eseguita con richieste HTTP reali,
+        risultati coerenti.
+- [x] **Newsletter spostata al passaggio 10** (prima era una seconda card nella stessa pagina di
+      audit tecnico): nuova route `GET /newsletter/:id` e vista `views/newsletter.ejs`, mostra il
+      dato già calcolato in background durante l'audit (nessun nuovo fetch necessario, la
+      logica di analisi è sincrona). È il passaggio finale del wizard.
+- [x] **Stepper estero da 8 a 10 passaggi** in `views/partials/layout-top.ejs`. Link "Continua"
+      aggiornati: `social-analisi.ejs` → `/contenuti/:id` → `/newsletter/:id` (fine wizard).
+- [x] **Verificato prima del deploy**: `require('./server.js')` pulito, tutte le view (incluse le
+      due nuove) renderizzate con `ejs.renderFile` su più casi (sezione assente/trovata,
+      ottimizzazione nulla/presente, divergenza cadenza, newsletter nei 3 stati), 37 test unitari
+      totali (22 contenuti + 15 newsletter) verdi.
+- **Numerazione**: questo passaggio 9/10 sostituisce quanto descritto nel punto 5 del backlog
+  sotto riguardo "passaggio 8" per la scheda GBP multi-plesso — quella richiesta resta da fare,
+  non toccata in questa sessione.
+- **Non ancora fatto** (prossima sessione): nessuna domanda dichiarativa "piano editoriale/cadenza"
+  esiste ancora nel questionario, quindi `divergenzaCadenza` resta sempre `null` nel passaggio 9
+  (comportamento corretto, non un bug). Il criterio "ottimizzazione" analizza solo l'ARTICOLO PIÙ
+  RECENTE, non una media su più articoli — coerente con l'esempio dato da Andrea ("ad esempio
+  nell'ultimo post indicato..."), ma da confermare se vuole che si guardino più articoli in futuro.
+
 ## Stato al 2026-09-30
 
 Segnalato dal cliente: "perché non trovi la scheda di maps della scuola?" — il modulo GBP
