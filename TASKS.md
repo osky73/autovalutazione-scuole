@@ -215,7 +215,7 @@ Spec completa (dal prompt originale del cliente, riportata testualmente):
 
 **Stato al 2026-09-30 (sessione schedulata pomeridiana)**: creato e testato `lib/contenuti.js`
 (commit `751fab9`), ancora NON agganciato al wizard — incremento volutamente piccolo e
-autoconclusivo per non rischiare di lasciare un deploy a metà (vedi note in fondo al file).
+autoconclusivo per non rischiare di lasciare un deploy a metà.
 - [x] Funzione di raccolta dati condivisa `raccogliArticoli(baseUrl, pagineHtml)`: STEP 1
       (`individuaSezione`, link nel menu/footer per testo o URL) + STEP 2 in cascata (sitemap.xml
       tramite la nuova `getSitemapEntries()` in `lib/sitemap.js` → feed RSS/Atom su path comuni
@@ -239,25 +239,69 @@ autoconclusivo per non rischiare di lasciare un deploy a metà (vedi note in fon
   giudizio). Anche il caso "ultimo articolo ≤30gg ma meno di ~1 articolo/mese negli ultimi 6 mesi"
   (non coperto esplicitamente dalla spec) è stato trattato come "rallentato" — vedi commenti nel
   codice.
-- **Ancora da fare** (prossima sessione): la domanda dichiarativa "Avete un piano editoriale per il
-  sito? Con quale cadenza pensate di pubblicare?" (nuovo blocco "Nurturing" nel questionario), la
-  decisione su dove/quando agganciare la chiamata nel wizard (nuovo step 9 vs sezione aggiuntiva
-  dell'audit tecnico — vedi indicazioni sotto), l'estensione di `lib/store.js` per salvare il
-  risultato in sessione, e la vista/sezione di report che lo mostra.
 
-Indicazioni implementative (da valutare/decidere durante lo sviluppo, non ancora decise):
-- Dove va nel wizard: è un nuovo passaggio. Attualmente il wizard ha 8 step (vedi `server.js`):
-  1 landing → 2 audit tecnico → 3 dichiarazione competenze → 4 verifica coerenza → 5 posizionamento
-  → 6 social (conferma canali trovati) → 7 altri canali (YouTube/GBP/manuali) → 8 analisi social
-  finale. Il criterio blog fa parte del blocco "Nurturing" (non ancora presente come step dedicato:
-  va deciso se aggiungere uno step 9, o integrarlo nello step di audit tecnico esistente come sezione
-  aggiuntiva del report — la spec dice "prende in input l'URL del sito già raccolto", il che è
-  compatibile con farlo girare in background durante l'audit tecnico iniziale, simile a come la spec
-  newsletter richiede per il proprio criterio — vedi sotto).
+**Stato al 2026-10-01 (sessione schedulata)**: `lib/contenuti.js` agganciato al wizard e
+**deployato in produzione** (commit `deb9202`, deployment `dpl_9yKtq6muZHyP8QXnjhwWUDa9hJpm`).
+- [x] **Decisione presa sul dove agganciare**: eseguito in background durante l'audit tecnico
+      iniziale (step 2 del wizard, dentro `lib/runAudit.js`, in `Promise.all` insieme a sitemap e
+      PageSpeed) — non un nuovo step 9 dedicato. Stessa logica richiesta esplicitamente dalla spec
+      del criterio newsletter ("va eseguita in background durante l'audit tecnico iniziale"), e
+      compatibile con la nota della spec blog ("prende in input l'URL del sito già raccolto").
+      Il risultato (`contenuti`) è salvato automaticamente in sessione dentro `sessione.audit`
+      (nessuna modifica necessaria a `lib/store.js`, che già salva l'intero oggetto ritornato da
+      `runAudit`).
+- [x] **Vista**: nuova sezione "Nurturing — Aggiornamento contenuti / Blog" in `views/audit.ejs`
+      (dopo la card del punteggio sito), con stato (pill colorata: attivo/rallentato/fermo/assente),
+      messaggio diagnostico, conteggi articoli 6/12 mesi, intervallo medio, gap più lungo, ed
+      eventuale box di divergenza cadenza dichiarata/verificata. Nuove varianti di pillola aggiunte
+      in `views/partials/layout-top.ejs`.
+- [x] **Gestione errori**: `raccogliArticoli` è avvolta in un `.catch()` dentro `runAudit.js` così un
+      fallimento di rete (sito irraggiungibile per la sezione blog, feed non valido, ecc.) non fa
+      fallire l'intero audit tecnico — degrada a stato "fermo"/"assente" invece di propagare
+      l'errore. Verificato che entrambi i percorsi (sezione non trovata, sezione trovata ma rete
+      irraggiungibile) non lanciano eccezioni.
+- [x] **Verificato prima del deploy**: 14 test unitari esistenti ancora verdi, `require('./server.js')`
+      pulito, rendering di `views/audit.ejs` testato con `ejs.renderFile` sui 4 stati possibili
+      (assente/attivo/rallentato/fermo) senza errori, e pipeline completa (`raccogliArticoli` +
+      `giudicaContenuti`) verificata end-to-end contro un piccolo sito fittizio servito in locale
+      (richiesta HTTP reale via `http.createServer`, non solo unit test con dati finti) — individua
+      correttamente la sezione blog, estrae le date da `<time datetime>`, calcola le metriche e il
+      giudizio attesi.
+- [x] **Deployato in produzione** con la procedura di TASKS.md (file invariati referenziati per SHA1
+      dall'ultimo deployment di produzione, file nuovi/modificati inline in base64); verificato
+      `readyState: READY`, `aliasError: null`, alias primario `autoanalisi-scuole.vercel.app`
+      riassegnato al nuovo deployment, e il redirect di `autoanalisi-scuole-osky2.vercel.app` rimasto
+      intatto (non toccato, come da istruzioni). **Nota**: non è stato possibile fare una verifica
+      HTTP diretta del sito in produzione da questa sessione (rete della sandbox bloccata verso
+      `vercel.app`, stesso limite di sessioni precedenti) — la verifica si basa sullo stato
+      `READY`/`aliasError: null` dell'API Vercel e sui test locali sopra elencati. Da confermare con
+      un controllo visivo rapido (apertura del wizard fino allo step "Audit tecnico") appena
+      possibile.
+- **Ancora da fare** (prossima sessione, non bloccante): la domanda dichiarativa "Avete un piano
+  editoriale per il sito? Con quale cadenza pensate di pubblicare?" (nuovo blocco "Nurturing" nel
+  questionario `views/dichiarazione.ejs` o successivo) non esiste ancora — finché non c'è,
+  `giudicaContenuti` viene chiamata senza `cadenzaDichiarata` e il confronto STEP 5 resta sempre
+  `null` (comportamento corretto e documentato, nessun bug). Una volta aggiunta la domanda, passarla
+  a `giudicaContenuti` in `runAudit.js` (richiede spostare quella chiamata dopo la dichiarazione, o
+  ricalcolare il giudizio quando la dichiarazione arriva, visto che oggi gira durante l'audit che la
+  precede nel wizard — da decidere la soluzione migliore quando si implementa la domanda).
+
+Indicazioni implementative:
+- **Dove va nel wizard (DECISO e implementato il 2026-10-01)**: integrato nello step di audit
+  tecnico esistente (step 2) come sezione aggiuntiva del report, NON come nuovo step 9 dedicato —
+  gira in background dentro `runAudit()` insieme a sitemap e PageSpeed, mostrato in una card
+  separata in `views/audit.ejs`. Vedi dettagli in "Stato al 2026-10-01" sopra.
 - La domanda dichiarativa "Avete un piano editoriale per il sito? Con quale cadenza pensate di
   pubblicare?" non esiste ancora nel questionario (`views/dichiarazione.ejs` raccoglie solo le
   competenze/temi) — va aggiunta da qualche parte, probabilmente in un nuovo blocco di domande
   dichiarative "Nurturing" (newsletter + editoriale) prima o dopo lo step "dichiarazione competenze".
+  **Attenzione per quando si implementa**: lo step di dichiarazione (3) viene DOPO l'audit tecnico
+  (2) nel wizard attuale, quindi la cadenza dichiarata non è ancora disponibile quando
+  `giudicaContenuti` viene chiamata dentro `runAudit()` — oggi infatti gira sempre senza
+  `cadenzaDichiarata` (STEP 5 della spec, confronto cadenza, resta sempre `null`). Da decidere: o si
+  ricalcola il giudizio (poco costoso, è sincrono) quando la dichiarazione arriva, salvando il
+  risultato aggiornato in sessione, oppure si accetta che il confronto cadenza compaia solo in un
+  secondo momento/vista successiva.
 
 ### 2. Criterio "Newsletter"
 
