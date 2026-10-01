@@ -27,6 +27,17 @@ app.set('views', __dirname + '/views');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '8mb' }));
 
+// Express 5 (a differenza della 4) lascia `req.body` a `undefined`, anziché `{}`, quando il
+// corpo della richiesta è vuoto (es. un form POST senza alcun campo, come succede nel passaggio
+// "Canali social" quando sul sito non viene trovato nessun canale: il form viene inviato comunque
+// per proseguire, ma senza input). Tutte le route leggono `req.body.campo` assumendo che l'oggetto
+// esista sempre: senza questa rete di sicurezza quella lettura lancia un TypeError e la richiesta
+// fallisce con 500 (bug segnalato da Andrea: "dopo il passaggio 6 dà errore").
+app.use((req, res, next) => {
+  if (!req.body) req.body = {};
+  next();
+});
+
 const PORT = process.env.PORT || 3000;
 
 function calcolaConfermati(sessione) {
@@ -100,6 +111,7 @@ app.get('/audit/:id/esegui', async (req, res) => {
     } else {
       sessione.audit = risultato;
       sessione.pagineHtml = risultato.pagineHtml;
+      sessione.pagineUrl = risultato.pagineUrl;
     }
   }
 
@@ -157,7 +169,7 @@ app.get('/verifica/:id', (req, res) => {
   if (!sessione.dichiarati) return res.redirect(`/dichiarazione/${sessione.id}`);
 
   if (!sessione.temi) {
-    const estrazione = estraiTemi(sessione.pagineHtml || []);
+    const estrazione = estraiTemi(sessione.pagineHtml || [], sessione.pagineUrl || []);
     const chiaviDichiarate = new Set(sessione.dichiarati.map((t) => t.key));
     const temaPiuCitato = estrazione.temiTrovati[0] || null;
 
@@ -466,7 +478,22 @@ app.get('/social/:id/analisi', (req, res) => {
   if (!sessione.socialConfermati) return res.redirect(`/social/${sessione.id}`);
 
   if (!sessione.socialConfermati.length) {
-    return res.render('social-analisi', { sessione, canali: [], gbp: sessione.gbp });
+    // `valutazione` va sempre passata alla vista anche qui: social-analisi.ejs la referenzia con
+    // `<% if (valutazione) { %>` e, a differenza di un confronto JS normale, EJS lancia un
+    // ReferenceError ("valutazione is not defined") se la variabile non è tra i local del render,
+    // anche solo per leggerla in un if — non basta che sia "falsy", deve essere DICHIARATA.
+    // Bug reale riprodotto su suoremantellate.org (nessun canale social confermato): 500 subito
+    // dopo il passaggio "Canali social", nella stessa area del bug segnalato da Andrea ("dopo il
+    // passaggio 6 dà errore").
+    //
+    // sessione.socialAnalisi va impostato (array vuoto, non lasciato null/undefined): il passaggio
+    // successivo GET /contenuti/:id controlla `if (!sessione.socialAnalisi) redirect(.../analisi)`
+    // per sapere se questo step è già stato eseguito. Lasciandolo non impostato, una scuola senza
+    // alcun canale social confermato rimbalzava all'infinito tra questa pagina e /contenuti/:id,
+    // senza poter mai raggiungere il passaggio "Attività editoriale" (bug riprodotto nello stesso
+    // test su suoremantellate.org).
+    sessione.socialAnalisi = [];
+    return res.render('social-analisi', { sessione, canali: [], valutazione: null, gbp: sessione.gbp });
   }
 
   if (!sessione.socialAnalisi) {

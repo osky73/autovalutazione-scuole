@@ -96,6 +96,67 @@ confermato delle 09:28 UTC circa). Nessuna perdita di dati per gli utenti (le se
 comunque in-memory e non persistenti, vedi punto 0 del backlog — un riavvio della funzione le avrebbe
 perse comunque).
 
+## Stato al 2026-10-01 (terza parte) — 5 bug segnalati da Andrea + 2 trovati durante il test
+
+Andrea ha segnalato 5 problemi su `https://www.suoremantellate.org/`:
+
+- [x] **Bug 1 — errore dopo il passaggio 6**: causa reale diversa da quanto ipotizzato inizialmente.
+      Express 5 (a differenza della 4) lascia `req.body` a `undefined`, non `{}`, quando il form POST
+      arriva senza alcun campo (succede nel passaggio "Canali social" quando il sito non ha nessun
+      canale da confermare). Tutte le route leggono `req.body.campo` assumendo che l'oggetto esista
+      sempre → `TypeError` → 500. **Fix**: middleware globale in `server.js` (`if (!req.body)
+      req.body = {}`) prima di tutte le route.
+- [x] **Bug 2 — "certificazione linguistica" non trovata** nonostante fosse presente sul sito.
+      Verificato che il matching testuale/keyword in `lib/temi.js` funzionava correttamente una volta
+      risolto il bug 1 (che impediva di arrivare al passaggio "Verifica competenze" per questo sito);
+      confermato live: ora mostra "lingue (trovato, 4 — vedi pagina)".
+- [x] **Bug 3 — blog/news non rilevato** nonostante la voce di menù "News" (che punta a `/about/`,
+      nome pagina sbagliato ma voce di menù corretta). Il codice esistente (`individuaSezione()` in
+      `lib/contenuti.js`) già gestiva questo caso: matcha sia sull'URL sia sul TESTO del link di
+      navigazione, quindi la voce "News" nel menù (presente nell'HTML della home, sempre incluso
+      nella scansione) basta a far rilevare correttamente la sezione anche se lo slug è `/about/`.
+      Nessuna modifica di codice necessaria — confermato live il 2026-10-01: il passaggio 9 mostra
+      frequenza, ottimizzazione e relazione con le competenze calcolate correttamente per questo sito.
+- [x] **Bug 4 — posizionamento Google: falso "non trovato"**. Google blocca le richieste automatiche
+      del server (interstitial "abilita JavaScript e i cookie"), e il codice precedente non lo
+      riconosceva, concludendo silenziosamente "nessun risultato" invece di segnalare il blocco.
+      **Fix**: nuovo `lib/serp.js` — oltre ai pattern di blocco noti, verifica anche che la risposta
+      "sembri" una vera pagina di risultati (contenitore risultati + almeno 3 `<h3>`); se non lo è,
+      segnala onestamente "Google non raggiungibile" invece di un falso negativo.
+- [x] **Bug 5 — testo "Finding..." poco chiaro**: sostituito con "Osservazione:" + link "vedi pagina"
+      verso la pagina reale dove è stata trovata la competenza, sia per le competenze dichiarate sia
+      per quelle aggiuntive individuate (`views/verifica.ejs`, usa il nuovo `pagineUrl` plumbing in
+      `lib/runAudit.js`/`lib/temi.js`).
+
+Durante il test di verifica (scuola senza alcun canale social confermato, proprio il caso di
+suoremantellate.org) sono stati trovati e risolti **altri due bug nella stessa area del bug 1**,
+non segnalati esplicitamente ma nello stesso punto del wizard:
+
+- [x] **Bug 6 — 500 in `/social/:id/analisi`** quando nessun canale social è confermato: il render
+      omitteva del tutto la local `valutazione`, e EJS lancia `ReferenceError` se una variabile
+      referenziata con `<% if (x) { %>` non è tra i local passati al render (non basta che sia
+      "falsy", deve essere dichiarata). **Fix**: passato `valutazione: null` in quel render.
+- [x] **Bug 7 — loop di redirect infinito** tra `/social/:id/analisi` e `/contenuti/:id` per le
+      stesse scuole: il ramo "nessun canale confermato" non impostava mai `sessione.socialAnalisi`
+      (restava `undefined`), e `/contenuti/:id` ridirige a `/social/:id/analisi` finché questo non è
+      impostato → ping-pong infinito, impossibile raggiungere il passaggio "Attività editoriale".
+      **Fix**: impostato `sessione.socialAnalisi = []` in quel ramo.
+
+**Verificato end-to-end** su un deployment preview con l'intero flusso (avvio → audit → dichiarazione
+→ verifica → posizionamento → canali social vuoti → analisi vuota → attività editoriale → newsletter)
+eseguito via fetch da browser contro `https://www.suoremantellate.org/`: nessun errore, nessun loop,
+sezione blog rilevata correttamente. **Deployato in produzione** il 2026-10-01 (alias
+`autoanalisi-scuole.vercel.app` riassegnato al nuovo deployment, alias di fallback `-osky2` lasciato
+intatto come redirect).
+
+- **Nota per il backlog — newsletter (richiesta separata di Andrea)**: aggiunta la richiesta di
+  verificare la presenza di form di iscrizione alla newsletter cercando il termine "newsletter" nel
+  sito (non solo una pagina/sezione dedicata — può essere anche una checkbox in un form che serve ad
+  altro). Esempio dato: su `https://www.lazolla.it/contattaci/` la newsletter è presente ma non
+  veniva rilevata. Questo è già documentato in dettaglio nella sezione "2. Criterio 'Newsletter'" più
+  sotto (voce "STEP 2 (Verifica B)" e relative note): nessuna ulteriore azione richiesta qui, il
+  backlog esistente copre già questa richiesta.
+
 ## Stato al 2026-10-01 (seconda parte) — bug blog risolto + nuovo passaggio 9/10 dedicato
 
 Andrea ha segnalato: "ho provato www.lazolla.it, ha un blog ben popolato (voce di menu 'News',
@@ -529,6 +590,29 @@ che ha completato il criterio blog/contenuti sopra.
   del box di divergenza cadenza del criterio blog). Non ancora verificato un sito reale con un ESP
   italiano/locale non in lista — la lista `ESP_NOTI` resta da arricchire man mano che se ne incontrano
   (come indicato esplicitamente dalla spec).
+- [ ] **Falso negativo segnalato da Andrea (2026-10-01)**: per il sito de La Zolla
+  (https://www.lazolla.it/contattaci/) il criterio risulta "assente" ma la form di iscrizione alla
+  newsletter è ben presente in quella pagina. Andrea chiede di cambiare approccio: non aspettarsi una
+  pagina o un blocco dedicato, ma cercare direttamente il termine "newsletter" nel testo del sito e
+  verificare che nei dintorni ci sia una "dinamica di form" — può essere una form a sé stante oppure
+  anche solo una spunta/checkbox di adesione dentro una form che serve ad altro (es. un form di
+  contatto generico, come in questo caso). Possibili cause già individuabili dal codice attuale, da
+  verificare prima di cambiare l'euristica:
+  1. La pagina `/contattaci/` potrebbe non rientrare tra le pagine scaricate dall'audit
+     (`lib/pages.js` sceglie un sottoinsieme limitato di pagine interne): se il crawler non la scarica
+     proprio, nessuna delle verifiche A/B/C la vede mai.
+  2. Anche se la pagina viene scaricata, il giudizio finale (`analizzaNewsletter` in
+     `lib/newsletter.js`) richiede `(A OR B) AND C` — cioè un meccanismo di raccolta email **E** un ESP
+     riconosciuto (`ESP_NOTI`). Una form di contatto con semplice checkbox "iscrivimi alla newsletter"
+     che invia via email/backend proprio (senza Mailchimp/Brevo/ecc.) soddisferebbe A ma non C, e
+     risulterebbe "assente" (sottocaso "meccanismo senza ESP") anche se dal punto di vista dell'utente
+     la form "c'è". Verificare se questa distinzione è comunicata chiaramente nella vista o se rischia
+     di essere letta come "non c'è nulla".
+  3. Valutare se aggiungere un vero e proprio STEP 0 richiesto da Andrea: ricerca testuale diretta del
+     termine "newsletter" (case-insensitive) nelle pagine raccolte, indipendentemente dalla forma del
+     markup, e se trovato verificare che nelle vicinanze (stesso form/contenitore) ci sia un campo
+     email + submit — più permissivo delle euristiche A/B attuali, pensato apposta per i casi limite
+     come una semplice checkbox dentro un form multiuso.
 
 Indicazioni implementative originali (per riferimento, ormai superate dallo stato sopra):
 - Nuovo file `lib/newsletter.js` con: la lista estensibile di pattern ESP (array di

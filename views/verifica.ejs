@@ -11,7 +11,7 @@
     %>
       <span class="theme-chip" style="cursor:default;">
         <%= t.label %>
-        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %>)</span><% } else if (t.key) { %><span class="muted">(non trovato sul sito)</span><% } %>
+        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %><% if (trovato.url) { %> — <a href="<%= trovato.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span><% } else if (t.key) { %><span class="muted">(non trovato sul sito)</span><% } %>
       </span>
     <% }) %>
   </div>
@@ -25,14 +25,14 @@
   <% } else { %>
     <div class="theme-list">
       <% aggiuntive.forEach(function(t) { %>
-        <span class="theme-chip" style="cursor:default;"><%= t.label %> <span class="muted">(<%= t.count %>)</span></span>
+        <span class="theme-chip" style="cursor:default;"><%= t.label %> <span class="muted">(<%= t.count %><% if (t.url) { %> — <a href="<%= t.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span></span>
       <% }) %>
     </div>
   <% } %>
 
   <% if (finding) { %>
     <div class="finding">
-      <strong>Finding:</strong> <%= finding %>
+      <strong>Osservazione:</strong> <%= finding %>
     </div>
   <% } %>
 </div>
