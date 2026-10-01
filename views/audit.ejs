@@ -56,6 +56,22 @@
 </div>
 <% } %>
 
+<% if (audit.newsletter) { %>
+<div class="card">
+  <h2 style="margin-top:0;">Nurturing — Newsletter</h2>
+  <div class="indicator-row">
+    <div>
+      <div>Raccolta email / iscrizione</div>
+      <div class="meta"><%= audit.newsletter.messaggio %></div>
+    </div>
+    <span class="pill <%= audit.newsletter.stato %>"><%= audit.newsletter.stato === 'presente' ? 'Presente' : 'Assente' %></span>
+  </div>
+  <% if (audit.newsletter.piattaforma) { %>
+    <p class="muted" style="margin-top:14px;">Piattaforma rilevata: <%= audit.newsletter.piattaforma %></p>
+  <% } %>
+</div>
+<% } %>
+
 <div class="actions">
   <a class="btn secondary" href="/">← Indietro</a>
   <a class="btn btn-principale" href="/dichiarazione/<%= sessione.id %>">Continua →</a>
