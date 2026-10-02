@@ -667,6 +667,29 @@ che ha completato il criterio blog/contenuti sopra.
     Firecrawl senza crediti residui) — da confermare con un audit reale del sito appena possibile.
     Resta anche da arricchire `ESP_NOTI` quando si incontreranno ESP italiani/locali non in lista
     (nessuno trovato finora, incluso per questo stesso sito, che sembra usare un backend proprio).
+  - **Correzione/nota da una SECONDA sessione, partita in parallelo sullo stesso trigger schedulato
+    (vedi sotto)**: il paragrafo sopra sull'alias ("riassegnato automaticamente... senza bisogno di
+    `assign_alias` manuale") non è risultato confermato. Interrogando `list_aliases` subito dopo che
+    il deployment sopra (`dpl_fSCdbm2zBv5UCMoE9SaBU5qiPvN3`, creato alle 12:04:10 UTC) risultava
+    `READY`, l'alias primario `autoanalisi-scuole.vercel.app` puntava ANCORA al vecchio deployment del
+    2026-10-01 (`dpl_HCLaR15sEFzQToDDP24EEiA12EK5`) — stesso comportamento già visto nell'incidente del
+    2026-10-01 (l'aliasing automatico non è affidabile per questo progetto, va sempre verificato con
+    `list_aliases` e corretto a mano se serve). Questa seconda sessione ha quindi creato un secondo
+    deployment equivalente (stesso commit `48334f4`, stessi 43 file, contenuto identico verificato
+    confrontando gli hash SHA1 — `dpl_Hc2dZpa8QH3zsxhFsKhkV5sKQi1X`, creato alle 12:08:11 UTC, circa 4
+    minuti dopo) senza accorgersi che un deployment già pronto esisteva, e ha riassegnato l'alias
+    primario a QUESTO con `mcp__Vercel__assign_alias`, verificato con `list_aliases` subito dopo
+    (puntava correttamente al nuovo deployment). **Il deployment effettivamente in produzione ora è
+    `dpl_Hc2dZpa8QH3zsxhFsKhkV5sKQi1X`** (contenuto identico a `dpl_fSCdbm2zBv5UCMoE9SaBU5qiPvN3`,
+    quindi nessun danno, solo un deployment ridondante creato per non aver controllato
+    `list_deployments`/`list_aliases` subito prima di deployare). **Lezione per le prossime sessioni
+    schedulate**: più esecuzioni dello stesso trigger possono partire molto vicine nel tempo e lavorare
+    sulla stessa voce di backlog in parallelo — prima di creare un nuovo deployment, controllare sempre
+    `list_deployments` (ultimi minuti) per un deployment già pronto con lo stesso commit, e sempre
+    verificare/correggere l'alias con `list_aliases` + `assign_alias` dopo ogni deploy, indipendentemente
+    da cosa dice la risposta di `create_deployment`. Se capita ancora, vale la pena segnalare ad Andrea
+    un possibile problema di doppia schedulazione dello stesso trigger (non è detto sia un problema di
+    queste sessioni).
 
 Indicazioni implementative originali (per riferimento, ormai superate dallo stato sopra):
 - Nuovo file `lib/newsletter.js` con: la lista estensibile di pattern ESP (array di
