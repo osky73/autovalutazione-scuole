@@ -608,29 +608,65 @@ che ha completato il criterio blog/contenuti sopra.
   del box di divergenza cadenza del criterio blog). Non ancora verificato un sito reale con un ESP
   italiano/locale non in lista — la lista `ESP_NOTI` resta da arricchire man mano che se ne incontrano
   (come indicato esplicitamente dalla spec).
-- [ ] **Falso negativo segnalato da Andrea (2026-10-01)**: per il sito de La Zolla
-  (https://www.lazolla.it/contattaci/) il criterio risulta "assente" ma la form di iscrizione alla
-  newsletter è ben presente in quella pagina. Andrea chiede di cambiare approccio: non aspettarsi una
-  pagina o un blocco dedicato, ma cercare direttamente il termine "newsletter" nel testo del sito e
-  verificare che nei dintorni ci sia una "dinamica di form" — può essere una form a sé stante oppure
-  anche solo una spunta/checkbox di adesione dentro una form che serve ad altro (es. un form di
-  contatto generico, come in questo caso). Possibili cause già individuabili dal codice attuale, da
-  verificare prima di cambiare l'euristica:
-  1. La pagina `/contattaci/` potrebbe non rientrare tra le pagine scaricate dall'audit
-     (`lib/pages.js` sceglie un sottoinsieme limitato di pagine interne): se il crawler non la scarica
-     proprio, nessuna delle verifiche A/B/C la vede mai.
-  2. Anche se la pagina viene scaricata, il giudizio finale (`analizzaNewsletter` in
-     `lib/newsletter.js`) richiede `(A OR B) AND C` — cioè un meccanismo di raccolta email **E** un ESP
-     riconosciuto (`ESP_NOTI`). Una form di contatto con semplice checkbox "iscrivimi alla newsletter"
-     che invia via email/backend proprio (senza Mailchimp/Brevo/ecc.) soddisferebbe A ma non C, e
-     risulterebbe "assente" (sottocaso "meccanismo senza ESP") anche se dal punto di vista dell'utente
-     la form "c'è". Verificare se questa distinzione è comunicata chiaramente nella vista o se rischia
-     di essere letta come "non c'è nulla".
-  3. Valutare se aggiungere un vero e proprio STEP 0 richiesto da Andrea: ricerca testuale diretta del
-     termine "newsletter" (case-insensitive) nelle pagine raccolte, indipendentemente dalla forma del
-     markup, e se trovato verificare che nelle vicinanze (stesso form/contenitore) ci sia un campo
-     email + submit — più permissivo delle euristiche A/B attuali, pensato apposta per i casi limite
-     come una semplice checkbox dentro un form multiuso.
+- [x] **Falso negativo segnalato da Andrea (2026-10-01) — risolto il 2026-10-02**: per il sito de La
+  Zolla (https://www.lazolla.it/contattaci/) il criterio risultava "assente" ma la form di iscrizione
+  alla newsletter era ben presente in quella pagina. Confermate e risolte tutte e tre le cause
+  ipotizzate nella sessione precedente:
+  1. **Causa 1 (pagina non scaricata) — confermata e corretta**: `discoverInternalPages` (chiamata da
+     `lib/runAudit.js`) limitava a 3 il numero di pagine interne scaricate, ma esistono 4 categorie
+     note in `lib/pages.js` (chi-siamo/iscrizioni/contatti/notizie) scelte nell'ordine di comparsa dei
+     link nella home — con 4 categorie trovate, una (spesso proprio "contatti") veniva tagliata fuori
+     a seconda dell'ordine dei link. **Fix**: limite alzato da 3 a 4 (il numero esatto di categorie
+     note, quindi non scarica mai pagine superflue).
+  2. **Causa 2 (giudizio `(A OR B) AND C` troppo rigido per comunicare il caso trovato) — confermata,
+     non modificata di proposito**: resta voluto dalla spec originale (il verdetto "Presente" deve
+     richiedere un ESP riconosciuto); il problema reale era che il sottocaso "quick win" non veniva
+     mai mostrato (vedi punto successivo), facendo sembrare il caso "trovato ma senza ESP" identico a
+     "niente trovato".
+  3. **Causa 3/STEP 0 (euristiche A/B troppo rigide per riconoscere la form reale) — implementato**:
+     recuperata la struttura reale della pagina (via `WebFetch`, non direttamente raggiungibile dalla
+     sandbox per limiti di rete): un form con nome, cognome, email, un menu "Chi sei?", checkbox sui
+     temi di interesse e consenso privacy, con il titolo "Iscriviti alla newsletter della Zolla" messo
+     in un `<h2>` FUORI dal `<form>`. Questo spiega perché le euristiche esistenti fallivano:
+     `rilevaFormStandalone` (verifica B) tollera solo 1-2 campi, troppo rigido per una newsletter vera
+     con più campi; `rilevaCampoDichiarato` (verifica A) usa `closest('form, div, li, p, section')` su
+     un singolo input, che trova quasi sempre il `<form>` stesso come ancestor più vicino — perdendo un
+     titolo messo fuori da esso. **Fix**: nuova `rilevaDinamicaFormNewsletter()` in `lib/newsletter.js`
+     (STEP 0, confluisce in verificaA) — trova un form con campo email + pulsante di invio
+     indipendentemente dal numero di altri campi, e cerca la parola "newsletter" (o sinonimi) nel form
+     stesso o in un paio di contenitori ancestori (non nell'intera pagina, per non confondere un form
+     generico con una newsletter solo perché la parola compare altrove, es. nel menu).
+  - **Bug aggiuntivo trovato durante la verifica**: `views/newsletter.ejs` confrontava
+    `newsletter.sottocaso` con la stringa `'raccolta_senza_esp'`, mai prodotta dal codice (che genera
+    `'meccanismo_senza_esp'`) — il box "quick win" (raccolta trovata ma senza ESP) non compariva mai,
+    a prescindere dal fix sopra. Corretto il refuso.
+  - **4 nuovi test unitari** (41 totali, tutti verdi), incluso uno che riproduce la struttura reale
+    segnalata (form multi-campo + titolo fuori dal form) e verifica che il verdetto finale sia
+    "assente"/`meccanismo_senza_esp` (non più `nessun_meccanismo`) con `verificaA: true`. Verificato
+    anche il rendering EJS di `views/newsletter.ejs` sui 4 stati possibili (il box quick-win compare
+    ora solo nel caso corretto) e `require('./server.js')` pulito.
+  - **Deployato in produzione il 2026-10-02** (commit `48334f4`): file invariati referenziati per
+    SHA1 dall'ultimo deployment di produzione, i 3 file modificati (`lib/newsletter.js`,
+    `lib/runAudit.js`, `views/newsletter.ejs`) e `lib/social/adapters/index.js` (nascosto dal
+    troncamento di `list_deployment_files` già noto, vedi nota sull'incidente del 2026-10-01) inline.
+    Verificato `readyState: READY`, poi il contenuto esatto di `lib/social/adapters/index.js` e
+    `lib/newsletter.js` nel NUOVO deployment via `get_deployment_file_contents` (bypassando il
+    troncamento della sola vista ad albero) — corrisponde byte-per-byte a quanto caricato. L'alias
+    primario `autoanalisi-scuole.vercel.app` è stato riassegnato automaticamente (Vercel ha creato un
+    deployment di promozione con un ID diverso ma contenuto identico, verificato confrontando tutti
+    gli hash SHA1 dei file tra i due deployment — nessuna discrepanza), senza bisogno di
+    `assign_alias` manuale questa volta. Alias di fallback `-osky2` lasciato intatto come redirect
+    (non toccato). Non è stato possibile fare una verifica HTTP diretta del sito (rete della sandbox
+    bloccata verso `vercel.app`, stesso limite di sessioni precedenti; anche `WebFetch` ha fallito per
+    mancanza di un utente presente ad approvare la richiesta, essendo questa una sessione schedulata
+    non presidiata) — la verifica si basa su `readyState: READY`, `aliasError: null`, sul confronto
+    byte-per-byte dei file tra i due deployment, e sui test locali sopra elencati.
+  - **Ancora da fare** (non bloccante, prossima sessione): non è stato possibile verificare il fix
+    contro l'HTML reale e completo di lazolla.it/contattaci (solo una descrizione testuale della
+    struttura via `WebFetch`, non il markup raw — rete della sandbox bloccata verso il dominio,
+    Firecrawl senza crediti residui) — da confermare con un audit reale del sito appena possibile.
+    Resta anche da arricchire `ESP_NOTI` quando si incontreranno ESP italiani/locali non in lista
+    (nessuno trovato finora, incluso per questo stesso sito, che sembra usare un backend proprio).
 
 Indicazioni implementative originali (per riferimento, ormai superate dallo stato sopra):
 - Nuovo file `lib/newsletter.js` con: la lista estensibile di pattern ESP (array di
