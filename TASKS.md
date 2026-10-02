@@ -17,6 +17,54 @@ un'unica area utilizzabile. **Non richiamare `assign_alias` su `autoanalisi-scuo
 puntandolo a un deployment nei prossimi deploy**: il redirect è permanente e non va toccato/rifatto
 a ogni deploy, va lasciato così com'è.
 
+## Stato al 2026-10-02 (sessione Andrea) — 3 ritocchi schermata 7/posizionamento + terzo incidente alias (stavolta causato da questa sessione, risolto da una sessione concorrente)
+
+Andrea ha chiesto tre ritocchi puntuali:
+- [x] **Box Google Business Profile minimizzato nello step 7** (`views/social-altri.ejs`): ora
+      mostra solo nome scuola, pill di stato (senza dettaglio righe/finding, che restano nello step
+      8 "Analisi dei canali social", dove erano già duplicati — coerente con un punto già aperto nel
+      backlog), indirizzo e link Maps, più la nota "Il dettaglio completo è nella schermata
+      successiva."
+- [x] **Stile uniforme dei `<select>` fasce (like/follower/frequenza) ripristinato**: il fix
+      precedente impostava `font-size` solo sul contenitore `.fascia-row`, che NON si propaga agli
+      elementi di form (`<select>`/`<input>` usano il font di default del browser a meno di una
+      regola propria) — per questo "si era perso". Aggiunta la regola `.fascia-select { font-size:
+      0.82rem; ... }` direttamente sul select in `views/social-conferma.ejs` e `views/social-altri.ejs`.
+- [x] **Testo risultato "Non disponibile" nella card Posizionamento** (`views/posizionamento.ejs`):
+      da "Google non raggiungibile per nessuna ricerca del cluster" a "Non ci sono risultati nella
+      prima pagina per queste ricerche." (più comprensibile per chi legge il report).
+
+Verificato con rendering EJS locale su più stati e dal vivo su un deployment preview (screenshot
+GBP minimizzato, zoom sul font dei select, testo nuovo nei risultati di posizionamento) prima della
+promozione in produzione.
+
+### Terzo incidente alias della stessa giornata (stavolta causato da questa sessione)
+
+Mentre questa sessione verificava dal vivo i 3 ritocchi sopra (richiesto più tempo del solito per
+intoppi di automazione browser), una sessione concorrente (`session_01DokqS5HHH8zwqbMqpW9hxx`,
+lavoro "Nurturing" documentato nella sezione sotto) ha completato e promosso il proprio deployment
+in produzione. La chiamata `assign_alias` di questa sessione, fatta subito dopo senza un secondo
+controllo, ha sovrascritto quell'alias puntandolo al deployment con solo i 3 ritocchi di questa
+sessione — **perdendo temporaneamente in produzione le domande dichiarative Nurturing** per i
+~15-20 minuti successivi. La sessione concorrente ha rilevato la cosa (via il controllo
+`list_aliases` di prassi) e ha ripristinato l'alias sul proprio deployment più recente
+(`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`), che — essendo stato costruito sul commit `2398f9f` di questa
+sessione — conteneva GIÀ tutti e 3 i ritocchi richiesti da Andrea insieme al lavoro Nurturing.
+**Verificato in questa sessione** (confronto SHA1 di tutti i file locali vs `list_deployment_files`
+di `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`): hash identici su tutti i file, incluse le 3 view toccate da
+Andrea — nessun nuovo deploy necessario, produzione già corretta e completa. Confermato anche con
+un controllo dal vivo della home page.
+
+**Causa di fondo (terza volta nella stessa giornata) e correzione di processo per le prossime
+sessioni**: il rischio non è solo tra "calcolo SHA" e "creo il deployment" (prima lezione) ma
+anche tra "finisco la verifica dal vivo" e "chiamo `assign_alias`" — una verifica live che richiede
+tempo (minuti) lascia una finestra ampia per un deploy concorrente. **Da questa sessione in avanti:
+richiamare sempre `list_aliases` immediatamente prima di ogni `assign_alias`** e, se il
+`deploymentId` puntato dall'alias primario è cambiato rispetto a quello noto all'inizio della
+sessione, fermarsi e confrontare gli SHA1 prima di sovrascrivere — esattamente come fatto qui.
+Vale la pena, come già notato dalla sessione concorrente, indagare se più esecuzioni dello stesso
+trigger schedulato partono in parallelo senza coordinamento.
+
 ## Stato al 2026-10-02 (sessione successiva) — domande dichiarative "Nurturing" + secondo incidente alias risolto
 
 Lavoro su questa sessione (schedulata), seguendo l'ordine del backlog (blog/contenuti poi
