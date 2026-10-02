@@ -1,3 +1,36 @@
+## PROSSIMO TASK (richiesto da Andrea il 2026-10-03) — passaggio "Canali social": rilevazione automatica via Firecrawl al posto del caricamento screenshot
+
+**Decisione di Andrea**: il caricamento di uno screenshot da parte del dirigente scolastico NON è accettabile (troppo
+attrito per un'autoanalisi rapida). Nessun riquadro di upload, in nessun caso. Il bottone
+"🤖 Chiedo l'aiuto dell'AI" va ripensato così. Non è una funzione già implementata: oggi il bottone chiama
+`/social/:id/ai-aiuto`, ma `lib/social/adapters/index.js` è uno stub (`infoPiattaforma()` ritorna sempre `null`), quindi
+ogni canale risulta "non supportato" e compaiono solo i box di upload (`mostraLivelloC` in `views/social-conferma.ejs`).
+
+### Comportamento richiesto
+- [ ] **Il bottone attiva Firecrawl** (server-side, in background) sui canali social indicati dal sito della scuola
+      (apre la pagina del profilo, ne ricava lo screenshot/dati e legge i valori: follower, post, like, commenti).
+- [ ] **Se Firecrawl funziona** per un canale: i valori trovati vengono stampati **di fianco ai menù a tendina**
+      (fasce like / follower / frequenza) di quel canale, e i menù diventano **disattivati e grigi** (disabled).
+- [ ] **Se Firecrawl fallisce per qualsiasi motivo** (blocco, login wall, crediti finiti, timeout, errore API,
+      chiave assente): compare un messaggio che invita a **inserire a mano i valori delle attività social usando i menù
+      a tendina sottostanti**, che restano attivi. NESSUN box di caricamento immagine.
+- [ ] **Rimuovere il flusso di upload**: riquadri screenshot, `/social/:id/ai-estrai` e il relativo codice client
+      (`mostraLivelloC`, `fileToBase64`, ecc.). Valutare se `lib/social/extract.js` e `lib/social/ai.js` (Gemini) servono
+      ancora per leggere lo screenshot di Firecrawl; altrimenti eliminarli.
+- [ ] **Dipendenza**: serve una chiave API Firecrawl come env var su Vercel (es. `FIRECRAWL_API_KEY`, "sensitive").
+      NON è la connessione MCP usata nelle sessioni di lavoro: va creata/fornita da Andrea dalla dashboard Firecrawl.
+- [ ] Gestire in modo sicuro il fallimento: timeout breve, un solo tentativo per canale, nessun blocco del wizard,
+      rate limit già esistente (`consentito`), nessuna chiave esposta al client.
+
+### Test da fare prima di implementare (domani, 2026-10-04, crediti Firecrawl gratuiti ripristinati)
+- [ ] Provare solo i **social** (NON le posizioni su Google): 4-5 profili reali di scuole, mix Instagram/Facebook.
+- [ ] Per ognuno: richiesta con proxy `stealth` + screenshot + estrazione dati; annotare se la pagina si apre o appare
+      il muro di login, quali valori escono, e quanti crediti consuma ogni richiesta (piano gratuito: 1.000 crediti/mese).
+- [ ] **Esito del test = decisione**: se i dati escono in modo utilizzabile → implementare il comportamento sopra.
+      Se Firecrawl fallisce → **niente bottone AI**: restano solo i menù a tendina con autodichiarazione delle attività
+      social, e si rimuove il codice AI/upload. (Alternativa già discussa se serve dato completo su Instagram:
+      Graph API di Meta / Business Discovery, solo per profili business/creator.)
+
 ## Stato al 2026-10-03 (ritocco 2) — passaggio 5: 6 query visibili prima di "… altro"
 
 Richiesta di Andrea: mostrare 3-4 query in più prima del troncamento. Scelto 6 (prima 3). Costante
