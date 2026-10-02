@@ -17,8 +17,10 @@ ogni canale risulta "non supportato" e compaiono solo i box di upload (`mostraLi
 - [ ] **Rimuovere il flusso di upload**: riquadri screenshot, `/social/:id/ai-estrai` e il relativo codice client
       (`mostraLivelloC`, `fileToBase64`, ecc.). Valutare se `lib/social/extract.js` e `lib/social/ai.js` (Gemini) servono
       ancora per leggere lo screenshot di Firecrawl; altrimenti eliminarli.
-- [ ] **Dipendenza**: serve una chiave API Firecrawl come env var su Vercel (es. `FIRECRAWL_API_KEY`, "sensitive").
-      NON è la connessione MCP usata nelle sessioni di lavoro: va creata/fornita da Andrea dalla dashboard Firecrawl.
+- [x] **Dipendenza risolta (2026-10-03)**: la chiave API Firecrawl è già impostata su Vercel come env var
+      `FIRECRAWL_API_KEY` ("sensitive", production + preview), fornita da Andrea. Valida solo per i deploy FUTURI e non ancora
+      verificata (account senza crediti fino al reset del 2026-10-04). Il valore NON va scritto nel repo; Andrea
+      valuta di rigenerarla dopo il test (è stata incollata in chiaro in chat).
 - [ ] Gestire in modo sicuro il fallimento: timeout breve, un solo tentativo per canale, nessun blocco del wizard,
       rate limit già esistente (`consentito`), nessuna chiave esposta al client.
 
