@@ -34,8 +34,9 @@
       </p>
       <%
         var queryTesti = r.risultatiQuery.map(function(x) { return '"' + x.query + '"'; });
-        var queryPrime = queryTesti.slice(0, 3);
-        var queryRestanti = queryTesti.slice(3);
+        var QUERY_VISIBILI = 6; // query sempre visibili prima del toggle "… altro"
+        var queryPrime = queryTesti.slice(0, QUERY_VISIBILI);
+        var queryRestanti = queryTesti.slice(QUERY_VISIBILI);
       %>
       <p class="query-inline">
         Ricerche: <%= queryPrime.join(', ') %><% if (queryRestanti.length) { %><span class="query-altro"><input type="checkbox" id="altro-<%= idx %>" class="altro-chk" aria-label="Mostra tutte le ricerche"><span class="altro-closed">, <label for="altro-<%= idx %>" class="altro-toggle">… altro (<%= queryRestanti.length %>)</label></span><span class="altro-open">, <%= queryRestanti.join(', ') %></span></span><% } %>

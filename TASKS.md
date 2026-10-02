@@ -1,3 +1,9 @@
+## Stato al 2026-10-03 (ritocco 2) — passaggio 5: 6 query visibili prima di "… altro"
+
+Richiesta di Andrea: mostrare 3-4 query in più prima del troncamento. Scelto 6 (prima 3). Costante
+`QUERY_VISIBILI` in `views/posizionamento.ejs` (cambiare solo quella per regolare). Verificato su
+mock con 5/6/9 query: toggle solo oltre le 6. 46 test verdi.
+
 ## Stato al 2026-10-03 (ritocco) — toggle "… altro" del passaggio 5 sulla stessa riga dell'ultima query
 
 Richiesta di Andrea: il toggle "… altro (N)" deve stare sulla stessa riga dell'ultima query
