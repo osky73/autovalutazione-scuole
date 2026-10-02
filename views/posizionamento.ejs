@@ -14,17 +14,24 @@
       </div>
       <ul class="result-bullet">
         <li>
-          <% if (!r.disponibile) { %>
-            <span class="pill assente">Non disponibile</span> Non ci sono risultati nella prima pagina per queste ricerche.
-          <% } else if (r.migliore) { %>
-            <span class="pill ottimizzato">Posizione <%= r.migliore.posizione %></span> Trovato con: "<%= r.migliore.query %>"
-          <% } else if (maxAnalizzati > 0) { %>
-            <span class="pill parziale">Non presente tra i primi <%= maxAnalizzati %> risultati</span>
+          <% if (r.migliore) { %>
+            <span class="pill presente">Presente</span>
           <% } else { %>
-            <span class="pill parziale">Non presente nei risultati analizzati</span>
+            <span class="pill assente">Assente</span>
           <% } %>
         </li>
       </ul>
+      <p class="muted" style="margin-top:4px;">
+        <% if (!r.disponibile) { %>
+          Non ci sono risultati nella prima pagina per queste ricerche.
+        <% } else if (r.migliore) { %>
+          Trovato in posizione <%= r.migliore.posizione %> con: "<%= r.migliore.query %>"
+        <% } else if (maxAnalizzati > 0) { %>
+          Non presente tra i primi <%= maxAnalizzati %> risultati.
+        <% } else { %>
+          Non presente nei risultati analizzati.
+        <% } %>
+      </p>
       <p class="query-inline">Ricerche: <%= r.risultatiQuery.map(function(x) { return '"' + x.query + '"'; }).join(', ') %></p>
     </div>
   <% }) %>
