@@ -1,3 +1,45 @@
+## Stato al 2026-10-03 — contatore passaggi fisso a "di 8" corretto a "di 10" + ottimizzazione articoli estesa agli ultimi 3
+
+Andrea ha segnalato che il footer del wizard mostrava "Passaggio N di 8" anche quando N arrivava a
+9 o 10 (es. "Passaggio 9 di 8"), e che il criterio di ottimizzazione nel passaggio 9 (Attività
+editoriale) va verificato sugli ultimi 3 articoli pubblicati, non solo sull'ultimo.
+
+- [x] **Bug "di 8" risolto**: `views/partials/layout-bottom.ejs` aveva il totale hardcoded a 8
+      invece di 10 (lo stepper visuale in `layout-top.ejs` era già corretto a 10 span). Il wizard
+      ha sempre avuto 10 passaggi: non era un bug di navigazione, solo un numero sbagliato nel testo.
+- [x] **Ottimizzazione estesa agli ultimi 3 articoli** (`lib/contenuti.js`):
+  - Nuova `trovaUrlUltimiArticoli(articoli, n=3)` (accanto alla precedente
+    `trovaUrlArticoloPiuRecente`, mantenuta per compatibilità/test ma non più usata da `server.js`).
+  - Nuova `aggregaOttimizzazione(risultatiArticoli)`: giudizio complessivo cautelativo basato sul
+    caso peggiore — "scarsa" se almeno un articolo tra gli ultimi è scarso, "buona" solo se tutti
+    sono buoni, altrimenti "parziale". Evita che un articolo scritto male venga "annacquato" nella
+    media.
+  - `server.js` (`GET /contenuti/:id/esegui`): recupera e analizza fino a 3 articoli (non più solo
+    il più recente), aggrega il giudizio, e passa anche l'elenco dettagliato per articolo alla vista.
+  - `views/contenuti.ejs`: la card "Ottimizzazione" mostra ora il giudizio aggregato (con conteggio
+    articoli analizzati) seguito dal dettaglio per singolo articolo (link, metadescription, link
+    interni/esterni, immagini senza alt, pill individuale).
+- [x] **Verificato**: 46 test unitari verdi (5 nuovi: `trovaUrlUltimiArticoli` ×2,
+      `aggregaOttimizzazione` ×3), `require('./server.js')` pulito, rendering di `contenuti.ejs`
+      testato su 4 casi (nessuna sezione, ottimizzazione non disponibile, 1 articolo, 3 articoli di
+      qualità mista) senza errori EJS.
+- [x] **Commit, push e deploy** su `https://autoanalisi-scuole.vercel.app` con il consueto flusso
+      git-push → attesa `READY` → `list_aliases` → `assign_alias`.
+
+## Stato al 2026-10-02 (sessione Andrea, tardo) — passaggio 5 "Posizionamento Google": bullet semplificato a Presente/Assente
+
+Richiesta di Andrea: nel passaggio 5, la valutazione nel bullet deve essere binaria — "Assente"
+(rosso) se negativa, "Presente" (verde) se positiva — con il testo esplicativo ("Non ci sono
+risultati...", "Trovato in posizione...", ecc.) spostato sotto al bullet, seguito dal blocco delle
+ricerche testate su Google.
+
+- [x] **`views/posizionamento.ejs`**: il bullet ora mostra solo il pill Presente/Assente; la
+      spiegazione testuale e il blocco "Ricerche: ..." sono stati spostati sotto, in quell'ordine.
+- [x] **Verificato**: 41 test unitari verdi, rendering testato su mock data per tutti i rami
+      logici (trovato, non trovato con risultati analizzati, non disponibile/bloccato da Google).
+- [x] **Commit `18ace3e`, deploy `dpl_3X5kYBAqbdQFphmByoVpFWcwNuYS`**, promosso in produzione e
+      verificato dal vivo su `https://autoanalisi-scuole.vercel.app`.
+
 ## Stato al 2026-10-02 (continuazione) — domande Nurturing spostate dal passaggio 3 a schermate dedicate prima degli step 9/10
 
 Andrea ha segnalato che le due domande dichiarative Nurturing (piano editoriale/cadenza e

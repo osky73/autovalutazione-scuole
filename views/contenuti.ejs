@@ -58,21 +58,30 @@ function pillOttimizzazione(livello) {
 </div>
 
 <div class="card">
-  <h2 style="margin-top:0;">Ottimizzazione dell'ultimo articolo</h2>
+  <h2 style="margin-top:0;">Ottimizzazione degli ultimi articoli</h2>
   <% if (!dati.ottimizzazione) { %>
-    <p class="muted">Non è stato possibile analizzare l'ultimo articolo (pagina non raggiungibile o link non individuato).</p>
+    <p class="muted">Non è stato possibile analizzare gli ultimi articoli (pagine non raggiungibili o link non individuati).</p>
   <% } else { %>
     <div class="indicator-row">
       <div>
-        <div>Valutazione complessiva</div>
-        <div class="meta">
-          Metadescription: <%= dati.ottimizzazione.metaDescrizioneSoloExcerpt ? 'coincide con l\'estratto del testo, non è scritta apposta' : 'personalizzata' %> ·
-          link interni: <%= dati.ottimizzazione.linkInterni %> · link esterni: <%= dati.ottimizzazione.linkEsterni %> ·
-          immagini senza nome/alt descrittivo: <%= dati.ottimizzazione.immaginiNonSignificative %> di <%= dati.ottimizzazione.immaginiTotali %>
-        </div>
+        <div>Valutazione complessiva (<%= dati.ottimizzazione.numeroArticoliAnalizzati %> articol<%= dati.ottimizzazione.numeroArticoliAnalizzati === 1 ? 'o' : 'i' %> analizzat<%= dati.ottimizzazione.numeroArticoliAnalizzati === 1 ? 'o' : 'i' %>)</div>
+        <div class="meta">Basata sul caso peggiore tra gli ultimi articoli pubblicati, per non mascherare un singolo articolo scritto male.</div>
       </div>
       <span class="pill <%= pillOttimizzazione(dati.ottimizzazione.livello) %>"><%= dati.ottimizzazione.livello.charAt(0).toUpperCase() + dati.ottimizzazione.livello.slice(1) %></span>
     </div>
+    <% dati.ottimizzazione.articoli.forEach(function(a) { %>
+      <div class="indicator-row" style="margin-top:8px;">
+        <div>
+          <div><a href="<%= a.url %>" target="_blank" rel="noopener"><%= a.url %></a></div>
+          <div class="meta">
+            Metadescription: <%= a.metaDescrizioneSoloExcerpt ? 'coincide con l\'estratto del testo, non è scritta apposta' : 'personalizzata' %> ·
+            link interni: <%= a.linkInterni %> · link esterni: <%= a.linkEsterni %> ·
+            immagini senza nome/alt descrittivo: <%= a.immaginiNonSignificative %> di <%= a.immaginiTotali %>
+          </div>
+        </div>
+        <span class="pill <%= pillOttimizzazione(a.livello) %>"><%= a.livello.charAt(0).toUpperCase() + a.livello.slice(1) %></span>
+      </div>
+    <% }) %>
   <% } %>
 </div>
 

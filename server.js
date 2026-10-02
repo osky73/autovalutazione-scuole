@@ -5,8 +5,9 @@ const { estraiTemi, elencoTemi, VOCABOLARIO } = require('./lib/temi');
 const { estraiLocalita, estraiDatiOrganizzazione } = require('./lib/localita');
 const {
   calcolaFrequenzaEditoriale,
-  trovaUrlArticoloPiuRecente,
+  trovaUrlUltimiArticoli,
   analizzaOttimizzazioneArticolo,
+  aggregaOttimizzazione,
   relazioneCompetenze,
   giudicaContenuti,
 } = require('./lib/contenuti');
@@ -617,35 +618,37 @@ app.get('/contenuti/:id/esegui', async (req, res) => {
         contenuti,
         frequenza: null,
         ottimizzazione: null,
-        urlUltimoArticolo: null,
         relazioneCompetenze: { presente: false, temiCorrelati: [] },
       };
     } else {
       const frequenza = calcolaFrequenzaEditoriale(raccolta.articoli);
-      const urlUltimoArticolo = trovaUrlArticoloPiuRecente(raccolta.articoli);
+      // Richiesta di Andrea (2026-10-03): l'ottimizzazione va verificata sugli ultimi 3 articoli,
+      // non solo sull'ultimo pubblicato — un solo articolo non è rappresentativo.
+      const urlUltimiArticoli = trovaUrlUltimiArticoli(raccolta.articoli, 3);
 
-      let ottimizzazione = null;
+      const risultatiArticoli = [];
       const pagineBlogHtml = [];
 
       try {
         const resListing = await fetchPage(raccolta.url, { timeoutMs: 8000 });
         if (resListing.ok && resListing.html) pagineBlogHtml.push(resListing.html);
       } catch (e) {
-        /* la pagina elenco non è indispensabile: la relazione competenze può basarsi anche solo sull'articolo */
+        /* la pagina elenco non è indispensabile: la relazione competenze può basarsi anche solo sugli articoli */
       }
 
-      if (urlUltimoArticolo) {
+      for (const urlArticolo of urlUltimiArticoli) {
         try {
-          const resArticolo = await fetchPage(urlUltimoArticolo, { timeoutMs: 8000 });
+          const resArticolo = await fetchPage(urlArticolo, { timeoutMs: 8000 });
           if (resArticolo.ok && resArticolo.html) {
             pagineBlogHtml.push(resArticolo.html);
-            ottimizzazione = analizzaOttimizzazioneArticolo(resArticolo.html, urlUltimoArticolo);
+            risultatiArticoli.push({ url: urlArticolo, ...analizzaOttimizzazioneArticolo(resArticolo.html, urlArticolo) });
           }
         } catch (e) {
-          /* ottimizzazione resta null: la vista lo segnala come non disponibile */
+          /* articolo non raggiungibile: viene semplicemente escluso dall'aggregato */
         }
       }
 
+      const ottimizzazione = aggregaOttimizzazione(risultatiArticoli);
       const relazione = relazioneCompetenze(pagineBlogHtml, competenze);
 
       sessione.attivitaEditoriale = {
@@ -653,7 +656,6 @@ app.get('/contenuti/:id/esegui', async (req, res) => {
         contenuti,
         frequenza,
         ottimizzazione,
-        urlUltimoArticolo,
         relazioneCompetenze: relazione,
       };
     }
