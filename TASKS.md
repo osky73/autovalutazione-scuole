@@ -17,6 +17,37 @@ un'unica area utilizzabile. **Non richiamare `assign_alias` su `autoanalisi-scuo
 puntandolo a un deployment nei prossimi deploy**: il redirect è permanente e non va toccato/rifatto
 a ogni deploy, va lasciato così com'è.
 
+## Stato al 2026-10-02 — restyle "Posizionamento su Google" (richiesta Andrea) + chiusura incidente alias
+
+Andrea ha chiesto (con screenshot) di ristrutturare la card "Posizionamento su Google" così: nome
+competenza come intestazione, il risultato (pill + spiegazione) come un unico bullet, e sotto tutte
+le query del cluster in testo continuo una dietro l'altra (non in lista), per una migliore resa
+mobile. Implementato in `views/posizionamento.ejs` (markup) e `views/partials/layout-top.ejs`
+(nuove classi CSS `.result-bullet` e `.query-inline`). Verificato live sulla preview per La Zolla:
+intestazione competenza, bullet con pill "Non disponibile"/"Posizione N", query a seguire separate
+da virgola sulla stessa riga.
+
+**Incidente collaterale durante il deploy (causato da questa sessione, poi corretto)**: nel
+promuovere questo restyle in produzione, l'alias `autoanalisi-scuole.vercel.app` è stato
+riassegnato riusando per errore gli SHA *pre-fix* di `lib/newsletter.js`, `lib/runAudit.js` e
+`views/newsletter.ejs` (la sessione non si era accorta che un'altra sessione concorrente aveva nel
+frattempo deployato in produzione il fix del falso negativo newsletter — vedi sezioni precedenti,
+commit `48334f4`/`a08ff67`). Questo ha fatto regredire temporaneamente la produzione al
+comportamento pre-fix (il sito ha servito quella versione per alcuni minuti). Una terza sessione
+concorrente se n'è accorta e ha riportato l'alias al deployment corretto (vedi commit `e763ee3` e
+`dcd1002`). Questa sessione, una volta rilevata la discrepanza (`oldDeploymentId` restituito da
+`assign_alias` diverso da quanto atteso), ha fatto `git fetch` + `git rebase` per unire localmente
+entrambe le modifiche (restyle posizionamento + fix newsletter), creato un nuovo deployment Vercel
+con TUTTI i file aggiornati insieme, verificato live che entrambi i fix funzionino contemporaneamente
+(sessione completa per La Zolla: card posizionamento nel nuovo formato + newsletter rilevata
+correttamente come "presente ma senza ESP"), e solo a quel punto riassegnato l'alias di produzione.
+
+**Lezione operativa (da applicare sempre d'ora in poi)**: prima di qualsiasi deploy in produzione in
+questo repo, fare sempre `git fetch origin main` e confrontare con l'HEAD locale — altre sessioni
+(anche schedulate) possono aver pushato e deployato modifiche indipendentemente. Costruire il
+deployment Vercel a partire da SHA locali non aggiornati rischia di far regredire in silenzio fix già
+live in produzione.
+
 ## Come deployare
 
 Il progetto Vercel NON è collegato via Git integration: i deploy si fanno con
