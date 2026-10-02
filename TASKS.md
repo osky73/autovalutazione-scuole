@@ -28,13 +28,23 @@ relazione con le competenze).
       vivo** su `https://autoanalisi-scuole.vercel.app/`: pagina di landing funzionante, form
       presente, nessun errore.
 - **IMPORTANTE per le prossime sessioni**: questo progetto ORA È collegato a GitHub
-      (`osky73/autovalutazione-scuole`, branch `main`). Da qui in avanti un deploy in produzione si fa
+      (`osky73/autovalutazione-scuole`, branch `main`). Da qui in avanti un deploy si fa
       semplicemente con `git push origin main` (dopo il consueto `git fetch`/confronto per sessioni
-      concorrenti) — Vercel builda e alias-a automaticamente al branch collegato. **NON è più
-      necessario** (anzi, è da evitare, visto che il meccanismo "by file list" ha mostrato questo bug)
-      usare `mcp__Vercel__create_deployment` con l'elenco manuale di `{file, sha}` — la sezione "Come
+      concorrenti) — Vercel builda in automatico al push. **NON è più necessario** (anzi, è da
+      evitare, visto che il meccanismo "by file list" ha mostrato questo bug) usare
+      `mcp__Vercel__create_deployment` con l'elenco manuale di `{file, sha}` — la sezione "Come
       deployare" sotto è OBSOLETA e sarà da riscrivere, lasciata per ora come riferimento storico/di
       debug.
+      **ATTENZIONE — l'alias primario `autoanalisi-scuole.vercel.app` NON si aggiorna da solo dopo
+      un push** (verificato con un secondo push di prova subito dopo il primo: il nuovo deployment è
+      arrivato `READY` ma l'alias primario è rimasto sul deployment precedente, bisogna ancora
+      promuoverlo manualmente). **Resta quindi necessario, dopo ogni push**: 1) aspettare `READY` con
+      `mcp__Vercel__get_deployment` (o `list_deployments` per trovare l'id del deployment appena
+      creato dal push — compare con `meta.githubCommitSha` uguale al commit appena pushato), 2) il
+      consueto controllo `list_aliases` prima di promuovere (per le sessioni concorrenti), 3)
+      `mcp__Vercel__assign_alias` sul nuovo deployment per `autoanalisi-scuole.vercel.app`. Il secondo
+      alias di fallback (`-osky2`, redirect permanente) NON viene toccato dal deploy via Git,
+      verificato — resta quindi valida la regola di non toccarlo mai.
 
 ### Dettaglio del blocco deploy (per la prossima sessione)
 
