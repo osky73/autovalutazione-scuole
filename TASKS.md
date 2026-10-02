@@ -1,3 +1,19 @@
+## Stato al 2026-10-03 (notte) — posizione su Google via API Serper (con ripiego sulla lettura diretta)
+
+Richiesta di Andrea: usare Serper per le posizioni su Google, perché la lettura diretta di google.com dai server
+Vercel viene bloccata ("Non disponibile"). Chiave `SERPER_API_KEY` impostata su Vercel (sensitive, production +
+preview) — il valore NON va scritto nel repo (è stata incollata in chiaro in chat: valutare di rigenerarla).
+
+- [x] **`lib/serp.js`**: nuova `cercaConSerper()` (POST `https://google.serper.dev/search`, header `X-API-KEY`,
+      body `{q, gl:'it', hl:'it', num:30, autocorrect:false}`, timeout 9s, ordina per `position`, scarta link non
+      http e duplicati) e `cercaRisultati()` che prova Serper e, se non configurato/in errore, ripiega sulla
+      vecchia `cercaSuGoogle()` (può essere bloccata: in quel caso resta "Non disponibile"). `risultatiQuery[].fonte`
+      indica `serper` o `google`.
+- [x] **Test**: `lib/serp.test.js` (6 test con risposte finte, nessuna chiamata reale). 52 test verdi.
+- [ ] **Da verificare**: crediti consumati da una richiesta con `num` > 10 (non documentato nelle fonti lette: il
+      piano gratuito ha 2.500 query). Se consuma 2 crediti, valutare `num:10` + `page` oppure limitare a 20.
+- [ ] **Da verificare**: confronto posizione Serper vs ricerca manuale su Google per 1-2 scuole reali.
+
 ## PROSSIMO TASK (richiesto da Andrea il 2026-10-03) — passaggio "Canali social": rilevazione automatica via Firecrawl al posto del caricamento screenshot
 
 **Decisione di Andrea**: il caricamento di uno screenshot da parte del dirigente scolastico NON è accettabile (troppo
