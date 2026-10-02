@@ -86,8 +86,19 @@ DOPO questa correzione è stato creato il nuovo deployment con il lavoro Nurturi
 sessione (`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`, referenziando per SHA1 tutti i file invariati da
 `dpl_Fykcwyop4asZmm9KdAH4WYKi1geJ` più i 3 file modificati inline), verificato `READY`, confrontati
 tutti i file del nuovo deployment per assicurarsi che nessuno fosse rimasto alla versione vecchia,
-e riassegnato l'alias primario a questo deployment finale. Verificato stabile con un secondo
-controllo di `list_aliases` dopo una breve attesa.
+e riassegnato l'alias primario a questo deployment finale. **Un controllo immediatamente
+successivo ha trovato l'alias GIÀ RIPORTATO su `dpl_Fykcwyop4asZmm9KdAH4WYKi1geJ`** (il deployment
+pulito ma SENZA il lavoro Nurturing) — un'altra sessione concorrente, con una vista del repo
+antecedente al push di questa sessione, ha evidentemente rifatto lo stesso controllo di coerenza
+e "corretto" l'alias verso quello che per lei era l'ultimo stato noto, senza sapere che nel
+frattempo era stato creato un deployment più recente. Riassegnato di nuovo l'alias al deployment
+corretto (`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`) e verificato stabile con un'attesa di 60 secondi e un
+nuovo controllo — nessun altro cambiamento rilevato. **Tre episodi di questo tipo nella stessa
+giornata (vedi anche sezione precedente) sono un pattern, non una coincidenza**: è fortemente
+raccomandato segnalare ad Andrea la possibilità che il trigger schedulato di questo progetto parta
+più volte in parallelo (sovrapposizione di esecuzioni), e valutare se serve un meccanismo di lock
+(es. un file/flag in sessione, o controllare `list_deployments` degli ultimi 5-10 minuti prima di
+agire sull'alias) per evitare che sessioni concorrenti si rincorrano sull'alias di produzione.
 
 **Lezione aggiuntiva per le prossime sessioni** (si aggiunge a quella già scritta sotto "Come
 deployare"): il confronto "questo deployment corrisponde a un commit noto?" si può fare rapidamente
