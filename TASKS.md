@@ -1,3 +1,51 @@
+## Stato al 2026-10-02 (sessione più recente) — rimozione indicatore "Ultimo contenuto pubblicato" dall'audit tecnico + deploy bloccato da un problema lato piattaforma Vercel
+
+Andrea ha chiesto di rimuovere l'indicatore "Ultimo contenuto pubblicato" dallo step 2 (audit
+tecnico) perché si sovrappone col criterio Nurturing dedicato "Attività editoriale" (step 9,
+`lib/contenuti.js`), che fa la stessa verifica in modo più completo (frequenza, ottimizzazione,
+relazione con le competenze).
+
+- [x] **Codice modificato e verificato in locale**: rimossi `scoreRecency()` e l'indicatore
+      `ultimo_contenuto` da `lib/score.js`, il calcolo `lastDateFound` da `lib/runAudit.js`,
+      `extractDates()`/`MONTHS_IT` e il campo `lastDateFound` da `lib/analyzePage.js` (dead code,
+      nessun altro riferimento residuo — verificato con grep), e la menzione nel testo introduttivo
+      di `views/audit.ejs`. 41/41 test unitari verdi, `require('./server.js')` pulito, test diretto
+      di `computeSiteScore` con dati finti: ora restituisce solo i 7 indicatori rimanenti, logica di
+      punteggio/peggiore-indicatore ancora corretta.
+- [x] **Commit e push**: `8ae4296`.
+- [ ] **BLOCCATO — deploy su Vercel non riesce**, causa confermata come problema lato piattaforma,
+      non del codice (vedi dettaglio sotto). **Prossima sessione: ritentare il deploy** con lo stesso
+      meccanismo consueto (vedi "Come deployare") — se il problema si è risolto da solo, promuovere
+      normalmente; se persiste, considerare di contattare il supporto Vercel o aprire un deployment
+      dalla dashboard web per avere i build log reali (qui non recuperabili, vedi sotto). **Il
+      sito in produzione non è stato toccato ed è stabile** su `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`
+      (l'ultimo deployment buono, con tutto il lavoro Nurturing + i 3 ritocchi di oggi — manca solo
+      questa rimozione).
+
+### Dettaglio del blocco deploy (per la prossima sessione)
+
+Ogni tentativo di `mcp__Vercel__create_deployment` su questo progetto falliva con lo stesso errore:
+```
+{"errorCode": "type_error", "errorMessage": "Cannot read properties of undefined (reading 'fsPath')", "errorStep": "buildStep"}
+```
+**Prova decisiva che NON è un problema di codice**: un deployment con i file passati per SHA1
+ESATTAMENTE IDENTICI (stesso hash, stessa dimensione) all'attuale deployment di produzione
+funzionante (`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`, nessuna modifica, nessun file nuovo o cambiato) ha
+fallito con lo stesso identico errore. Se persino un "re-deploy" byte-per-byte di ciò che è già
+`READY` in produzione fallisce, la causa è nell'infrastruttura di build di Vercel per questo
+progetto in questo momento, non nei file. Provato anche: con/senza `skipAutoDetectionConfirmation`,
+con/senza `forceNew`, con `target: "production"` e senza — stesso errore in tutti i casi (5
+tentativi consecutivi, tutti falliti identicamente, nessuno mai arrivato a `READY` né promosso).
+`mcp__Vercel__list_deployment_events` (per i log di build dettagliati) ha risposto sempre `404
+Deployment not found` per ogni deployment fallito, con varie combinazioni di `teamId`/`slug`/
+`builds` — non è stato possibile ottenere il log di build reale per capire la causa esatta lato
+Vercel.
+
+**Nessun rischio per la produzione**: nessuno dei deployment falliti è mai arrivato a uno stato
+diverso da `ERROR`, quindi `assign_alias` non è mai stato chiamato e l'alias primario
+`autoanalisi-scuole.vercel.app` è rimasto, verificato via `list_aliases`, puntato su
+`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs` per tutta la sessione.
+
 # Backlog — autoanalisi-scuole
 
 Questo file è la fonte di verità per il lavoro pianificato su questa app. Ogni sessione (anche quelle
