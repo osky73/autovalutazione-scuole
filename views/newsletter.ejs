@@ -22,6 +22,11 @@
         Il sito raccoglie indirizzi email (modulo o checkbox dedicata), ma non risulta collegato a nessuno strumento di invio (ESP): le email raccolte probabilmente non vengono usate — una quick win commercialmente interessante da segnalare.
       </div>
     <% } %>
+    <% if (discrepanzaNewsletter) { %>
+      <div class="finding">
+        La scuola ha dichiarato di considerare la newsletter uno strumento importante, ma sul sito non è stato trovato alcun meccanismo di raccolta email collegato a un Email Service Provider.
+      </div>
+    <% } %>
   <% } %>
 </div>
 

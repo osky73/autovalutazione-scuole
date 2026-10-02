@@ -8,6 +8,7 @@ const {
   trovaUrlArticoloPiuRecente,
   analizzaOttimizzazioneArticolo,
   relazioneCompetenze,
+  giudicaContenuti,
 } = require('./lib/contenuti');
 const { fetchPage } = require('./lib/http');
 const { verificaPosizionamentoCluster } = require('./lib/serp');
@@ -126,6 +127,12 @@ app.get('/dichiarazione/:id', (req, res) => {
   res.render('dichiarazione', { sessione, temi: elencoTemi() });
 });
 
+// Blocco "Nurturing" (TASKS.md punti 1 e 2): due domande dichiarative aggiunte allo stesso
+// passaggio di dichiarazione competenze (step 3), per non introdurre un nuovo step dedicato nello
+// stepper. Chiavi valide per la cadenza editoriale, coerenti con CADENZA_ATTESA_GIORNI in
+// lib/contenuti.js (STEP 5 del criterio blog).
+const CADENZE_EDITORIALI_VALIDE = new Set(['settimanale', 'quindicinale', 'mensile', 'trimestrale']);
+
 app.post('/dichiarazione/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -158,6 +165,18 @@ app.post('/dichiarazione/:id', (req, res) => {
   sessione.temi = null;
   sessione.confermati = null;
   sessione.posizionamento = null;
+
+  // "Avete un piano editoriale per il sito? Con quale cadenza pensate di pubblicare?" (STEP 5 del
+  // criterio blog/contenuti). Risposta facoltativa: se vuota o non riconosciuta resta null, e il
+  // confronto con la cadenza verificata (passaggio 9) resta semplicemente non mostrato.
+  const cadenzaEditoriale = (req.body.cadenzaEditoriale || '').trim().toLowerCase();
+  sessione.cadenzaDichiarata = CADENZE_EDITORIALI_VALIDE.has(cadenzaEditoriale) ? cadenzaEditoriale : null;
+
+  // "Considerate la newsletter uno strumento importante?" (criterio newsletter). true/false/null
+  // (null = non risposto): usato solo per segnalare un'eventuale discrepanza nel passaggio 10, la
+  // scansione gira comunque sempre durante l'audit, indipendentemente dalla risposta (per spec).
+  const newsletterImportante = req.body.newsletterImportante;
+  sessione.newsletterImportante = newsletterImportante === 'si' ? true : newsletterImportante === 'no' ? false : null;
 
   res.redirect(`/verifica/${sessione.id}`);
 });
@@ -568,7 +587,11 @@ app.get('/contenuti/:id/esegui', async (req, res) => {
 
   if (!sessione.attivitaEditoriale) {
     const raccolta = (sessione.audit && sessione.audit.raccoltaContenuti) || { sezioneTrovata: false, url: null, articoli: [] };
-    const contenuti = (sessione.audit && sessione.audit.contenuti) || null;
+    // Il giudizio va RICALCOLATO qui (non riusato da sessione.audit.contenuti, calcolato durante
+    // l'audit tecnico allo step 2) perché solo a questo punto del wizard, dopo la dichiarazione
+    // (step 3), è disponibile sessione.cadenzaDichiarata — serve al confronto dello STEP 5 della
+    // spec blog/contenuti (divergenzaCadenza). Operazione sincrona ed economica, nessun nuovo fetch.
+    const contenuti = giudicaContenuti(raccolta, { cadenzaDichiarata: sessione.cadenzaDichiarata });
     const competenze = sessione.confermati || [];
 
     if (!raccolta.sezioneTrovata) {
@@ -630,7 +653,13 @@ app.get('/newsletter/:id', (req, res) => {
   if (!sessione) return res.redirect('/');
   if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
 
-  res.render('newsletter', { sessione, newsletter: (sessione.audit && sessione.audit.newsletter) || null });
+  const newsletter = (sessione.audit && sessione.audit.newsletter) || null;
+  // Discrepanza dichiarato/verificato (menzionata dalla spec: "così i dati sono pronti... per
+  // segnalare eventuali discrepanze tra quanto dichiarato e quanto verificato"): la scuola ha
+  // dichiarato la newsletter importante (step 3) ma la scansione non trova alcuna integrazione ESP.
+  const discrepanzaNewsletter = sessione.newsletterImportante === true && !!newsletter && newsletter.stato === 'assente';
+
+  res.render('newsletter', { sessione, newsletter, newsletterImportante: sessione.newsletterImportante, discrepanzaNewsletter });
 });
 
 app.post('/api/social/fetch', async (req, res) => {
