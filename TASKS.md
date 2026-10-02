@@ -13,7 +13,14 @@ con un "… altro (N)" cliccabile che espande l'elenco completo.
 - [x] **Verificato**: 46 test unitari verdi, `require('./server.js')` pulito, rendering testato con
       mock su 2/3/5 query per confermare che compaiono sempre e solo le prime 3 fuori dal blocco
       "altro" e che il blocco appare solo quando ce ne sono di più.
-- [ ] **Deploy in sospeso**: in questa sessione l'accesso al progetto Vercel via MCP risultava
+- [x] **Deploy PROMOSSO (2026-10-03, sessione successiva con credenziali Vercel aggiornate)**:
+      `origin/main` = `dca1cb9` = `dpl_GxqbMF2RZQkumTyfn75KDxfzxz9p` (`READY`, nessuna sessione
+      concorrente). `list_aliases` poi `assign_alias` su `autoanalisi-scuole.vercel.app`
+      (`oldDeploymentId` = `dpl_3X5kYBAqbdQFphmByoVpFWcwNuYS`, come atteso); alias `-osky2`
+      (redirect) non toccato. Verificato: l'URL diretto del deployment mostra "Passaggio 1 di 10"
+      (WebFetch sull'alias ha mostrato ancora "di 8" per la cache di 15 min, falso negativo).
+      Nota storica qui sotto, descrive il blocco ormai risolto:
+- [ ] ~~**Deploy in sospeso**~~ (RISOLTO, vedi sopra): in questa sessione l'accesso al progetto Vercel via MCP risultava
       bloccato (403/404 su `list_projects`/`get_deployment`/`get_project`, nonostante il team "OSKY"
       fosse visibile) — probabile scope insufficiente della connessione. Andrea ha riautorizzato la
       connessione da Vercel, ma questa sessione continuava a usare le credenziali precedenti (stesso
