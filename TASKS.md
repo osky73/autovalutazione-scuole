@@ -1,3 +1,10 @@
+## Stato al 2026-10-03 (notte, 5) — posizione su Google limitata alla PRIMA PAGINA (num:10)
+
+Richiesta di Andrea: servono solo le posizioni sulla prima pagina di Google (1-10), non 11-30. `lib/serp.js`:
+Serper e ripiego su google.com ora chiedono `num: 10` (prima 30). Costo certo di 1 credito Serper per ricerca.
+"Presente" = scuola tra i primi 10 risultati; "Assente" = non tra i primi 10. Test aggiornato. (Sostituisce la
+nota "Resta `num:30`" della sezione precedente.)
+
 ## Stato al 2026-10-03 (notte, 4) — ripristinate le ricerche generiche di musica e ambiente
 
 Correzione richiesta da Andrea: le voci 32 ("scuola media musica canto") e 72 ("scuola media ambiente natura") NON
