@@ -127,10 +127,13 @@ app.get('/dichiarazione/:id', (req, res) => {
   res.render('dichiarazione', { sessione, temi: elencoTemi() });
 });
 
-// Blocco "Nurturing" (TASKS.md punti 1 e 2): due domande dichiarative aggiunte allo stesso
-// passaggio di dichiarazione competenze (step 3), per non introdurre un nuovo step dedicato nello
-// stepper. Chiavi valide per la cadenza editoriale, coerenti con CADENZA_ATTESA_GIORNI in
-// lib/contenuti.js (STEP 5 del criterio blog).
+// Blocco "Nurturing" (TASKS.md punti 1 e 2): due domande dichiarative, ciascuna spostata (richiesta
+// di Andrea, 2026-10-02) in una schermata dedicata subito prima del passaggio che la confronta con
+// il dato verificato — la cadenza editoriale prima del passaggio 9 ("Attività editoriale"), la
+// domanda sulla newsletter prima del passaggio 10 ("Newsletter") — invece che tutte insieme nel
+// passaggio 3 (dichiarazione competenze), dove erano scollegate dal contesto a cui si riferiscono.
+// Chiavi valide per la cadenza editoriale, coerenti con CADENZA_ATTESA_GIORNI in lib/contenuti.js
+// (STEP 5 del criterio blog).
 const CADENZE_EDITORIALI_VALIDE = new Set(['settimanale', 'quindicinale', 'mensile', 'trimestrale']);
 
 app.post('/dichiarazione/:id', (req, res) => {
@@ -165,18 +168,6 @@ app.post('/dichiarazione/:id', (req, res) => {
   sessione.temi = null;
   sessione.confermati = null;
   sessione.posizionamento = null;
-
-  // "Avete un piano editoriale per il sito? Con quale cadenza pensate di pubblicare?" (STEP 5 del
-  // criterio blog/contenuti). Risposta facoltativa: se vuota o non riconosciuta resta null, e il
-  // confronto con la cadenza verificata (passaggio 9) resta semplicemente non mostrato.
-  const cadenzaEditoriale = (req.body.cadenzaEditoriale || '').trim().toLowerCase();
-  sessione.cadenzaDichiarata = CADENZE_EDITORIALI_VALIDE.has(cadenzaEditoriale) ? cadenzaEditoriale : null;
-
-  // "Considerate la newsletter uno strumento importante?" (criterio newsletter). true/false/null
-  // (null = non risposto): usato solo per segnalare un'eventuale discrepanza nel passaggio 10, la
-  // scansione gira comunque sempre durante l'audit, indipendentemente dalla risposta (per spec).
-  const newsletterImportante = req.body.newsletterImportante;
-  sessione.newsletterImportante = newsletterImportante === 'si' ? true : newsletterImportante === 'no' ? false : null;
 
   res.redirect(`/verifica/${sessione.id}`);
 });
@@ -557,10 +548,36 @@ app.get('/social/:id/esegui', async (req, res) => {
 // per non riscansionare il sito); qui si aggiungono solo i tre nuovi criteri, che richiedono
 // dati non ancora disponibili in quella fase (competenze) o un fetch aggiuntivo mirato
 // (ottimizzazione dell'articolo più recente).
+// Domanda "Avete un piano editoriale per il sito? Con quale cadenza pensate di pubblicare?" (STEP 5
+// del criterio blog/contenuti): schermata dedicata subito prima del passaggio 9, così la cadenza
+// dichiarata è raccolta nel punto del wizard a cui si riferisce davvero, invece che nel passaggio 3
+// (dichiarazione competenze, scollegato dal contesto). `cadenzaRichiesta` distingue "non ancora
+// chiesta" (redirect a questa schermata) da "chiesta ma risposta vuota/non riconosciuta"
+// (cadenzaDichiarata resta null, il confronto allo step 9 semplicemente non viene mostrato).
+app.get('/contenuti/:id/cadenza', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.socialAnalisi) return res.redirect(`/social/${sessione.id}/analisi`);
+
+  res.render('contenuti-cadenza', { sessione });
+});
+
+app.post('/contenuti/:id/cadenza', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+
+  const cadenzaEditoriale = (req.body.cadenzaEditoriale || '').trim().toLowerCase();
+  sessione.cadenzaDichiarata = CADENZE_EDITORIALI_VALIDE.has(cadenzaEditoriale) ? cadenzaEditoriale : null;
+  sessione.cadenzaRichiesta = true;
+
+  res.redirect(`/contenuti/${sessione.id}`);
+});
+
 app.get('/contenuti/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
   if (!sessione.socialAnalisi) return res.redirect(`/social/${sessione.id}/analisi`);
+  if (!sessione.cadenzaRichiesta) return res.redirect(`/contenuti/${sessione.id}/cadenza`);
 
   if (!sessione.attivitaEditoriale) {
     return res.render('attesa', {
@@ -648,10 +665,35 @@ app.get('/contenuti/:id/esegui', async (req, res) => {
 // Step 10 — Newsletter: passaggio dedicato dopo l'attività editoriale (richiesta Andrea,
 // 2026-10-01). Il dato è già calcolato in background durante l'audit tecnico (sincrono, nessun
 // fetch aggiuntivo necessario), quindi qui si limita a mostrarlo senza passaggio di attesa.
+// Domanda "Considerate la newsletter uno strumento importante?": schermata dedicata subito prima
+// del passaggio 10, per lo stesso motivo della domanda sulla cadenza editoriale sopra —
+// `newsletterRichiesta` distingue "non ancora chiesta" da "chiesta, nessuna risposta" (resta null,
+// nessuna discrepanza mostrata). La scansione newsletter gira comunque sempre durante l'audit
+// tecnico, indipendentemente da questa risposta (per spec).
+app.get('/newsletter/:id/importanza', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
+
+  res.render('newsletter-importanza', { sessione });
+});
+
+app.post('/newsletter/:id/importanza', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+
+  const newsletterImportante = req.body.newsletterImportante;
+  sessione.newsletterImportante = newsletterImportante === 'si' ? true : newsletterImportante === 'no' ? false : null;
+  sessione.newsletterRichiesta = true;
+
+  res.redirect(`/newsletter/${sessione.id}`);
+});
+
 app.get('/newsletter/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
   if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
+  if (!sessione.newsletterRichiesta) return res.redirect(`/newsletter/${sessione.id}/importanza`);
 
   const newsletter = (sessione.audit && sessione.audit.newsletter) || null;
   // Discrepanza dichiarato/verificato (menzionata dalla spec: "così i dati sono pronti... per

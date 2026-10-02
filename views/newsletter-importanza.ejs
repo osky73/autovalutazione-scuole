@@ -1,0 +1,20 @@
+<%- include('partials/layout-top', { titolo: 'Newsletter', step: 10 }) %>
+
+<h1>Considerate la newsletter uno strumento importante?</h1>
+<p class="lead">Confrontiamo la risposta con quanto risulta effettivamente presente sul sito nella pagina seguente.</p>
+
+<form method="POST" action="/newsletter/<%= sessione.id %>/importanza">
+  <div class="card">
+    <div class="theme-list">
+      <label class="theme-chip"><input type="radio" name="newsletterImportante" value="si" /> Sì</label>
+      <label class="theme-chip"><input type="radio" name="newsletterImportante" value="no" /> No</label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn secondary" href="/contenuti/<%= sessione.id %>">← Indietro</a>
+    <button type="submit" class="btn btn-principale">Continua →</button>
+  </div>
+</form>
+
+<%- include('partials/layout-bottom', { step: 10, sessione: sessione }) %>

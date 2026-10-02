@@ -24,25 +24,6 @@
     <p class="muted" id="limite-avviso" style="display:none;">Hai raggiunto il massimo di 5 competenze: deseleziona o rimuovi qualcosa per aggiungerne un'altra.</p>
   </div>
 
-  <div class="card">
-    <h2 style="margin-top:0;">Blog e newsletter</h2>
-
-    <label for="cadenzaEditoriale">Avete un piano editoriale per il sito? Con quale cadenza pensate di pubblicare?</label>
-    <select id="cadenzaEditoriale" name="cadenzaEditoriale">
-      <option value="">Non abbiamo un piano editoriale</option>
-      <option value="settimanale">Settimanale</option>
-      <option value="quindicinale">Quindicinale</option>
-      <option value="mensile">Mensile</option>
-      <option value="trimestrale">Trimestrale</option>
-    </select>
-
-    <label>Considerate la newsletter uno strumento importante?</label>
-    <div class="theme-list">
-      <label class="theme-chip"><input type="radio" name="newsletterImportante" value="si" /> Sì</label>
-      <label class="theme-chip"><input type="radio" name="newsletterImportante" value="no" /> No</label>
-    </div>
-  </div>
-
   <div class="actions">
     <a class="btn secondary" href="/audit/<%= sessione.id %>">← Indietro</a>
     <button type="submit" class="btn btn-principale">Continua →</button>
