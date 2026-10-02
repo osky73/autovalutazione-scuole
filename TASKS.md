@@ -1,3 +1,12 @@
+## Stato al 2026-10-03 (notte, 6) — "media" tolto da tutte le ricerche su Google
+
+Richiesta di Andrea: le ricerche non devono più contenere "media". Prima `scuola media <tema> <località>`, ora
+`scuola <tema> <località>` (es. "scuola coding Milano", "scuola potenziamento cucina Pavia") per TUTTE le ricerche:
+generiche, parole chiave del vocabolario e varianti potenziamento/curvatura/indirizzo delle competenze personalizzate.
+`queryPerTema()` in `lib/temi.js`, testo introduttivo di `views/posizionamento.ejs` e test aggiornati. 58 test verdi.
+Nota: le ricerche senza "media" restituiscono risultati più ampi (anche licei, primarie, ecc.); la posizione si
+valuta comunque sul dominio della scuola analizzata.
+
 ## Stato al 2026-10-03 (notte, 5) — posizione su Google limitata alla PRIMA PAGINA (num:10)
 
 Richiesta di Andrea: servono solo le posizioni sulla prima pagina di Google (1-10), non 11-30. `lib/serp.js`:

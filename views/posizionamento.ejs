@@ -1,7 +1,7 @@
 <%- include('partials/layout-top', { titolo: 'Posizionamento Google', step: 5 }) %>
 
 <h1>Posizionamento su Google</h1>
-<p class="lead">Per ogni competenza verifichiamo un intero cluster di ricerche — la long-tail generica "scuola media [competenza] <%= sessione.localita %>" più le parole chiave specifiche del tema trovate nel sito — e mostriamo il posizionamento migliore ottenuto per <%= sessione.audit.homeUrl %>, indicando con quale ricerca.</p>
+<p class="lead">Per ogni competenza verifichiamo un intero cluster di ricerche — la long-tail generica "scuola [competenza] <%= sessione.localita %>" più le parole chiave specifiche del tema trovate nel sito — e mostriamo il posizionamento migliore ottenuto per <%= sessione.audit.homeUrl %>, indicando con quale ricerca.</p>
 
 <div class="card">
   <% risultati.forEach(function(r, idx) {
