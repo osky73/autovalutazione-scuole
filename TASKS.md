@@ -12,7 +12,14 @@ preview) — il valore NON va scritto nel repo (è stata incollata in chiaro in 
 - [x] **Test**: `lib/serp.test.js` (6 test con risposte finte, nessuna chiamata reale). 52 test verdi.
 - [ ] **Da verificare**: crediti consumati da una richiesta con `num` > 10 (non documentato nelle fonti lette: il
       piano gratuito ha 2.500 query). Se consuma 2 crediti, valutare `num:10` + `page` oppure limitare a 20.
-- [ ] **Da verificare**: confronto posizione Serper vs ricerca manuale su Google per 1-2 scuole reali.
+- [x] **Verificato dal server Vercel con la chiave reale** (deploy di prova su ramo temporaneo, rotta di debug poi
+      rimossa): "La Zolla Milano" -> `fonte: serper`, 7 risultati, lazolla.it in posizione 1. **In produzione** dal
+      2026-10-03 (commit `db0dbe5`, `dpl_GfPsjFnSZ8hQQmx1zN7obEbcAotw`, alias promosso).
+- [ ] **Da verificare**: confronto posizione Serper vs ricerca manuale su Google per altre scuole (1 solo caso provato).
+- [ ] **Pulizia manuale**: il ramo `debug-serper-temp` su GitHub non è cancellabile da questo ambiente (proxy blocca
+      la cancellazione di rami); è stato riallineato a `main` (nessuna rotta di debug). Andrea può eliminarlo da GitHub.
+- NB: lo strumento di fetch usato nelle sessioni NON mantiene la query string degli URL (una rotta con `?t=...`
+      dava 404); passare i parametri nel percorso. Inoltre i percorsi che iniziano con `__` danno 404 su Vercel.
 
 ## PROSSIMO TASK (richiesto da Andrea il 2026-10-03) — passaggio "Canali social": rilevazione automatica via Firecrawl al posto del caricamento screenshot
 
