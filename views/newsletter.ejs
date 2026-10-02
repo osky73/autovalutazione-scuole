@@ -17,7 +17,7 @@
     <% if (newsletter.piattaforma) { %>
       <p class="muted" style="margin-top:14px;">Piattaforma rilevata: <%= newsletter.piattaforma %></p>
     <% } %>
-    <% if (newsletter.stato === 'assente' && newsletter.sottocaso === 'raccolta_senza_esp') { %>
+    <% if (newsletter.stato === 'assente' && newsletter.sottocaso === 'meccanismo_senza_esp') { %>
       <div class="finding">
         Il sito raccoglie indirizzi email (modulo o checkbox dedicata), ma non risulta collegato a nessuno strumento di invio (ESP): le email raccolte probabilmente non vengono usate — una quick win commercialmente interessante da segnalare.
       </div>
