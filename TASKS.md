@@ -1,3 +1,19 @@
+## Stato al 2026-10-03 (ritocco) — toggle "… altro" del passaggio 5 sulla stessa riga dell'ultima query
+
+Richiesta di Andrea: il toggle "… altro (N)" deve stare sulla stessa riga dell'ultima query
+mostrata, stessa dimensione del testo delle query, "altro" in grassetto e sottolineato (colore
+brand invariato).
+
+- [x] **Causa**: `<details>` è un elemento a blocco nei browser, quindi `display:inline` non basta e il
+      `<summary>` andava a capo. Inoltre `label { display:block; margin-bottom:6px }` è una regola
+      GLOBALE in `layout-top.ejs`: ogni nuova `<label>` in linea va esplicitamente riportata a
+      `display:inline; margin:0`.
+- [x] **Soluzione** (`views/posizionamento.ejs`, `views/partials/layout-top.ejs`): toggle CSS-only
+      con checkbox nascosta + `<label class="altro-toggle">` in linea (id `altro-<idx>` per card),
+      nessun JavaScript. Al click la label sparisce e compare l'elenco completo.
+- [x] **Verificato** con Chromium headless su mock (6 query) a 390px e 900px: toggle sulla stessa
+      riga, 13.12px come le query, peso 700, sottolineato; espansione corretta. 46 test verdi.
+
 ## Stato al 2026-10-03 (continuazione) — lista ricerche del passaggio 5 compattata (prime 3 + "… altro")
 
 Andrea ha segnalato che il contatore "di 8" in calce era ancora visibile in produzione (il commit

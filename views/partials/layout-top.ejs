@@ -75,10 +75,12 @@
   .result-bullet .pill { margin-right: 6px; }
   .query-inline { color: var(--muted); font-size: 0.82rem; margin: 8px 0 0; line-height: 1.6; word-break: break-word; }
   .query-altro { display: inline; }
-  .query-altro summary { display: inline; cursor: pointer; color: var(--brand); list-style: none; }
-  .query-altro summary::-webkit-details-marker { display: none; }
-  .query-altro summary:hover { text-decoration: underline; }
-  .query-altro[open] summary { display: none; }
+  .query-altro .altro-chk { position: absolute; opacity: 0; width: 0; height: 0; }
+  .query-altro .altro-open { display: none; }
+  .query-altro .altro-chk:checked ~ .altro-open { display: inline; }
+  .query-altro .altro-chk:checked ~ .altro-closed { display: none; }
+  .query-altro .altro-toggle { display: inline; margin: 0; cursor: pointer; color: var(--brand); font-size: inherit; font-weight: 700; text-decoration: underline; }
+  .query-altro .altro-chk:focus-visible ~ .altro-closed .altro-toggle { outline: 2px solid var(--brand); outline-offset: 2px; }
   .theme-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 20px; }
   .theme-chip {
     border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px; cursor: pointer;

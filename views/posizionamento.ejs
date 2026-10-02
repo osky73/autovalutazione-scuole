@@ -4,7 +4,7 @@
 <p class="lead">Per ogni competenza verifichiamo un intero cluster di ricerche — la long-tail generica "scuola media [competenza] <%= sessione.localita %>" più le parole chiave specifiche del tema trovate nel sito — e mostriamo il posizionamento migliore ottenuto per <%= sessione.audit.homeUrl %>, indicando con quale ricerca.</p>
 
 <div class="card">
-  <% risultati.forEach(function(r) {
+  <% risultati.forEach(function(r, idx) {
        var analizzati = r.risultatiQuery.filter(function(x){ return x.disponibile; }).map(function(x){ return x.risultatiAnalizzati || 0; });
        var maxAnalizzati = analizzati.length ? Math.max.apply(null, analizzati) : 0;
   %>
@@ -38,7 +38,7 @@
         var queryRestanti = queryTesti.slice(3);
       %>
       <p class="query-inline">
-        Ricerche: <%= queryPrime.join(', ') %><% if (queryRestanti.length) { %>, <details class="query-altro"><summary>… altro (<%= queryRestanti.length %>)</summary><%= queryRestanti.join(', ') %></details><% } %>
+        Ricerche: <%= queryPrime.join(', ') %><% if (queryRestanti.length) { %><span class="query-altro"><input type="checkbox" id="altro-<%= idx %>" class="altro-chk" aria-label="Mostra tutte le ricerche"><span class="altro-closed">, <label for="altro-<%= idx %>" class="altro-toggle">… altro (<%= queryRestanti.length %>)</label></span><span class="altro-open">, <%= queryRestanti.join(', ') %></span></span><% } %>
       </p>
     </div>
   <% }) %>
