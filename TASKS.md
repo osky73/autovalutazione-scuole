@@ -1,3 +1,31 @@
+## Stato al 2026-10-02 (continuazione) — domande Nurturing spostate dal passaggio 3 a schermate dedicate prima degli step 9/10
+
+Andrea ha segnalato che le due domande dichiarative Nurturing (piano editoriale/cadenza e
+importanza della newsletter) non dovevano stare nel passaggio 3 (dichiarazione competenze), dove
+erano scollegate dal contesto a cui si riferiscono. Scelto (tra le opzioni proposte): dividerle,
+ciascuna in una schermata dedicata subito prima del passaggio che la confronta col dato verificato.
+
+- [x] **Rimossa la card "Blog e newsletter" da `views/dichiarazione.ejs`** (passaggio 3) e la
+      relativa lettura in `POST /dichiarazione/:id` (`server.js`).
+- [x] **Nuova schermata "Avete un piano editoriale...?"** subito prima del passaggio 9 (Attività
+      editoriale): `GET`/`POST /contenuti/:id/cadenza` (nuova vista `views/contenuti-cadenza.ejs`).
+      Sotto-schermata del passaggio 9 (stesso pattern già usato per `/posizionamento/:id/localita`,
+      sotto-schermata del passaggio 5) — lo stepper resta a 10 passaggi, nessuna rinumerazione.
+- [x] **Nuova schermata "Considerate la newsletter uno strumento importante?"** subito prima del
+      passaggio 10 (Newsletter): `GET`/`POST /newsletter/:id/importanza` (nuova vista
+      `views/newsletter-importanza.ejs`), stesso pattern.
+- [x] **Nuovi flag di sessione** `cadenzaRichiesta`/`newsletterRichiesta` per distinguere "domanda
+      non ancora fatta" (redirect alla nuova schermata) da "fatta ma senza risposta" (valore resta
+      `null`, nessun confronto mostrato — comportamento identico a prima, solo il momento in cui
+      viene chiesto è cambiato).
+- [x] **Verificato**: 41 test unitari verdi, `require('./server.js')` pulito, test end-to-end con
+      il vero server Express su una sessione simulata (tutti i nuovi redirect, salvataggio delle
+      risposte, prosecuzione corretta del wizard dopo ciascuna domanda).
+- [x] **Commit, push e deploy**: commit `b89c065`, deploy automatico via Git
+      (`dpl_4mKc3hyYserNKowzGG4VuHBYRZa5`, `READY`), promosso in produzione con il consueto
+      controllo `list_aliases` prima di `assign_alias`. **Verificato dal vivo** su
+      `https://autoanalisi-scuole.vercel.app/`: landing page funzionante.
+
 ## Stato al 2026-10-02 (sessione più recente) — rimozione indicatore "Ultimo contenuto pubblicato" dall'audit tecnico + RISOLTO il blocco deploy collegando Git
 
 Andrea ha chiesto di rimuovere l'indicatore "Ultimo contenuto pubblicato" dallo step 2 (audit
