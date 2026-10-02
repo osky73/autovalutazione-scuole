@@ -1,3 +1,18 @@
+## Stato al 2026-10-03 (notte, 2) — ricerche su Google ridotte da 99 a 55 (scelta di Andrea)
+
+Andrea ha esaminato l'elenco numerato delle 99 ricerche del passaggio 5 e ne ha tolte 44 per contenere i crediti
+Serper (2.500 gratuiti). Restano 55 ricerche sui 8 cluster: lingue 18, musica 7, teatro 6, sport 5, tecnologia 4,
+ambiente 4, umanistica 5, arte 6. Con 5 temi confermati si fanno ~25 ricerche invece di ~60.
+
+- [x] **`lib/temi.js`**: per ogni tema `escludiDaSerp: [...]` (parole chiave NON usate nelle ricerche Google) e, per
+      musica/ambiente/umanistica, `senzaQueryGenerica: true` (saltata la ricerca generica "scuola media <tema>
+      <località>"). Nuova `queryPerTema(tema, localita)`, usata da `server.js` (`/posizionamento/:id/esegui`).
+- **ATTENZIONE**: `keywords` NON va ridotto per tagliare le ricerche — serve anche a `estraiTemi()` per riconoscere
+      i temi nelle pagine del sito (alcune varianti, es. "certificazione linguistica", sono state aggiunte apposta
+      per evitare falsi negativi). Per togliere/rimettere una ricerca modificare solo `escludiDaSerp`.
+- [x] `lib/temi.test.js` (5 test: conteggi per cluster, elenchi esatti, keywords di rilevamento intatte). 57 test verdi.
+- Non applicati (proposti, non confermati): `num:10` e tetto di 4 ricerche per tema / 6 temi. Resta `num:30`.
+
 ## Stato al 2026-10-03 (notte) — posizione su Google via API Serper (con ripiego sulla lettura diretta)
 
 Richiesta di Andrea: usare Serper per le posizioni su Google, perché la lettura diretta di google.com dai server

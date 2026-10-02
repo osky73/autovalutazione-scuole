@@ -1,7 +1,7 @@
 const express = require('express');
 const { creaSessione, getSessione } = require('./lib/store');
 const { runAudit } = require('./lib/runAudit');
-const { estraiTemi, elencoTemi, VOCABOLARIO } = require('./lib/temi');
+const { estraiTemi, elencoTemi, queryPerTema, VOCABOLARIO } = require('./lib/temi');
 const { estraiLocalita, estraiDatiOrganizzazione } = require('./lib/localita');
 const {
   calcolaFrequenzaEditoriale,
@@ -245,18 +245,10 @@ app.get('/posizionamento/:id/esegui', async (req, res) => {
   if (!sessione) return res.status(404).json({ ok: false });
 
   if (sessione.localita && !sessione.posizionamento && sessione.confermati) {
-    const valoriConQuery = sessione.confermati.map((t) => {
-      const etichettaQuery = t.label.replace(/\//g, ' ');
-      const queries = [`scuola media ${etichettaQuery} ${sessione.localita}`];
-
-      if (t.key && VOCABOLARIO[t.key]) {
-        for (const kw of VOCABOLARIO[t.key].keywords) {
-          queries.push(`scuola media ${kw} ${sessione.localita}`);
-        }
-      }
-
-      return { label: t.label, queries };
-    });
+    const valoriConQuery = sessione.confermati.map((t) => ({
+      label: t.label,
+      queries: queryPerTema(t, sessione.localita),
+    }));
 
     sessione.posizionamento = await verificaPosizionamentoCluster(valoriConQuery, sessione.audit.homeUrl);
   }
