@@ -15,7 +15,7 @@
       <ul class="result-bullet">
         <li>
           <% if (!r.disponibile) { %>
-            <span class="pill assente">Non disponibile</span> Google non raggiungibile per nessuna ricerca del cluster
+            <span class="pill assente">Non disponibile</span> Non ci sono risultati nella prima pagina per queste ricerche.
           <% } else if (r.migliore) { %>
             <span class="pill ottimizzato">Posizione <%= r.migliore.posizione %></span> Trovato con: "<%= r.migliore.query %>"
           <% } else if (maxAnalizzati > 0) { %>

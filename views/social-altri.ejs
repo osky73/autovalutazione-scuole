@@ -25,6 +25,8 @@
   .ai-c-status { font-size: 0.8rem; margin-top: 6px; }
   .ai-c-status.errore { color: var(--bad); }
   .ai-c-status.ok { color: var(--good); }
+  .fascia-select { font-size: 0.82rem; font-family: inherit; color: var(--ink); background: #fff; }
+  .fascia-select option[value=""] { font-style: italic; color: var(--muted); }
 </style>
 
 <h1>Altri canali social</h1>
@@ -57,26 +59,14 @@
     <% } else if (gbp.stato === 'errore') { %>
       <p class="muted" style="margin:0;"><%= gbp.messaggio %></p>
     <% } else if (gbp.stato === 'assente') { %>
-      <h3>Nessuna scheda trovata</h3>
-      <p style="margin:0 0 8px;"><%= gbp.messaggio %></p>
-      <div class="finding" style="margin:0;"><%= gbp.findingCommerciale %></div>
+      <h3 style="margin:0 0 4px;">Nessuna scheda trovata</h3>
+      <p class="muted" style="margin:0;"><%= gbp.messaggio %></p>
     <% } else { %>
-      <h3><%= gbp.nome %> <span class="pill <%= gbp.stato === 'reclamata' ? 'buono' : 'insufficiente' %>"><%= gbp.stato === 'reclamata' ? 'Probabilmente gestita' : 'Probabilmente non gestita' %> (stimato)</span></h3>
-      <p class="muted" style="margin:0 0 10px;"><%= gbp.indirizzo %> — <a href="<%= gbp.mapsUrl %>" target="_blank" rel="noopener">vedi su Google Maps</a></p>
-      <p style="margin:0 0 10px;"><%= gbp.messaggio %></p>
-
-      <div class="gbp-riga"><div>Categoria attività</div><div class="meta"><%= gbp.criteri.categoria.valore || 'non disponibile' %></div></div>
-      <div class="gbp-riga"><div>Orari pubblicati</div><div class="meta"><%= gbp.criteri.orari.valore %></div></div>
-      <div class="gbp-riga"><div>Foto sulla scheda</div><div class="meta"><%= gbp.criteri.foto.valore %> foto</div></div>
-      <div class="gbp-riga"><div>Recensioni</div><div class="meta"><%= gbp.criteri.recensioni.valore.numero %> recensioni<%= gbp.criteri.recensioni.valore.media ? ', media ' + gbp.criteri.recensioni.valore.media : '' %></div></div>
-      <div class="gbp-riga"><div>Scheda Evento (es. open day)</div><div class="meta"><%= gbp.criteri.evento.motivoEsclusione %></div></div>
-      <div class="gbp-riga"><div>Domande e risposte pubbliche</div><div class="meta"><%= gbp.criteri.qa.motivoEsclusione %></div></div>
-      <div class="gbp-riga"><div>Frequenza dei post pubblicati</div><div class="meta"><%= gbp.criteri.frequenzaPost.motivoEsclusione %></div></div>
-      <div class="gbp-riga"><div>Tasso di risposta alle recensioni</div><div class="meta"><%= gbp.criteri.tassoRisposteRecensioni.motivoEsclusione %></div></div>
-
-      <% if (gbp.findingCommerciale) { %>
-        <div class="finding" style="margin-top:12px;"><%= gbp.findingCommerciale %></div>
-      <% } %>
+      <h3 style="margin:0 0 4px;"><%= gbp.nome %> <span class="pill <%= gbp.stato === 'reclamata' ? 'buono' : 'insufficiente' %>"><%= gbp.stato === 'reclamata' ? 'Probabilmente gestita' : 'Probabilmente non gestita' %></span></h3>
+      <p class="muted" style="margin:0;"><%= gbp.indirizzo %> — <a href="<%= gbp.mapsUrl %>" target="_blank" rel="noopener">vedi su Google Maps</a></p>
+    <% } %>
+    <% if (gbp && (gbp.stato === 'reclamata' || gbp.stato === 'non_reclamata' || gbp.stato === 'assente')) { %>
+      <p class="muted" style="margin:8px 0 0; font-size:0.8rem;">Il dettaglio completo è nella schermata successiva.</p>
     <% } %>
   </div>
 
