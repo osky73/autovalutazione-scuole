@@ -14,15 +14,20 @@ relazione con le competenze).
       punteggio/peggiore-indicatore ancora corretta.
 - [x] **Commit e push**: `8ae4296`.
 - [ ] **BLOCCATO — deploy su Vercel non riesce**, causa confermata come problema lato piattaforma,
-      non del codice (vedi dettaglio sotto). **Ritentato una seconda volta nello stesso pomeriggio
-      (ore 17:15 circa) su richiesta di Andrea ("riprova ora"): stesso identico errore**, quindi non
-      si è ancora risolto da solo. **Prossima sessione: ritentare di nuovo il deploy** con lo stesso
-      meccanismo consueto (vedi "Come deployare") — se il problema si è risolto, promuovere
-      normalmente; se persiste ANCORA dopo diversi tentativi in sessioni diverse, è il momento di
-      contattare il supporto Vercel (qui non è stato possibile recuperare i build log reali, vedi
-      sotto, quindi un supporto umano con accesso alla dashboard potrebbe diagnosticare meglio) o
-      provare un deploy manuale dalla dashboard web Vercel, che potrebbe mostrare un errore più
-      dettagliato. **Il sito in produzione non è stato toccato ed è stabile** su
+      non del codice (vedi dettaglio sotto). **Ritentato una SECONDA volta nello stesso pomeriggio
+      (ore 17:15 circa, "riprova ora"): stesso identico errore. Ritentato una TERZA volta la sera
+      stessa (ore 23:00 circa, "riprova" di nuovo, ~6 ore dopo il tentativo precedente): stesso
+      identico errore ancora una volta.** Tre tentativi in tre momenti diversi della stessa giornata,
+      tutti con l'errore `type_error` / `Cannot read properties of undefined (reading 'fsPath')`,
+      nessun segno di auto-risoluzione nel tempo. **Raccomandazione per Andrea/la prossima sessione**:
+      a questo punto vale la pena che Andrea stesso apra la dashboard Vercel (vercel.com, progetto
+      `autoanalisi-scuole`) e provi un redeploy manuale da lì — potrebbe mostrare un errore più
+      dettagliato di quello che l'API espone qui — oppure apra un ticket al supporto Vercel linkando
+      uno dei deployment falliti (es. `dpl_4sbVTyyTcRmxfTU7qqosCYwKfkqj`, 2026-10-02 ~23:00) per una
+      diagnosi lato loro, dato che da qui non è stato possibile recuperare i build log reali (vedi
+      sotto). Una prossima sessione può comunque ritentare il meccanismo consueto prima di escalare,
+      nel caso si sia risolto da solo nel frattempo. **Il sito in produzione non è stato toccato ed è
+      stabile** su
       `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs` (l'ultimo deployment buono, con tutto il lavoro Nurturing +
       i 3 ritocchi di oggi — manca solo questa rimozione).
 
