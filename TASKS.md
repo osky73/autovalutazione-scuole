@@ -1,3 +1,9 @@
+## Stato al 2026-10-03 (notte, 4) — ripristinate le ricerche generiche di musica e ambiente
+
+Correzione richiesta da Andrea: le voci 32 ("scuola media musica canto") e 72 ("scuola media ambiente natura") NON
+andavano tolte. Ora `senzaQueryGenerica: true` resta solo su **umanistica** (voce 79 tolta). Ricerche totali: **57**
+(lingue 18, musica 8, teatro 6, sport 5, tecnologia 4, ambiente 5, umanistica 5, arte 6). 58 test verdi.
+
 ## Stato al 2026-10-03 (notte, 3) — competenze scritte a mano dall'utente: 3 ricerche in più su Google
 
 Richiesta di Andrea: quando l'utente aggiunge competenze sue (testo libero, `key: null`, passaggio 3), oltre alla
