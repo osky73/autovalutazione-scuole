@@ -1,4 +1,4 @@
-## Stato al 2026-10-02 (sessione più recente) — rimozione indicatore "Ultimo contenuto pubblicato" dall'audit tecnico + deploy bloccato da un problema lato piattaforma Vercel
+## Stato al 2026-10-02 (sessione più recente) — rimozione indicatore "Ultimo contenuto pubblicato" dall'audit tecnico + RISOLTO il blocco deploy collegando Git
 
 Andrea ha chiesto di rimuovere l'indicatore "Ultimo contenuto pubblicato" dallo step 2 (audit
 tecnico) perché si sovrappone col criterio Nurturing dedicato "Attività editoriale" (step 9,
@@ -13,23 +13,28 @@ relazione con le competenze).
       di `computeSiteScore` con dati finti: ora restituisce solo i 7 indicatori rimanenti, logica di
       punteggio/peggiore-indicatore ancora corretta.
 - [x] **Commit e push**: `8ae4296`.
-- [ ] **BLOCCATO — deploy su Vercel non riesce**, causa confermata come problema lato piattaforma,
-      non del codice (vedi dettaglio sotto). **Ritentato una SECONDA volta nello stesso pomeriggio
-      (ore 17:15 circa, "riprova ora"): stesso identico errore. Ritentato una TERZA volta la sera
-      stessa (ore 23:00 circa, "riprova" di nuovo, ~6 ore dopo il tentativo precedente): stesso
-      identico errore ancora una volta.** Tre tentativi in tre momenti diversi della stessa giornata,
-      tutti con l'errore `type_error` / `Cannot read properties of undefined (reading 'fsPath')`,
-      nessun segno di auto-risoluzione nel tempo. **Raccomandazione per Andrea/la prossima sessione**:
-      a questo punto vale la pena che Andrea stesso apra la dashboard Vercel (vercel.com, progetto
-      `autoanalisi-scuole`) e provi un redeploy manuale da lì — potrebbe mostrare un errore più
-      dettagliato di quello che l'API espone qui — oppure apra un ticket al supporto Vercel linkando
-      uno dei deployment falliti (es. `dpl_4sbVTyyTcRmxfTU7qqosCYwKfkqj`, 2026-10-02 ~23:00) per una
-      diagnosi lato loro, dato che da qui non è stato possibile recuperare i build log reali (vedi
-      sotto). Una prossima sessione può comunque ritentare il meccanismo consueto prima di escalare,
-      nel caso si sia risolto da solo nel frattempo. **Il sito in produzione non è stato toccato ed è
-      stabile** su
-      `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs` (l'ultimo deployment buono, con tutto il lavoro Nurturing +
-      i 3 ritocchi di oggi — manca solo questa rimozione).
+- [x] **Blocco deploy RISOLTO collegando il repo GitHub al progetto Vercel** (fatto da Andrea stesso
+      dalla dashboard, `Settings → Git`). Dopo 4 tentativi falliti nella giornata (vedi dettaglio
+      sotto) tutti con `mcp__Vercel__create_deployment` (deploy "by file list", senza integrazione
+      Git) — inclusi un redeploy fatto da Andrea stesso dalla dashboard con lo stesso identico
+      errore — collegare Git e far partire un deploy con un push (`git push origin main`, commit
+      `fe0a1a0`) ha funzionato subito (`dpl_HAwzMjXZLq2TRetaeQaexsBnwqc4`, `READY` in pochi secondi,
+      `source: "git"`). Il deploy via Git usa evidentemente una pipeline di build diversa da quella
+      "by file list" che falliva — non è stato possibile capire la causa esatta del bug originale
+      (niente log di build recuperabili, vedi sotto), ma collegando Git il problema non si è più
+      presentato. **Promosso in produzione**: `list_aliases` prima del cambio confermava ancora
+      `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs` (nessuna modifica concorrente), poi `assign_alias` sul nuovo
+      deployment (`oldDeploymentId` di ritorno confermato uguale a quanto atteso). **Verificato dal
+      vivo** su `https://autoanalisi-scuole.vercel.app/`: pagina di landing funzionante, form
+      presente, nessun errore.
+- **IMPORTANTE per le prossime sessioni**: questo progetto ORA È collegato a GitHub
+      (`osky73/autovalutazione-scuole`, branch `main`). Da qui in avanti un deploy in produzione si fa
+      semplicemente con `git push origin main` (dopo il consueto `git fetch`/confronto per sessioni
+      concorrenti) — Vercel builda e alias-a automaticamente al branch collegato. **NON è più
+      necessario** (anzi, è da evitare, visto che il meccanismo "by file list" ha mostrato questo bug)
+      usare `mcp__Vercel__create_deployment` con l'elenco manuale di `{file, sha}` — la sezione "Come
+      deployare" sotto è OBSOLETA e sarà da riscrivere, lasciata per ora come riferimento storico/di
+      debug.
 
 ### Dettaglio del blocco deploy (per la prossima sessione)
 
@@ -251,7 +256,16 @@ live in produzione.
 
 ## Come deployare
 
-Il progetto Vercel NON è collegato via Git integration: i deploy si fanno con
+**AGGIORNAMENTO 2026-10-02 sera — OBSOLETO, vedi la sezione di stato in cima al file**: dal
+2026-10-02 sera il progetto Vercel È collegato via Git integration (`osky73/autovalutazione-scuole`,
+branch `main`). Il nuovo modo per deployare è semplicemente `git push origin main` (dopo il consueto
+`git fetch`/confronto con l'HEAD remoto per sessioni concorrenti) — Vercel builda e alias-a la
+produzione in automatico in pochi secondi. Tutto il resto di questa sezione descrive il vecchio
+meccanismo "by file list" (senza Git integration), che ha mostrato un bug di piattaforma lo stesso
+giorno (vedi sezione di stato in cima) ed è da NON USARE più salvo emergenze in cui Git non sia
+disponibile. Lasciata come riferimento storico.
+
+Il vecchio meccanismo (prima del collegamento Git): i deploy si facevano con
 `mcp__Vercel__create_deployment`, passando `files` come lista di `{file, sha}` per i file INVARIATI
 (referenziati per hash, senza doverne rimandare il contenuto — Vercel li ha già in blob storage da
 deploy precedenti) e `{file, data, encoding:"utf-8"}` per i file nuovi o modificati. NON passare
