@@ -14,13 +14,17 @@ relazione con le competenze).
       punteggio/peggiore-indicatore ancora corretta.
 - [x] **Commit e push**: `8ae4296`.
 - [ ] **BLOCCATO — deploy su Vercel non riesce**, causa confermata come problema lato piattaforma,
-      non del codice (vedi dettaglio sotto). **Prossima sessione: ritentare il deploy** con lo stesso
-      meccanismo consueto (vedi "Come deployare") — se il problema si è risolto da solo, promuovere
-      normalmente; se persiste, considerare di contattare il supporto Vercel o aprire un deployment
-      dalla dashboard web per avere i build log reali (qui non recuperabili, vedi sotto). **Il
-      sito in produzione non è stato toccato ed è stabile** su `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`
-      (l'ultimo deployment buono, con tutto il lavoro Nurturing + i 3 ritocchi di oggi — manca solo
-      questa rimozione).
+      non del codice (vedi dettaglio sotto). **Ritentato una seconda volta nello stesso pomeriggio
+      (ore 17:15 circa) su richiesta di Andrea ("riprova ora"): stesso identico errore**, quindi non
+      si è ancora risolto da solo. **Prossima sessione: ritentare di nuovo il deploy** con lo stesso
+      meccanismo consueto (vedi "Come deployare") — se il problema si è risolto, promuovere
+      normalmente; se persiste ANCORA dopo diversi tentativi in sessioni diverse, è il momento di
+      contattare il supporto Vercel (qui non è stato possibile recuperare i build log reali, vedi
+      sotto, quindi un supporto umano con accesso alla dashboard potrebbe diagnosticare meglio) o
+      provare un deploy manuale dalla dashboard web Vercel, che potrebbe mostrare un errore più
+      dettagliato. **Il sito in produzione non è stato toccato ed è stabile** su
+      `dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs` (l'ultimo deployment buono, con tutto il lavoro Nurturing +
+      i 3 ritocchi di oggi — manca solo questa rimozione).
 
 ### Dettaglio del blocco deploy (per la prossima sessione)
 
