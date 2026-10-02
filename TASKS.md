@@ -690,6 +690,31 @@ che ha completato il criterio blog/contenuti sopra.
     da cosa dice la risposta di `create_deployment`. Se capita ancora, vale la pena segnalare ad Andrea
     un possibile problema di doppia schedulazione dello stesso trigger (non è detto sia un problema di
     queste sessioni).
+  - **AGGIORNAMENTO IMPORTANTE (stessa sessione, pochi minuti dopo)**: dopo aver riassegnato l'alias a
+    `dpl_Hc2dZpa8QH3zsxhFsKhkV5sKQi1X` (12:08 UTC circa) e aver fatto commit/push della nota sopra, un
+    controllo successivo di `list_aliases` (fatto per prudenza prima di chiudere la sessione) ha trovato
+    l'alias primario spostato SU UN TERZO DEPLOYMENT (`dpl_9Q7GHJQ6B6u7M3BX7aXm4ApAaid6`, creato alle
+    12:13:28 UTC, `target: null` quindi non uno dei deploy di produzione espliciti elencati da
+    `list_deployments`, e aliasato alle 12:15:46 UTC — non da questa sessione). **Questo terzo
+    deployment conteneva codice VECCHIO**: `lib/newsletter.js`/`lib/runAudit.js`/`views/newsletter.ejs`
+    con gli hash SHA1 di PRIMA del fix di oggi (incluso il refuso `raccolta_senza_esp` mai corretto), e
+    anche `views/partials/layout-top.ejs`/`views/posizionamento.ejs` con hash che non corrispondono a
+    NESSUN commit nella storia git del repo (verificato con `git log --all` + calcolo SHA1 di ogni
+    revisione storica di quei file) — quindi non proviene da nessun commit mai pushato su GitHub, il che
+    fa pensare a un deployment Vercel molto vecchio (precedente alla migrazione del repo su Git del
+    2026-09-29?) risuscitato in qualche modo, o a un comando con `deploymentId` che ha ereditato file
+    sbagliati (esattamente il rischio che la nota in cima a questo file mette in guardia:
+    "NON passare `deploymentId`"). **Il sito in produzione ha quindi servito una versione regredita
+    (senza il fix di oggi, senza il restyling mobile del 2026-10-01) per circa 4-5 minuti (12:15:46–
+    12:20:33 UTC circa)**, senza un crash come nell'incidente del 2026-10-01 (il sito rispondeva, solo
+    con contenuti/logica più vecchi). **Risolto**: alias riassegnato di nuovo a
+    `dpl_Hc2dZpa8QH3zsxhFsKhkV5sKQi1X` (verificato con `list_aliases`, stabile da allora). **Da
+    raccontare ad Andrea**: in questa finestra di circa un'ora si sono sovrapposte almeno due (forse
+    tre) sessioni che hanno lavorato sulla stessa voce di backlog e hanno creato/riassegnato deployment
+    in parallelo senza coordinarsi — vale la pena verificare la configurazione del trigger schedulato
+    (frequenza, eventuali esecuzioni doppie) per evitare che si ripeta, e tenere d'occhio l'alias di
+    produzione nelle prossime ore nel caso un'altra sessione concorrente lo risposti di nuovo su un
+    deployment non aggiornato.
 
 Indicazioni implementative originali (per riferimento, ormai superate dallo stato sopra):
 - Nuovo file `lib/newsletter.js` con: la lista estensibile di pattern ESP (array di
