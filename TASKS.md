@@ -1,3 +1,29 @@
+## Stato al 2026-10-03 (continuazione) — lista ricerche del passaggio 5 compattata (prime 3 + "… altro")
+
+Andrea ha segnalato che il contatore "di 8" in calce era ancora visibile in produzione (il commit
+precedente non era ancora stato promosso in produzione — vedi nota sotto) e ha chiesto che, nel
+blocco "Ricerche: ..." del passaggio 5 (Posizionamento Google), si vedano solo le prime 3 query,
+con un "… altro (N)" cliccabile che espande l'elenco completo.
+
+- [x] **`views/posizionamento.ejs`**: le prime 3 query restano sempre visibili; se ce ne sono altre,
+      vengono racchiuse in un `<details class="query-altro"><summary>… altro (N)</summary>...`,
+      espandibile al click — nessun JavaScript necessario, solo HTML/CSS nativi.
+- [x] **Stile aggiunto** in `views/partials/layout-top.ejs` (`.query-altro`): il trigger è in linea
+      col testo, colore brand, senza il triangolino di default del browser.
+- [x] **Verificato**: 46 test unitari verdi, `require('./server.js')` pulito, rendering testato con
+      mock su 2/3/5 query per confermare che compaiono sempre e solo le prime 3 fuori dal blocco
+      "altro" e che il blocco appare solo quando ce ne sono di più.
+- [ ] **Deploy in sospeso**: in questa sessione l'accesso al progetto Vercel via MCP risultava
+      bloccato (403/404 su `list_projects`/`get_deployment`/`get_project`, nonostante il team "OSKY"
+      fosse visibile) — probabile scope insufficiente della connessione. Andrea ha riautorizzato la
+      connessione da Vercel, ma questa sessione continuava a usare le credenziali precedenti (stesso
+      comportamento anche dopo `RefreshMcpTools`): serve una **nuova conversazione** perché la
+      sessione prenda le credenziali aggiornate. **Commit `a5c8b96` risultava pushato su GitHub ma
+      NON ancora promosso in produzione** (verificato via `WebFetch`: il footer live mostrava ancora
+      "Passaggio 1 di 8"). Il commit di questa sessione (contatore "di 10" + ottimizzazione 3
+      articoli + lista query compattata) va quindi promosso in produzione appena l'accesso Vercel è
+      ripristinato — fino ad allora resta solo su GitHub, non live.
+
 ## Stato al 2026-10-03 — contatore passaggi fisso a "di 8" corretto a "di 10" + ottimizzazione articoli estesa agli ultimi 3
 
 Andrea ha segnalato che il footer del wizard mostrava "Passaggio N di 8" anche quando N arrivava a

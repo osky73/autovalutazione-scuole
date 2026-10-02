@@ -32,7 +32,14 @@
           Non presente nei risultati analizzati.
         <% } %>
       </p>
-      <p class="query-inline">Ricerche: <%= r.risultatiQuery.map(function(x) { return '"' + x.query + '"'; }).join(', ') %></p>
+      <%
+        var queryTesti = r.risultatiQuery.map(function(x) { return '"' + x.query + '"'; });
+        var queryPrime = queryTesti.slice(0, 3);
+        var queryRestanti = queryTesti.slice(3);
+      %>
+      <p class="query-inline">
+        Ricerche: <%= queryPrime.join(', ') %><% if (queryRestanti.length) { %>, <details class="query-altro"><summary>… altro (<%= queryRestanti.length %>)</summary><%= queryRestanti.join(', ') %></details><% } %>
+      </p>
     </div>
   <% }) %>
 
