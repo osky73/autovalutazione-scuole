@@ -1,3 +1,13 @@
+## Stato al 2026-10-03 (notte, 3) — competenze scritte a mano dall'utente: 3 ricerche in più su Google
+
+Richiesta di Andrea: quando l'utente aggiunge competenze sue (testo libero, `key: null`, passaggio 3), oltre alla
+ricerca generica si aggiungono `scuola media potenziamento [competenza] [località]`,
+`scuola media curvatura [competenza] [località]`, `scuola media indirizzo [competenza] [località]` (con lo spazio
+dopo "indirizzo"). Quindi 4 ricerche per ogni competenza personalizzata.
+
+- [x] `queryPerTema()` in `lib/temi.js` (ramo senza chiave) + 2 test aggiornati/aggiunti. 58 test verdi. Non si
+      applica ai temi del vocabolario (restano le loro ricerche, vedi sezione precedente).
+
 ## Stato al 2026-10-03 (notte, 2) — ricerche su Google ridotte da 99 a 55 (scelta di Andrea)
 
 Andrea ha esaminato l'elenco numerato delle 99 ricerche del passaggio 5 e ne ha tolte 44 per contenere i crediti
