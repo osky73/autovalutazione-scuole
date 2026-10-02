@@ -17,6 +17,91 @@ un'unica area utilizzabile. **Non richiamare `assign_alias` su `autoanalisi-scuo
 puntandolo a un deployment nei prossimi deploy**: il redirect è permanente e non va toccato/rifatto
 a ogni deploy, va lasciato così com'è.
 
+## Stato al 2026-10-02 (sessione successiva) — domande dichiarative "Nurturing" + secondo incidente alias risolto
+
+Lavoro su questa sessione (schedulata), seguendo l'ordine del backlog (blog/contenuti poi
+newsletter): entrambi i criteri erano già implementati/agganciati/deployati (vedi sezioni sotto),
+restava solo la parte dichiarativa esplicitamente segnata come "ancora da fare" in entrambi i
+punti 1 e 2. Implementata in questa sessione:
+
+- [x] **Due nuove domande nel passaggio di dichiarazione competenze (step 3)**, aggiunte come
+      card aggiuntiva in `views/dichiarazione.ejs` (nessun nuovo step nello stepper, per non
+      rinumerare tutto il wizard — scelta più semplice, coerente con la nota del backlog che
+      suggeriva "prima o dopo lo step dichiarazione competenze"):
+      - "Avete un piano editoriale per il sito? Con quale cadenza pensate di pubblicare?" (select:
+        nessun piano/settimanale/quindicinale/mensile/trimestrale).
+      - "Considerate la newsletter uno strumento importante?" (Sì/No, non obbligatoria).
+      Risposte salvate in sessione (`sessione.cadenzaDichiarata`, `sessione.newsletterImportante`)
+      nella route `POST /dichiarazione/:id` di `server.js`.
+- [x] **Criterio blog/contenuti — STEP 5 della spec (confronto cadenza) finalmente popolato**: il
+      giudizio (`giudicaContenuti`) veniva calcolato in `runAudit.js` allo step 2, PRIMA che la
+      cadenza dichiarata fosse disponibile (arriva solo al passaggio 3) — per questo
+      `divergenzaCadenza` era sempre `null`, nonostante la vista (`views/contenuti.ejs`) avesse
+      già il box pronto. **Fix minimo**: invece di toccare `runAudit.js` (che gira troppo presto
+      nel wizard), la route `GET /contenuti/:id/esegui` (passaggio 9, che gira DOPO la
+      dichiarazione) ora RICALCOLA il giudizio chiamando `giudicaContenuti(raccolta, {
+      cadenzaDichiarata: sessione.cadenzaDichiarata })` invece di riusare il valore stantio di
+      `sessione.audit.contenuti` — operazione sincrona ed economica, nessun nuovo fetch. Il box di
+      divergenza in `views/contenuti.ejs` ora compare correttamente quando pertinente.
+- [x] **Criterio newsletter — segnalazione discrepanza dichiarato/verificato** (menzionata dalla
+      spec ma non ancora implementata): nuova card "finding" in `views/newsletter.ejs`, mostrata
+      quando `sessione.newsletterImportante === true` ma il criterio risulta "assente"
+      (calcolato in `GET /newsletter/:id` di `server.js`, variabile `discrepanzaNewsletter`).
+- [x] **Verificato**: 41 test unitari esistenti ancora verdi, `require('./server.js')` pulito,
+      rendering EJS delle 3 view coinvolte su più stati, e un controllo end-to-end con il vero
+      server Express e una sessione simulata (POST dichiarazione con cadenza "settimanale" +
+      newsletter "sì" → ricalcolo contenuti con divergenza rilevata correttamente (intervallo
+      verificato ~60gg contro 7gg atteso) → box visibile in `/contenuti/:id` → box discrepanza
+      visibile in `/newsletter/:id`; caso di controllo senza risposte Nurturing → nessun box in
+      nessuna delle due view, comportamento di default preservato).
+- [x] **Commit e push**: `c803097`.
+
+**Ancora da fare** (non bloccante, prossima sessione): la discrepanza cadenza/newsletter non è
+ancora stata verificata contro un sito reale con risposte Nurturing effettive (solo sessione
+simulata); valutare se la domanda cadenza dovrebbe essere obbligatoria o resta facoltativa come
+implementato. Arricchire ancora `ESP_NOTI` quando si incontrano ESP italiani/locali (nessuno
+trovato finora).
+
+### Secondo incidente alias nella stessa giornata (rilevato e risolto in questa sessione)
+
+Prima di deployare il lavoro sopra, un controllo di `list_aliases` (fatto per prassi, vedi
+"lezione operativa" già in questo file) ha trovato l'alias primario `autoanalisi-scuole.vercel.app`
+puntato su `dpl_3Km5NxvYMPXyKaPaMM4aunnbKvfS` (creato alle 12:18:54 UTC, aliasato alle 12:28:53 UTC
+— non da questa sessione), un deployment con un mix INCONSISTENTE di versioni file: `server.js`,
+`lib/*` e `views/layout-top.ejs` erano all'ultimo commit (`2398f9f`), ma `views/posizionamento.ejs`
+era fermo al commit precedente `b410a90` e `views/social-altri.ejs`/`views/social-conferma.ejs`
+erano addirittura alla versione precedente la sessione del restyle GBP — quindi non un "file
+misterioso" come nell'incidente precedente, ma lo stesso tipo di errore (deploy costruito con SHA1
+non tutti aggiornati all'ultimo commit). Nessun crash (nessun modulo mancante), solo UI/testi non
+all'ultima versione per quelle view.
+
+**Verificato e risolto**: confrontando via `sha1sum` locale i file di ogni commit della storia Git
+con gli hash (`uid`) riportati da `list_deployment_files`, trovato un deployment pulito e più
+recente (`dpl_Fykcwyop4asZmm9KdAH4WYKi1geJ`, creato alle 12:40:48 UTC, **non ancora aliasato** —
+probabilmente un'altra sessione concorrente lo aveva appena completato) che corrispondeva
+ESATTAMENTE (hash identici su tutti i 43 file) al commit `2398f9f`, l'ultimo pushato su `main`
+prima di questa sessione. Riassegnato l'alias primario a questo deployment con `assign_alias`
+(alias di fallback `-osky2` non toccato), poi verificato stabile con un controllo successivo. Solo
+DOPO questa correzione è stato creato il nuovo deployment con il lavoro Nurturing di questa
+sessione (`dpl_GCZGHfWoVA9sXQpPeY3mbRYrTnjs`, referenziando per SHA1 tutti i file invariati da
+`dpl_Fykcwyop4asZmm9KdAH4WYKi1geJ` più i 3 file modificati inline), verificato `READY`, confrontati
+tutti i file del nuovo deployment per assicurarsi che nessuno fosse rimasto alla versione vecchia,
+e riassegnato l'alias primario a questo deployment finale. Verificato stabile con un secondo
+controllo di `list_aliases` dopo una breve attesa.
+
+**Lezione aggiuntiva per le prossime sessioni** (si aggiunge a quella già scritta sotto "Come
+deployare"): il confronto "questo deployment corrisponde a un commit noto?" si può fare rapidamente
+calcolando `sha1sum` dei file in locale (dopo un `git pull`) e confrontandolo con gli `uid` di
+`list_deployment_files` — non serve scaricare il contenuto di ogni file con
+`get_deployment_file_contents` per la maggior parte dei controlli, l'hash SHA1 di Vercel per un
+file corrisponde esattamente al SHA1 del contenuto grezzo (non al git blob hash, che ha un prefisso
+diverso). Questo ha permesso di identificare in pochi secondi che un deployment era un mix
+inconsistente di commit diversi, senza dover ispezionare il contenuto file per file. **Da
+raccontare ad Andrea, di nuovo**: nella stessa giornata si sono verificati DUE episodi di alias
+riassegnato a un deployment non aggiornato da sessioni concorrenti non coordinate — vale la pena
+indagare se più esecuzioni dello stesso trigger schedulato partono in parallelo (vedi anche la nota
+sull'episodio precedente più sotto in questo file).
+
 ## Stato al 2026-10-02 — restyle "Posizionamento su Google" (richiesta Andrea) + chiusura incidente alias
 
 Andrea ha chiesto (con screenshot) di ristrutturare la card "Posizionamento su Google" così: nome
@@ -526,14 +611,14 @@ autoconclusivo per non rischiare di lasciare un deploy a metà.
       `READY`/`aliasError: null` dell'API Vercel e sui test locali sopra elencati. Da confermare con
       un controllo visivo rapido (apertura del wizard fino allo step "Audit tecnico") appena
       possibile.
-- **Ancora da fare** (prossima sessione, non bloccante): la domanda dichiarativa "Avete un piano
-  editoriale per il sito? Con quale cadenza pensate di pubblicare?" (nuovo blocco "Nurturing" nel
-  questionario `views/dichiarazione.ejs` o successivo) non esiste ancora — finché non c'è,
-  `giudicaContenuti` viene chiamata senza `cadenzaDichiarata` e il confronto STEP 5 resta sempre
-  `null` (comportamento corretto e documentato, nessun bug). Una volta aggiunta la domanda, passarla
-  a `giudicaContenuti` in `runAudit.js` (richiede spostare quella chiamata dopo la dichiarazione, o
-  ricalcolare il giudizio quando la dichiarazione arriva, visto che oggi gira durante l'audit che la
-  precede nel wizard — da decidere la soluzione migliore quando si implementa la domanda).
+- [x] **Risolto il 2026-10-02 (sessione successiva)**: la domanda dichiarativa "Avete un piano
+  editoriale per il sito? Con quale cadenza pensate di pubblicare?" è stata aggiunta al passaggio
+  di dichiarazione competenze (step 3, `views/dichiarazione.ejs`, blocco "Blog e newsletter").
+  Invece di spostare la chiamata a `giudicaContenuti` dentro `runAudit.js` (che gira prima), il
+  giudizio viene RICALCOLATO nella route `GET /contenuti/:id/esegui` (passaggio 9, che gira dopo la
+  dichiarazione) usando `sessione.cadenzaDichiarata` — vedi sezione "Stato al 2026-10-02 (sessione
+  successiva)" in cima al file per i dettagli. STEP 5 della spec (`divergenzaCadenza`) ora popolato
+  correttamente e mostrato nel box già pronto in `views/contenuti.ejs`.
 
 Indicazioni implementative:
 - **Dove va nel wizard (DECISO e implementato il 2026-10-01)**: integrato nello step di audit
@@ -630,15 +715,15 @@ che ha completato il criterio blog/contenuti sopra.
       `readyState: READY`, `aliasError: null`, alias primario riassegnato, redirect del secondo alias
       intatto, e lista file del nuovo deployment controllata per confermare che tutti i file
       nuovi/modificati sono presenti con l'hash atteso.
-- **Ancora da fare** (prossima sessione, non bloccante): la domanda dichiarativa "Considerate la
-  newsletter uno strumento importante?" (stesso futuro blocco "Nurturing" del questionario, insieme
-  alla domanda sulla cadenza editoriale del criterio blog) — per ora la scansione gira sempre, come
-  previsto dalla spec per quando la domanda non è ancora stata risposta/non esiste. Da decidere anche
-  dove mostrare un'eventuale segnalazione di discrepanza "dichiarato sì ma verificato assente" una
-  volta che la domanda esisterà (probabilmente nella stessa card di `views/audit.ejs`, sul modello
-  del box di divergenza cadenza del criterio blog). Non ancora verificato un sito reale con un ESP
-  italiano/locale non in lista — la lista `ESP_NOTI` resta da arricchire man mano che se ne incontrano
-  (come indicato esplicitamente dalla spec).
+- [x] **Risolto il 2026-10-02 (sessione successiva)**: la domanda dichiarativa "Considerate la
+  newsletter uno strumento importante?" è stata aggiunta allo stesso blocco "Blog e newsletter" nel
+  passaggio di dichiarazione (step 3). La scansione continua a girare sempre durante l'audit, come
+  da spec. La segnalazione di discrepanza "dichiarato sì ma verificato assente" è mostrata in
+  `views/newsletter.ejs` (passaggio 10, non più in `views/audit.ejs` che non mostra più queste
+  card dopo lo spostamento ai passaggi dedicati 9/10) — vedi sezione "Stato al 2026-10-02 (sessione
+  successiva)" in cima al file. Resta da fare: non ancora verificato un sito reale con un ESP
+  italiano/locale non in lista — la lista `ESP_NOTI` resta da arricchire man mano che se ne
+  incontrano (come indicato esplicitamente dalla spec).
 - [x] **Falso negativo segnalato da Andrea (2026-10-01) — risolto il 2026-10-02**: per il sito de La
   Zolla (https://www.lazolla.it/contattaci/) il criterio risultava "assente" ma la form di iscrizione
   alla newsletter era ben presente in quella pagina. Confermate e risolte tutte e tre le cause
