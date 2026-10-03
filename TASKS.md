@@ -1,3 +1,18 @@
+## Stato al 2026-10-03 (notte, 7) — link "vedi pagina" delle competenze: ora porta alla pagina dedicata
+
+Caso segnalato da Andrea su suoremantellate.org: "lingue" e "tecnologia/coding" risultavano trovate ma il link portava
+a home/news, mentre esistono pagine dedicate (`/certificazioni-linguistiche/` ecc.).
+**Causa**: `estraiTemi()` usava come link la PRIMA pagina scaricata in cui compariva una parola chiave (home o notizie,
+dove il testo del menu/delle news contiene i termini). Inoltre l'audit scarica solo home + max 4 pagine "tipo"
+(chi-siamo/iscrizioni/contatti/notizie, `lib/pages.js`), per cui le pagine dedicate non vengono mai lette; qui
+"News" punta a `/about/`, riconosciuto come "chi-siamo".
+- [x] **`lib/temi.js`**: il link ora è (1) il link interno (testo o indirizzo) che contiene una parola chiave del tema
+      — es. la voce di menu "Certificazioni linguistiche" -> `/certificazioni-linguistiche/` — scelto per punteggio
+      (testo=2, indirizzo=1), ignorando link esterni e le sigle corte come "pet" (solo parola intera); (2) altrimenti la
+      pagina scaricata più specifica (non home/notizie/contatti, poi più occorrenze). 6 nuovi test, 64 verdi.
+- [ ] **Limite noto, non risolto**: il rilevamento si basa solo su home + max 4 pagine; non si seguono i link dedicati
+      per verificarne il contenuto. Se serve, scaricare anche la pagina dedicata trovata dal link (costo: richieste in più).
+
 ## Stato al 2026-10-03 (notte, 6) — "media" tolto da tutte le ricerche su Google
 
 Richiesta di Andrea: le ricerche non devono più contenere "media". Prima `scuola media <tema> <località>`, ora
