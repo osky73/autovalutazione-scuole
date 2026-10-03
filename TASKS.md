@@ -1,3 +1,13 @@
+## DA FARE — nuovi pezzi di sviluppo (elenco di Andrea, 2026-10-03)
+
+Da affrontare dopo il test Firecrawl sui social (2026-10-04). Per ognuno serve prima un confronto con Andrea.
+- [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
+- [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
+- [ ] **Report finale scaricabile**: documento (probabilmente PDF) con i risultati di tutti i passaggi e i punteggi.
+- [ ] **Aggiungere le firme**: da chiarire di chi (consulente? dirigente?) e dove compaiono nel report.
+- [ ] **Dinamiche di ingaggio commerciale**: come si passa dall'autoanalisi al contatto/proposta (invito a un
+      colloquio, richiesta di contatto, ecc.), funnel verso i progetti di web marketing.
+
 ## Stato al 2026-10-03 (notte, 10) — nota in fondo al passaggio 5
 
 `views/posizionamento.ejs`: la nota "il controllo interroga direttamente Google, senza una API ufficiale..." (superata,
