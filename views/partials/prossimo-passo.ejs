@@ -1,2 +1,9 @@
-<%# Testo piccolo sotto il box bianco, sopra i bottoni: cosa si vede nel passaggio successivo. %>
-<p class="prossimo-desc"><%= testo %></p>
+<%# Riga centrata subito sotto il box bianco: "Prossimo passaggio: <nome> - Salta il prox passaggio".
+    Parametri: testo (nome del passaggio), salta (true/false), href (se presente il salto è un link; altrimenti è un
+    pulsante di invio che salva il modulo e invia salta=1, da usare dentro un <form>). %>
+<% var _salta = typeof salta !== 'undefined' && salta; %>
+<% if (_salta && !(typeof href !== 'undefined' && href)) { %>
+  <%# Invio da tastiera nei campi del modulo = "Continua": questo pulsante invisibile viene prima di "Salta". %>
+  <button type="submit" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;">Continua</button>
+<% } %>
+<p class="prossimo-riga">Prossimo passaggio: <%= testo %><% if (_salta) { %> - <% if (typeof href !== 'undefined' && href) { %><a href="<%= href %>">Salta il prox passaggio</a><% } else { %><button type="submit" name="salta" value="1" class="link-salta">Salta il prox passaggio</button><% } %><% } %></p>

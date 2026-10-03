@@ -47,11 +47,10 @@
   <p class="muted" style="margin-top:16px;">Posizioni rilevate nella prima pagina di Google (primi 10 risultati). Trattale come un'indicazione: i risultati possono variare da una ricerca all'altra e da una zona all'altra.</p>
 </div>
 
-<%- include('partials/prossimo-passo', { testo: "Prossimo passaggio: canali social indicati sul sito" }) %>
+<%- include('partials/prossimo-passo', { testo: "canali social indicati sul sito", salta: true, href: "/social/" + sessione.id + "/salta" }) %>
 <div class="actions">
   <a class="btn secondary" href="/verifica/<%= sessione.id %>">← Indietro</a>
   <a class="btn btn-principale" href="/social/<%= sessione.id %>">Continua →</a>
 </div>
-<%- include('partials/prossimo-salta', { etichetta: "Salta il prox passaggio", href: "/social/" + sessione.id + "/salta" }) %>
 
 <%- include('partials/layout-bottom', { step: 5, sessione: sessione }) %>

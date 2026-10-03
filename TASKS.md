@@ -1,3 +1,10 @@
+## Stato al 2026-10-03 (sera, 3) — riga unica centrata sotto il box: "Prossimo passaggio: … - Salta il prox passaggio"
+
+Richiesta di Andrea: il link di salto va sulla stessa riga della descrizione, centrato e più vicino al box bianco (prima il
+link era sotto "Continua"). Ora un solo partial `views/partials/prossimo-passo.ejs` (parametri `testo`, `salta`, `href`);
+rimosso `prossimo-salta.ejs`. Nei moduli (3, 6, 7) il salto resta un pulsante di invio con `salta=1`; per evitare che
+Invio da tastiera lo attivi al posto di "Continua", il partial inserisce prima un pulsante di invio invisibile.
+
 ## Stato al 2026-10-03 (sera, 2) — testi più brevi per descrizione e salto del passaggio successivo
 
 Richiesta di Andrea: descrizione "Prossimo passaggio: <nome>" (es. "Prossimo passaggio: indicazione competenze della

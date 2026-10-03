@@ -1,9 +1,0 @@
-<%# Link piccolo sotto "Continua": salta il passaggio successivo. Con `href` è un link; senza, è un
-    pulsante di invio che salva il modulo e invia anche salta=1 (da usare dentro un <form>). %>
-<p class="prossimo-salta">
-  <% if (typeof href !== 'undefined' && href) { %>
-    <a href="<%= href %>"><%= etichetta %></a>
-  <% } else { %>
-    <button type="submit" name="salta" value="1" class="link-salta"><%= etichetta %></button>
-  <% } %>
-</p>
