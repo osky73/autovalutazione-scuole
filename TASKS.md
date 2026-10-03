@@ -8,6 +8,48 @@ Da affrontare dopo il test Firecrawl sui social (2026-10-04). Per ognuno serve p
 - [ ] **Dinamiche di ingaggio commerciale**: come si passa dall'autoanalisi al contatto/proposta (invito a un
       colloquio, richiesta di contatto, ecc.), funnel verso i progetti di web marketing.
 
+## Stato al 2026-10-03 (sessione schedulata, 12) — nessuna voce azionabile oggi, tutto in attesa di Andrea o del test Firecrawl di domani
+
+Letto TASKS.md per intero (come richiesto) prima di qualunque modifica. Riepilogo per la prossima
+sessione, per non dover ripetere la stessa analisi:
+
+- [x] **Criteri blog/contenuti e newsletter (sezione "Da fare" nn. 1 e 2)**: ri-confermati completi,
+      agganciati al wizard e già in produzione (vedi sessione "notte, 11" subito sotto, che aveva
+      fatto la stessa verifica poche ore prima). Nessuna modifica di codice necessaria.
+- **Controllato se esisteva un'altra voce azionabile senza il contributo di Andrea — nessuna
+  trovata**:
+  - Voce 0 (bug sessione in-memory): Andrea ha già deciso di lasciare com'è, non riaprire.
+  - Voce 3 (andamento social 3 mesi): la voce stessa chiede di confermare con Andrea il livello di
+    automazione prima di implementare — non deciso.
+  - Voce 4 (verifica E2E aiuto AI Gemini): è un test manuale sul wizard live, non una modifica di
+    codice; richiede comunque di navigare `autoanalisi-scuole.vercel.app`, storicamente bloccato dai
+    limiti di rete di questa sandbox (vedi note nelle sessioni precedenti) — non ritentato per non
+    consumare budget su un tentativo già visto fallire più volte.
+  - Voce 5 (resto, dopo i ritocchi già fatti nella sessione "notte, 11"): tutti i punti rimasti
+    (box "dato peggiore", accorpamento passaggi 4+5, checkbox canale trovato, numerazione punto 7,
+    multi-plessi GBP, riferimenti screenshot) sono esplicitamente segnati come da chiarire con
+    Andrea o legati al lavoro Firecrawl non ancora fatto — nessuno è una scelta implementativa
+    semplice che si possa prendere da soli senza rischiare di andare contro l'intento di Andrea.
+  - **PROSSIMO TASK (Firecrawl sui social)**: la spec del comportamento è precisa e non ambigua, ma
+    Andrea ha esplicitamente strutturato il lavoro come "test prima, poi si decide se implementare"
+    (il test è programmato per domani 2026-10-04, quando si ripristinano i crediti gratuiti —
+    oggi è ancora il 2026-10-03). Scrivere già il codice Firecrawl oggi vorrebbe dire anticipare una
+    decisione che Andrea ha chiesto di prendere solo dopo aver visto l'esito del test — non fatto,
+    di proposito, per non rischiare lavoro da buttare se il test di domani dovesse concludere
+    "niente bottone AI".
+  - **5 nuove voci in cima al file** ("Domande al dirigente", punteggi, report finale, firme,
+    ingaggio commerciale): il file stesso dice che vanno affrontate "dopo il test Firecrawl sui
+    social (2026-10-04)" e che per ognuna serve prima un confronto con Andrea — non affrontate.
+- [x] **Verificato comunque lo stato di salute del codice** (nessuna modifica, solo controllo):
+      `npm install` (mancavano le `node_modules` in questa sessione) poi `npm test` → 70/70 test
+      unitari verdi, `node -e "require('./server.js')"` pulito, `git fetch origin main` confrontato
+      con l'HEAD locale → nessuna sessione concorrente, nessun deploy necessario.
+- **Nessun codice modificato, nessun deploy fatto in questa sessione** — solo questo aggiornamento di
+  TASKS.md, commit e push. La prossima sessione (schedulata o con Andrea) può ripartire da qui senza
+  dover rileggere tutto da capo: il vero blocco oggi non è la mancanza di idee ma la mancanza di un
+  confronto con Andrea su più punti contemporaneamente (voce 3, resto voce 5, le 5 nuove voci) e
+  l'attesa del test Firecrawl di domani.
+
 ## Stato al 2026-10-03 (sessione schedulata, notte, 11) — verifica criteri blog/newsletter + ritocchi punto 5
 
 Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
