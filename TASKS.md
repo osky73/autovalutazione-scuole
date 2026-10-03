@@ -1009,6 +1009,28 @@ Passi da seguire:
 4. Testare che una sessione sopravviva a un nuovo deployment (il caso più facile da verificare: creare
    una sessione, fare un deploy, verificare che la sessione sia ancora leggibile).
 
+**Chiarimento di Andrea (2026-10-03) e decisione presa — NESSUNA AZIONE, lasciare com'è**: il
+problema non si manifesta solo in concomitanza con un deploy di questa sessione, ma capita spesso
+anche senza alcun intervento in corso. Questo è coerente con la causa individuata, anzi la rafforza:
+su un'architettura serverless stateless una funzione può essere riciclata/sostituita con un'istanza
+"fredda" (che riparte con una `Map` vuota) anche senza nessun deploy — per un periodo di inattività
+(es. l'utente che si ferma a leggere una schermata per qualche minuto), per scale-out su un'altra
+istanza, o per normale avvicendamento delle lambda lato Vercel. Non è quindi un'anomalia legata a
+questa o quella sessione di sviluppo, è il comportamento atteso di questa architettura.
+- **Cercata un'alternativa tecnica a costo zero**: controllata la "Fluid Compute" di Vercel
+  (attivabile gratuitamente con `"fluid": true` in `vercel.json`, nessun costo aggiuntivo per
+  l'attivazione in sé). Scartata: è pensata per ridurre la latenza dei cold start e riusare le
+  istanze sotto traffico concorrente, non per mantenere viva la memoria durante una pausa reale
+  dell'utente senza richieste — non risolverebbe il sintomo descritto da Andrea, quindi non è stata
+  implementata per non dare un falso senso di sicurezza.
+- **Nessun'altra correzione tecnica gratuita individuata** che risolva il problema alla radice: resta
+  valido quanto scritto sopra, la soluzione strutturale è uno storage persistente (Vercel KV o
+  equivalente, es. Upstash Redis — quest'ultimo ha un piano gratuito senza carta di credito, ma
+  comunque un nuovo servizio/account esterno da creare e collegare, quindi non "gratis e automatico").
+- **Decisione di Andrea**: lasciare l'architettura attuale com'è. Non riaprire questa voce nelle
+  prossime sessioni finché Andrea non deciderà di attivare uno storage persistente (indicando quale) —
+  limitarsi a segnalarla se emergono nuovi sintomi diversi da quelli già descritti qui.
+
 ### 1. Criterio "Aggiornamento dei contenuti / Blog" (nuovo passaggio nel wizard)
 
 Spec completa (dal prompt originale del cliente, riportata testualmente):
