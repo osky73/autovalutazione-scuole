@@ -8,6 +8,80 @@ Da affrontare dopo il test Firecrawl sui social (2026-10-04). Per ognuno serve p
 - [ ] **Dinamiche di ingaggio commerciale**: come si passa dall'autoanalisi al contatto/proposta (invito a un
       colloquio, richiesta di contatto, ecc.), funnel verso i progetti di web marketing.
 
+## Stato al 2026-10-03 (sessione schedulata, notte, 11) — verifica criteri blog/newsletter + ritocchi punto 5
+
+Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
+
+- [x] **Criteri "Aggiornamento contenuti/Blog" e "Newsletter" (sezione "Da fare" nn. 1 e 2)**:
+      ri-letti per intero — risultano GIÀ completamente implementati, agganciati al wizard e
+      deployati (vedi le rispettive sezioni più sotto in questo file, tutte le voci spuntate).
+      Nessuna modifica di codice necessaria qui. Restano solo le note non bloccanti già segnate
+      ("arricchire `ESP_NOTI`", verifica su sito reale lazolla.it) — non azionabili senza un caso
+      reale nuovo da incontrare.
+- [ ] **Voce n. 0 (BUG PRIORITARIO, sessione in-memory)**: valutata, non affrontata. Controllato
+      via MCP Vercel (`filter_project_envs`) che il progetto NON ha oggi nessuno storage persistente
+      collegato (nessuna env var KV/Redis/Blob) — attivare Vercel KV (o equivalente) richiede
+      provisioning di una nuova risorsa, potenzialmente a pagamento: **da confermare con Andrea
+      prima di procedere**, come la nota originale del backlog chiede esplicitamente. L'alternativa
+      "cookie/URL firmato" indicata come workaround non è praticabile: la sessione contiene l'HTML
+      grezzo delle pagine scaricate (`pagineHtml`), ben oltre il limite di ~4KB per cookie. Nessuna
+      azione di codice fatta: in attesa della decisione di Andrea su quale storage attivare.
+- [x] **Voce n. 5 (revisione testi/UX), sottoinsieme non ambiguo implementato** (il resto della voce
+      resta aperto, vedi sotto): per restare in un incremento piccolo e sicuro, scelti solo i punti
+      con testo/richiesta inequivocabile, verificabili senza dover rileggere la numerazione con
+      Andrea (la voce stessa segnala "manca il punto 7, verificare con Andrea" — non toccata la
+      parte ambigua):
+  - **1) Landing**: titolo cambiato in "La tua scuola c'è?" + "(sul web)" a capo (`<br>`); bottone
+        "Avvia l'analisi →" → "Iniziamo" (`views/landing.ejs`).
+  - **6) Altri canali**: checkbox di fianco a YouTube rimosso (ora un campo nascosto, YouTube è
+        sempre incluso quando trovato — nessuna modifica lato server, stesso `name="includiYoutube"`
+        con lo stesso valore); titolo "Aggiungi un altro canale" → "Aggiungi un altro canale social
+        non trovato sul sito" (`views/social-altri.ejs`).
+  - **6) Scheda GBP**: rimosso "(stimato)" di fianco allo stato "probabilmente gestita/non gestita"
+        (`views/social-analisi.ejs`). **Non toccata** l'estensione multi-plessi (più schede GBP
+        selezionabili): è una feature più ampia (`lib/social/gbp.js` oggi ritorna un solo candidato),
+        da pianificare separatamente.
+  - **5) Select fasce (like/follower/frequenza)**: rimosse le etichette qualitative "(buono)",
+        "(sufficiente)", "(insufficiente)" e sostituite con i simboli matematici richiesti (≥, ≤, >,
+        <, intervallo "–"), in ENTRAMBE le schermate che usano queste select — "Canali social
+        indicati sul sito" (`views/social-conferma.ejs`, la richiesta esplicita della voce 5) e
+        "Altri canali" (`views/social-altri.ejs`, stessa select duplicata via JS per i canali
+        aggiunti a mano) — per non lasciare le due schermate con stile incoerente. Nessuna modifica ai
+        `value` delle `<option>` (`alta`/`media`/`bassa`), quindi nessun impatto sulla logica
+        server/JS esistente (soglie, precompilazione AI).
+  - **8) Analisi social finale**: rimossa la voce "Post della scheda Community: non verificabile..."
+        (`y.notaCommunity`, tolto sia il campo da `lib/social/youtube-analysis.js` che il paragrafo in
+        `views/social-analisi.ejs`, nessun test la referenziava). Messaggio tecnico "Il canale ha
+        risposto con codice ..." (per un social generico senza alcun valore indicato/rilevato)
+        sostituito con "Non sono state fornite o trovate indicazioni." — rimossa la costruzione del
+        messaggio tecnico in `lib/social.js` (`analizzaCanaleGenerico`, variabile `motivoErrore`
+        eliminata) e aggiornato il testo di fallback in `views/social-analisi.ejs`.
+  - **Non toccato, voce 5 (serve conferma/chiarimento con Andrea)**: punto 2 (box "dato peggiore" —
+        ambiguo ora che l'indicatore "ultimo contenuto pubblicato" è già stato rimosso il 2026-10-02,
+        quindi non è chiaro se la richiesta valga ancora per lo stato attuale della card); punto 3
+        parte "accorpare passaggio 4+5" (ristrutturazione di schermate, non una modifica di testo);
+        checkbox di fianco al canale TROVATO sul sito in `views/social-conferma.ejs` (a differenza del
+        checkbox YouTube, qui il testo introduttivo della schermata invita esplicitamente l'utente a
+        "escludere quelli sbagliati" tramite quel checkbox — rimuoverlo senza un meccanismo
+        sostitutivo toglierebbe una funzione, non solo un dettaglio estetico); riferimenti allo
+        screenshot nel testo di `social-conferma.ejs`/`social-altri.ejs` (intrecciati con il flusso
+        AI/upload che il "PROSSIMO TASK" Firecrawl prevede di riscrivere comunque, test previsto per
+        il 2026-10-04 — modificarli ora rischia di essere lavoro buttato); numerazione mancante
+        (punto 7) e caso multi-plessi GBP (feature più ampia).
+      **Nota**: il punto 4 "quando l'utente aggiunge una competenza personalizzata... il sistema deve
+      costruire delle varianti di query" risultava GIÀ implementato (vedi "Stato al 2026-10-03
+      (notte, 3)" più sotto in questo file) — nessuna azione necessaria lì.
+- [x] **Verificato prima di ogni modifica/dopo**: 70 test unitari esistenti verdi (nessuno nuovo,
+      nessuna logica toccata, solo testo/markup), `require('./server.js')` pulito, e rendering EJS
+      con `ejs.renderFile` di tutte le view toccate (`landing`, `social-conferma`, `social-altri`,
+      `social-analisi`) su più combinazioni di dati (con/senza canali trovati, YouTube presente/
+      assente, GBP nei vari stati, canale generico non disponibile) per confermare l'assenza di
+      errori EJS e la presenza dei nuovi testi/assenza dei vecchi.
+- Non toccate in questa sessione: voce n. 3 (andamento social 3 mesi — richiede conferma di Andrea
+  sul livello di automazione, come già segnalato) e voce n. 4 (verifica end-to-end aiuto AI Gemini in
+  produzione — richiede navigare il wizard live, storicamente bloccato per limiti di rete della
+  sandbox verso `vercel.app`).
+
 ## Stato al 2026-10-03 (notte, 10) — nota in fondo al passaggio 5
 
 `views/posizionamento.ejs`: la nota "il controllo interroga direttamente Google, senza una API ufficiale..." (superata,

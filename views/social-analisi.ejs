@@ -94,7 +94,6 @@
             <div><div>Contenuti sui temi chiave</div><div class="meta"><%= y.temiTrovati.length ? y.temiTrovati.join(', ') : 'Nessuno tra virtual tour, interviste ai docenti, giornata tipo' %></div></div>
             <span class="pill <%= y.livelloTemi.toLowerCase() %>"><%= y.livelloTemi %></span>
           </div>
-          <p class="muted" style="margin-top:10px;"><%= y.notaCommunity %></p>
         <% } %>
       <% } else { %>
         <% if (c.dataApertura || (c.avvisiAI && c.avvisiAI.length)) { %>
@@ -115,7 +114,7 @@
           <div class="indicator-row">
             <div>
               <div>Dati non disponibili</div>
-              <div class="meta"><%= c.motivo || 'Il canale non è raggiungibile pubblicamente per un\'analisi automatica.' %></div>
+              <div class="meta"><%= c.motivo || 'Non sono state fornite o trovate indicazioni.' %></div>
             </div>
             <span class="pill assente">Non disponibile</span>
           </div>
@@ -170,7 +169,7 @@
     <% } else { %>
       <div class="valutazione-score" style="margin-bottom:6px;">
         <span class="numero" style="font-size:1.4rem;"><%= gbp.punteggio || 'Non disponibile' %></span>
-        <span class="muted">— stato: <%= gbp.stato === 'reclamata' ? 'probabilmente gestita dalla scuola' : 'probabilmente non gestita dalla scuola' %> (stimato)</span>
+        <span class="muted">— stato: <%= gbp.stato === 'reclamata' ? 'probabilmente gestita dalla scuola' : 'probabilmente non gestita dalla scuola' %></span>
       </div>
       <p style="margin:0 0 10px;"><%= gbp.messaggio %></p>
       <div class="gbp-riga"><div>Categoria attività</div><div class="meta"><%= gbp.criteri.categoria.valore || 'non disponibile' %> — <%= gbp.criteri.categoria.etichetta %></div></div>

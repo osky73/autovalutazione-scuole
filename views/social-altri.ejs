@@ -37,16 +37,15 @@
   <div class="card">
     <% if (youtube) { %>
       <div class="social-row" style="padding:6px 0;">
-        <label style="display:flex; align-items:center; gap:8px; margin:0; font-weight:600;">
-          <input type="checkbox" name="includiYoutube" value="<%= youtube.url %>" checked style="margin:0; width:auto;" />
-          <span>YouTube</span>
-        </label>
+        <input type="hidden" name="includiYoutube" value="<%= youtube.url %>" />
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-weight:600;">YouTube</span>
+        </div>
         <a href="<%= youtube.url %>" target="_blank" rel="noopener" class="muted" style="font-size:0.82rem; word-break:break-all;"><%= youtube.url %></a>
         <p class="muted" style="margin:8px 0 0;">I dati (video pubblicati, ultimo caricamento, iscritti, visualizzazioni, interazioni) vengono letti automaticamente dalle API pubbliche di YouTube nel passaggio successivo.</p>
       </div>
     <% } else { %>
       <div class="non-trovato-row">
-        <input type="checkbox" disabled style="margin:0; width:auto;" />
         <span>YouTube — <strong>Non trovato</strong> sul sito della scuola</span>
       </div>
     <% } %>
@@ -70,7 +69,7 @@
     <% } %>
   </div>
 
-  <h2>Aggiungi un altro canale</h2>
+  <h2>Aggiungi un altro canale social non trovato sul sito</h2>
   <div class="card">
     <div id="extra-social-list"></div>
     <div class="ai-blocco" id="ai-blocco-extra" style="display:none;">
@@ -143,18 +142,18 @@
       '<div class="fascia-row" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; font-size:0.82rem;">' +
         '<label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">Post/settimana' +
           '<select name="extraFreq" class="fascia-select" style="margin:0; padding:6px 8px; width:auto;">' +
-            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">3 o più a settimana (buono)</option>' +
-            '<option value="media">2 a settimana (sufficiente)</option><option value="bassa">1 a settimana o meno (insufficiente)</option>' +
+            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">≥ 3 a settimana</option>' +
+            '<option value="media">2 a settimana</option><option value="bassa">≤ 1 a settimana</option>' +
           '</select></label>' +
         '<label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">Interazioni (media per contenuto)' +
           '<select name="extraLike" class="fascia-select" style="margin:0; padding:6px 8px; width:auto;">' +
-            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">30 o più (buono)</option>' +
-            '<option value="media">tra 15 e 30 (sufficiente)</option><option value="bassa">15 o meno (insufficiente)</option>' +
+            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">≥ 30</option>' +
+            '<option value="media">15 – 30</option><option value="bassa">≤ 15</option>' +
           '</select></label>' +
         '<label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">Follower' +
           '<select name="extraFollower" class="fascia-select fascia-follower" style="margin:0; padding:6px 8px; width:auto;">' +
-            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">Oltre 1000 (buono)</option>' +
-            '<option value="media">Tra 500 e 1000 (sufficiente)</option><option value="bassa">Sotto 500 (insufficiente)</option>' +
+            '<option value="" style="font-style:italic;">(indica un range)</option><option value="alta">&gt; 1000</option>' +
+            '<option value="media">500 – 1000</option><option value="bassa">&lt; 500</option>' +
           '</select></label>' +
       '</div>' +
       '<div class="ai-riepilogo"></div>' +

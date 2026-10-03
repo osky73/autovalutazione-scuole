@@ -65,27 +65,27 @@
               Post/settimana
               <select name="freqTrovato" class="fascia-select" style="margin:0; padding:6px 8px; width:auto;">
                 <option value="" style="font-style:italic;">(indica un range)</option>
-                <option value="alta">3 o più a settimana (buono)</option>
-                <option value="media">2 a settimana (sufficiente)</option>
-                <option value="bassa">1 a settimana o meno (insufficiente)</option>
+                <option value="alta">&ge; 3 a settimana</option>
+                <option value="media">2 a settimana</option>
+                <option value="bassa">&le; 1 a settimana</option>
               </select>
             </label>
             <label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">
               Interazioni (media per contenuto)
               <select name="likeTrovato" class="fascia-select" style="margin:0; padding:6px 8px; width:auto;">
                 <option value="" style="font-style:italic;">(indica un range)</option>
-                <option value="alta">30 o più (buono)</option>
-                <option value="media">tra 15 e 30 (sufficiente)</option>
-                <option value="bassa">15 o meno (insufficiente)</option>
+                <option value="alta">&ge; 30</option>
+                <option value="media">15 &ndash; 30</option>
+                <option value="bassa">&le; 15</option>
               </select>
             </label>
             <label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">
               Follower
               <select name="followerTrovato" class="fascia-select fascia-follower" style="margin:0; padding:6px 8px; width:auto;">
                 <option value="" style="font-style:italic;">(indica un range)</option>
-                <option value="alta">Oltre 1000 (buono)</option>
-                <option value="media">Tra 500 e 1000 (sufficiente)</option>
-                <option value="bassa">Sotto 500 (insufficiente)</option>
+                <option value="alta">&gt; 1000</option>
+                <option value="media">500 &ndash; 1000</option>
+                <option value="bassa">&lt; 500</option>
               </select>
             </label>
           </div>
