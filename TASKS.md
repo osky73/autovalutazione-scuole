@@ -1,3 +1,12 @@
+## Stato al 2026-10-03 (notte, 10) — nota in fondo al passaggio 5
+
+`views/posizionamento.ejs`: la nota "il controllo interroga direttamente Google, senza una API ufficiale..." (superata,
+ora si usa Serper) è sostituita da "Posizioni rilevate nella prima pagina di Google (primi 10 risultati). Trattale come
+un'indicazione: i risultati possono variare da una ricerca all'altra e da una zona all'altra." Scelta di Andrea: NON
+accennare alla località, per non spingere l'utente a chiedere nuove ricerche (ogni ricerca costa un credito Serper).
+Decisione: si resta su Serper (migliore rapporto costo/semplicità). Discrepanza su suoremantellate.org ancora aperta:
+da verificare con altre scuole (3-4 indirizzi di cui Andrea conosce la posizione reale).
+
 ## Stato al 2026-10-03 (notte, 9) — lettura di fino a 10 pagine in più + riquadro AI social
 
 Richiesta di Andrea: scaricare le pagine dedicate per verificare le competenze (max 10), partendo dalla sitemap.
