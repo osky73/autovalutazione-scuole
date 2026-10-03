@@ -42,7 +42,7 @@
 <form method="POST" action="/social/<%= sessione.id %>" id="form-social">
   <div class="card">
     <% if (trovati.length === 0) { %>
-      <p class="muted">Non abbiamo trovato link a canali social (esclusi YouTube e Google Business Profile, che trovi nel passaggio successivo) nelle pagine analizzate.</p>
+      <p class="muted">Non abbiamo trovato link a canali social, nel prossimo passaggio potrai segnalarli manualmente.</p>
     <% } else { %>
       <% trovati.forEach(function(c) { %>
         <div class="social-row" data-url="<%= c.url %>" data-platform="<%= c.platform %>" style="padding:10px 0; border-bottom:1px solid var(--border);">

@@ -1,3 +1,9 @@
+## Stato al 2026-10-03 (notte, 8) — testo passaggio 6 quando non ci sono canali social
+
+`views/social-conferma.ejs`: la frase "Non abbiamo trovato link a canali social (esclusi YouTube e Google Business
+Profile...) nelle pagine analizzate." è ora "Non abbiamo trovato link a canali social, nel prossimo passaggio potrai
+segnalarli manualmente." (richiesta di Andrea).
+
 ## Stato al 2026-10-03 (notte, 7) — link "vedi pagina" delle competenze: ora porta alla pagina dedicata
 
 Caso segnalato da Andrea su suoremantellate.org: "lingue" e "tecnologia/coding" risultavano trovate ma il link portava
