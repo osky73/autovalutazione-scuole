@@ -81,6 +81,21 @@ Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto
   sul livello di automazione, come già segnalato) e voce n. 4 (verifica end-to-end aiuto AI Gemini in
   produzione — richiede navigare il wizard live, storicamente bloccato per limiti di rete della
   sandbox verso `vercel.app`).
+- [x] **Commit, push e deploy**: commit `25b7e04`, push su `main` senza conflitti (confrontato con
+      `git fetch origin main` prima del commit, nessuna sessione concorrente). Deploy automatico via
+      Git integration: `dpl_FniGB5ANEV4RebDEv29nn1GhE7nB`, `READY` in ~15s. **Promosso in
+      produzione**: `list_aliases` subito prima del cambio confermava ancora il deployment noto
+      (`dpl_FyKkubWkF6jd7eyP4AcsosVEDBW7`, commit `29e0dab` — nessuna modifica concorrente nel
+      frattempo, inclusa la promozione del commit `2cfab46` solo-TASKS.md, già incluso come
+      antenato del nuovo deploy), poi `assign_alias` su `autoanalisi-scuole.vercel.app`
+      (`oldDeploymentId` di ritorno uguale a quanto atteso) e verificato stabile con un secondo
+      `list_aliases`. Alias di fallback `-osky2` lasciato intatto (ancora redirect permanente verso
+      l'alias primario). **Non è stato possibile un controllo HTTP diretto dal vivo** (stesso limite
+      di rete delle sessioni precedenti: `WebFetch` su `autoanalisi-scuole.vercel.app` ha restituito
+      `PROVENANCE_REQUIRED` — richiede l'approvazione di un utente presente, assente in questa
+      sessione schedulata) — verifica basata su `readyState: READY`, sui 70 test locali, sul
+      rendering EJS di tutte le view toccate con `ejs.renderFile`, e su `require('./server.js')`
+      pulito prima del push.
 
 ## Stato al 2026-10-03 (notte, 10) — nota in fondo al passaggio 5
 
