@@ -61,6 +61,25 @@ function calcolaConfermati(sessione) {
   return confermati;
 }
 
+// Confronto tra competenze dichiarate e contenuto del sito (passaggio 4): calcolo sincrono, nessuna richiesta
+// di rete. Separato dalla rotta perché serve anche quando il passaggio 4 viene saltato.
+function preparaTemi(sessione) {
+  const estrazione = estraiTemi(sessione.pagineHtml || [], sessione.pagineUrl || []);
+  const chiaviDichiarate = new Set(sessione.dichiarati.map((t) => t.key));
+  const temaPiuCitato = estrazione.temiTrovati[0] || null;
+
+  let finding = null;
+  if (temaPiuCitato && !sessione.dichiarati.length) {
+    finding = `Il tema più citato nel sito è "${temaPiuCitato.label}".`;
+  } else if (temaPiuCitato && !chiaviDichiarate.has(temaPiuCitato.key)) {
+    const elenco = sessione.dichiarati.map((t) => t.label).join(', ');
+    finding = `Il tema più citato nel sito è "${temaPiuCitato.label}", ma non è tra le competenze dichiarate dalla scuola (${elenco}).`;
+  }
+
+  sessione.temi = { estrazione, finding };
+  sessione.confermati = calcolaConfermati(sessione);
+}
+
 app.get('/', (req, res) => {
   res.render('landing');
 });
@@ -137,6 +156,20 @@ app.get('/dichiarazione/:id', (req, res) => {
 // (STEP 5 del criterio blog).
 const CADENZE_EDITORIALI_VALIDE = new Set(['settimanale', 'quindicinale', 'mensile', 'trimestrale']);
 
+// Salta il passaggio 3 (nessuna competenza indicata): si prosegue al passaggio 4.
+app.get('/dichiarazione/:id/salta', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.audit) return res.redirect(`/audit/${sessione.id}`);
+
+  sessione.dichiarati = [];
+  sessione.temi = null;
+  sessione.confermati = null;
+  sessione.posizionamento = null;
+  sessione.posizionamentoSaltato = false;
+  res.redirect(`/verifica/${sessione.id}`);
+});
+
 app.post('/dichiarazione/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -169,6 +202,12 @@ app.post('/dichiarazione/:id', (req, res) => {
   sessione.posizionamento = null;
   sessione.posizionamentoSaltato = false;
 
+  // "Salta il passaggio successivo": il confronto del passaggio 4 viene calcolato senza mostrarlo.
+  if (req.body.salta) {
+    preparaTemi(sessione);
+    return res.redirect(`/posizionamento/${sessione.id}`);
+  }
+
   res.redirect(`/verifica/${sessione.id}`);
 });
 
@@ -179,20 +218,7 @@ app.get('/verifica/:id', (req, res) => {
   if (!sessione.dichiarati) return res.redirect(`/dichiarazione/${sessione.id}`);
 
   if (!sessione.temi) {
-    const estrazione = estraiTemi(sessione.pagineHtml || [], sessione.pagineUrl || []);
-    const chiaviDichiarate = new Set(sessione.dichiarati.map((t) => t.key));
-    const temaPiuCitato = estrazione.temiTrovati[0] || null;
-
-    let finding = null;
-    if (temaPiuCitato && !sessione.dichiarati.length) {
-      finding = `Il tema più citato nel sito è "${temaPiuCitato.label}".`;
-    } else if (temaPiuCitato && !chiaviDichiarate.has(temaPiuCitato.key)) {
-      const elenco = sessione.dichiarati.map((t) => t.label).join(', ');
-      finding = `Il tema più citato nel sito è "${temaPiuCitato.label}", ma non è tra le competenze dichiarate dalla scuola (${elenco}).`;
-    }
-
-    sessione.temi = { estrazione, finding };
-    sessione.confermati = calcolaConfermati(sessione);
+    preparaTemi(sessione);
 
     return res.render('attesa', {
       titolo: 'Verifica in corso',
@@ -320,6 +346,23 @@ app.get('/social/:id', (req, res) => {
   res.render('social-conferma', { sessione, trovati: trovatiSenzaYoutube });
 });
 
+// Salta il passaggio 6 (conferma dei canali social trovati sul sito): nessun canale confermato, si va al 7.
+app.get('/social/:id/salta', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.posizionamento && !sessione.posizionamentoSaltato) return res.redirect(`/posizionamento/${sessione.id}`);
+
+  if (sessione.socialTrovati === undefined) {
+    sessione.socialTrovati = discoverSocialLinks(sessione.pagineHtml || []);
+  }
+  sessione.socialConfermati = [];
+  sessione.gbp = null;
+  sessione.socialAnalisi = null;
+  sessione.socialValutazione = null;
+  sessione.analisiSocialSaltata = false;
+  res.redirect(`/social/${sessione.id}/altri`);
+});
+
 app.post('/social/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -355,6 +398,10 @@ app.post('/social/:id', (req, res) => {
   sessione.gbp = null;
   sessione.socialAnalisi = null;
   sessione.socialValutazione = null;
+  sessione.analisiSocialSaltata = false;
+
+  // "Salta il passaggio successivo": niente YouTube/GBP/altri canali, si va all'analisi (passaggio 8).
+  if (req.body.salta) return res.redirect(`/social/${sessione.id}/analisi`);
 
   res.redirect(`/social/${sessione.id}/altri`);
 });
@@ -432,6 +479,16 @@ app.post('/social/:id/altri', (req, res) => {
   sessione.socialConfermati = [...(sessione.socialConfermati || []), ...nuovi];
   sessione.socialAnalisi = null;
   sessione.socialValutazione = null;
+  sessione.analisiSocialSaltata = false;
+
+  // "Salta il passaggio successivo": l'analisi social (passaggio 8) non viene eseguita né mostrata.
+  // socialAnalisi = [] la segna come "fatta" per i passaggi seguenti; se l'utente torna indietro
+  // alla pagina di analisi, questa viene eseguita davvero (vedi GET /social/:id/analisi).
+  if (req.body.salta) {
+    sessione.socialAnalisi = [];
+    sessione.analisiSocialSaltata = true;
+    return res.redirect(`/contenuti/${sessione.id}/cadenza`);
+  }
 
   res.redirect(`/social/${sessione.id}/analisi`);
 });
@@ -494,6 +551,11 @@ app.get('/social/:id/analisi', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
   if (!sessione.socialConfermati) return res.redirect(`/social/${sessione.id}`);
+
+  if (sessione.analisiSocialSaltata) {
+    sessione.analisiSocialSaltata = false;
+    sessione.socialAnalisi = null;
+  }
 
   if (!sessione.socialConfermati.length) {
     // `valutazione` va sempre passata alla vista anche qui: social-analisi.ejs la referenzia con
@@ -562,6 +624,16 @@ app.get('/social/:id/esegui', async (req, res) => {
 // (dichiarazione competenze, scollegato dal contesto). `cadenzaRichiesta` distingue "non ancora
 // chiesta" (redirect a questa schermata) da "chiesta ma risposta vuota/non riconosciuta"
 // (cadenzaDichiarata resta null, il confronto allo step 9 semplicemente non viene mostrato).
+// Salta il passaggio 9 (attività editoriale, domanda sulla cadenza compresa): si va alla domanda sulla newsletter.
+app.get('/contenuti/:id/salta', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.socialAnalisi) return res.redirect(`/social/${sessione.id}/analisi`);
+
+  sessione.contenutiSaltato = true;
+  res.redirect(`/newsletter/${sessione.id}/importanza`);
+});
+
 app.get('/contenuti/:id/cadenza', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -682,7 +754,7 @@ app.get('/contenuti/:id/esegui', async (req, res) => {
 app.get('/newsletter/:id/importanza', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
-  if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
+  if (!sessione.attivitaEditoriale && !sessione.contenutiSaltato) return res.redirect(`/contenuti/${sessione.id}`);
 
   res.render('newsletter-importanza', { sessione });
 });
@@ -701,7 +773,7 @@ app.post('/newsletter/:id/importanza', (req, res) => {
 app.get('/newsletter/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
-  if (!sessione.attivitaEditoriale) return res.redirect(`/contenuti/${sessione.id}`);
+  if (!sessione.attivitaEditoriale && !sessione.contenutiSaltato) return res.redirect(`/contenuti/${sessione.id}`);
   if (!sessione.newsletterRichiesta) return res.redirect(`/newsletter/${sessione.id}/importanza`);
 
   const newsletter = (sessione.audit && sessione.audit.newsletter) || null;

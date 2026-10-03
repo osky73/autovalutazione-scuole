@@ -1,3 +1,24 @@
+## Stato al 2026-10-03 (sera) — in ogni passaggio: descrizione del successivo + possibilità di saltarlo
+
+Richiesta di Andrea. Nuovi blocchi condivisi `views/partials/prossimo-passo.ejs` (testo piccolo sotto il box bianco,
+sopra i bottoni: cosa si vede nel passaggio successivo) e `views/partials/prossimo-salta.ejs` (link/pulsante piccolo
+sotto "Continua →"). Applicati ai passaggi 2-9. Nei passaggi con modulo (3, 6, 7) il salto è un pulsante di invio che
+salva comunque ciò che l'utente ha compilato (`salta=1`); negli altri è un link `GET .../salta`.
+- Salta 3 (da 2): `GET /dichiarazione/:id/salta` -> nessuna competenza, si va al 4.
+- Salta 4 (da 3): `POST /dichiarazione/:id` con `salta` -> `preparaTemi()` (calcolo sincrono, senza mostrarlo) e vai al 5.
+- Salta 5 (da 4): già fatto nel commit precedente (`GET /posizionamento/:id/salta`, nessun credito Serper).
+- Salta 6 (da 5): `GET /social/:id/salta` -> nessun canale confermato, vai al 7.
+- Salta 7 (da 6): `POST /social/:id` con `salta` -> salva i canali e vai direttamente all'analisi (8).
+- Salta 8 (da 7): `POST /social/:id/altri` con `salta` -> `socialAnalisi=[]`, `analisiSocialSaltata=true`, vai alla
+      domanda sulla cadenza (9). Se l'utente torna alla pagina di analisi, questa viene eseguita davvero.
+- Salta 9 (da 8): `GET /contenuti/:id/salta` -> `contenutiSaltato=true`, vai alla domanda sulla newsletter (10); le rotte
+      newsletter accettano `contenutiSaltato`.
+- Passaggio 9 -> 10: solo la descrizione, senza link per saltare (dopo il 10 non c'è nessun altro passaggio; da decidere
+      quando ci sarà il report finale).
+- Non toccate: le schermate-domanda (cadenza, importanza newsletter) fanno parte rispettivamente dei passaggi 9 e 10.
+- Verifica: percorso completo con tutti i salti provato in locale (17 controlli); 70 test unitari verdi.
+- Nota: con il passaggio 6 o 8 saltati, i passaggi successivi non mostrano dati social (nessun testo "saltato" dedicato).
+
 ## Stato al 2026-10-03 (pomeriggio) — passaggio 3 senza competenze + possibilità di saltare il passaggio 5
 
 Richiesta di Andrea.

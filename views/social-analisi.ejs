@@ -187,9 +187,11 @@
   </div>
 <% } %>
 
+<%- include('partials/prossimo-passo', { testo: "Nel passaggio successivo verifichiamo l'attività editoriale del sito (news/blog): frequenza di pubblicazione, ottimizzazione degli ultimi articoli e legame con le competenze. Prima ti chiediamo con quale cadenza pensate di pubblicare." }) %>
 <div class="actions">
   <a class="btn secondary" href="/social/<%= sessione.id %>/altri">← Indietro</a>
   <a class="btn btn-principale" href="/contenuti/<%= sessione.id %>">Continua →</a>
 </div>
+<%- include('partials/prossimo-salta', { etichetta: "Salta il passaggio successivo (attività editoriale)", href: "/contenuti/" + sessione.id + "/salta" }) %>
 
 <%- include('partials/layout-bottom', { step: 8, sessione: sessione }) %>

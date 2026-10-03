@@ -40,12 +40,12 @@
   <% } %>
 </div>
 
-<p class="muted" style="font-size:0.78rem; margin:14px 0 0;">Nel passaggio successivo, per ogni competenza (dichiarata o individuata nel sito) controlliamo se la scuola compare nella prima pagina di Google con ricerche del tipo "scuola [competenza] [località]", e ti mostriamo la posizione migliore ottenuta e con quale ricerca.</p>
+<%- include('partials/prossimo-passo', { testo: "Nel passaggio successivo, per ogni competenza (dichiarata o individuata nel sito) controlliamo se la scuola compare nella prima pagina di Google con ricerche del tipo \"scuola [competenza] [località]\", e ti mostriamo la posizione migliore ottenuta e con quale ricerca." }) %>
 
-<div class="actions" style="margin-top:10px;">
+<div class="actions">
   <a class="btn secondary" href="/audit/<%= sessione.id %>">← Indietro</a>
   <a class="btn btn-principale" href="/posizionamento/<%= sessione.id %>">Continua →</a>
 </div>
-<p style="text-align:right; font-size:0.78rem; margin:6px 0 0;"><a class="muted" style="font-size:0.78rem;" href="/posizionamento/<%= sessione.id %>/salta">Salta il passaggio successivo (posizionamento su Google)</a></p>
+<%- include('partials/prossimo-salta', { etichetta: "Salta il passaggio successivo (posizionamento su Google)", href: "/posizionamento/" + sessione.id + "/salta" }) %>
 
 <%- include('partials/layout-bottom', { step: 4, sessione: sessione }) %>
