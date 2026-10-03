@@ -104,12 +104,12 @@
     <% } %>
   </div>
 
-  <%- include('partials/prossimo-passo', { testo: "Nel passaggio successivo trovi YouTube (se presente sul sito), la scheda Google Business Profile della scuola e la possibilità di aggiungere altri canali a mano." }) %>
+  <%- include('partials/prossimo-passo', { testo: "Prossimo passaggio: altri canali social e scheda Google Business Profile" }) %>
   <div class="actions">
     <a class="btn secondary" href="<%= sessione.posizionamentoSaltato ? '/verifica/' : '/posizionamento/' %><%= sessione.id %>">← Indietro</a>
     <button type="submit" class="btn btn-principale">Continua →</button>
   </div>
-<%- include('partials/prossimo-salta', { etichetta: "Salta il passaggio successivo (altri canali social)" }) %>
+<%- include('partials/prossimo-salta', { etichetta: "Salta il prox passaggio" }) %>
 </form>
 
 <script>

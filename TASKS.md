@@ -1,3 +1,8 @@
+## Stato al 2026-10-03 (sera, 2) — testi più brevi per descrizione e salto del passaggio successivo
+
+Richiesta di Andrea: descrizione "Prossimo passaggio: <nome>" (es. "Prossimo passaggio: indicazione competenze della
+scuola") e link "Salta il prox passaggio". Modificati i testi nei passaggi 2-9 (partial `prossimo-passo` / `prossimo-salta`).
+
 ## Stato al 2026-10-03 (sera) — in ogni passaggio: descrizione del successivo + possibilità di saltarlo
 
 Richiesta di Andrea. Nuovi blocchi condivisi `views/partials/prossimo-passo.ejs` (testo piccolo sotto il box bianco,

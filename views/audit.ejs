@@ -30,11 +30,11 @@
   <% } %>
 </div>
 
-<%- include('partials/prossimo-passo', { testo: "Nel passaggio successivo potrai indicare fino a 5 competenze su cui si basa l'identità web della tua scuola (puoi anche non indicarne nessuna)." }) %>
+<%- include('partials/prossimo-passo', { testo: "Prossimo passaggio: indicazione competenze della scuola" }) %>
 <div class="actions">
   <a class="btn secondary" href="/">← Indietro</a>
   <a class="btn btn-principale" href="/dichiarazione/<%= sessione.id %>">Continua →</a>
 </div>
-<%- include('partials/prossimo-salta', { etichetta: "Salta il passaggio successivo (competenze della scuola)", href: "/dichiarazione/" + sessione.id + "/salta" }) %>
+<%- include('partials/prossimo-salta', { etichetta: "Salta il prox passaggio", href: "/dichiarazione/" + sessione.id + "/salta" }) %>
 
 <%- include('partials/layout-bottom', { step: 2, sessione: sessione }) %>

@@ -24,12 +24,12 @@
     <p class="muted" id="limite-avviso" style="display:none;">Hai raggiunto il massimo di 5 competenze: deseleziona o rimuovi qualcosa per aggiungerne un'altra.</p>
   </div>
 
-  <%- include('partials/prossimo-passo', { testo: "Nel passaggio successivo confrontiamo le competenze indicate con quelle che il sito comunica davvero e ti mostriamo se compaiono e in quali pagine." }) %>
+  <%- include('partials/prossimo-passo', { testo: "Prossimo passaggio: verifica delle competenze" }) %>
   <div class="actions">
     <a class="btn secondary" href="/audit/<%= sessione.id %>">← Indietro</a>
     <button type="submit" class="btn btn-principale">Continua →</button>
   </div>
-<%- include('partials/prossimo-salta', { etichetta: "Salta il passaggio successivo (verifica delle competenze)" }) %>
+<%- include('partials/prossimo-salta', { etichetta: "Salta il prox passaggio" }) %>
 </form>
 
 <script>
