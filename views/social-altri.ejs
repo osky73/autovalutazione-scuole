@@ -73,6 +73,13 @@
   <h2>Aggiungi un altro canale</h2>
   <div class="card">
     <div id="extra-social-list"></div>
+    <div class="ai-blocco" id="ai-blocco-extra" style="display:none;">
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button type="button" id="btn-ai-extra" class="btn btn-principale">🤖 Chiedo l'aiuto dell'AI</button>
+        <span id="ai-stato-extra" role="status" aria-live="polite" style="font-size:0.88rem; font-weight:600; color:var(--brand);"></span>
+      </div>
+      <p class="ai-privacy">Leggiamo solo i dati pubblici dei canali che hai aggiunto per precompilare le fasce. Puoi sempre correggerle a mano.</p>
+    </div>
     <label for="nuovo-social-url">Indirizzo del canale</label>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; align-items:center;">
       <input type="text" id="nuovo-social-url" placeholder="es. https://instagram.com/nomescuola" style="flex:1; min-width:220px; margin-bottom:0;" />
@@ -171,7 +178,7 @@
         if (e.target.checked) el.value = '';
       });
     });
-    riga.querySelector('span[title="Rimuovi"]').addEventListener('click', function () { riga.remove(); });
+    riga.querySelector('span[title="Rimuovi"]').addEventListener('click', function () { riga.remove(); aggiornaBloccoAI(); });
     riga.querySelectorAll('.fascia-select').forEach(function (sel) {
       sel.addEventListener('change', function () {
         if (riga.dataset.aiApplicato === '1') azzeraAI(riga);
@@ -181,7 +188,13 @@
 
     extraList.appendChild(riga);
     inputUrl.value = '';
+    aggiornaBloccoAI();
   });
+
+  // Il riquadro "Chiedo l'aiuto dell'AI" compare solo se è stato aggiunto almeno un canale.
+  function aggiornaBloccoAI() {
+    document.getElementById('ai-blocco-extra').style.display = extraList.querySelector('.social-row') ? 'block' : 'none';
+  }
 
   function fasciaDaFrequenza(v) { if (v == null) return ''; if (v >= 3) return 'alta'; if (v >= 1.5) return 'media'; return 'bassa'; }
   function fasciaDaInterazioni(v) { if (v == null) return ''; if (v >= 30) return 'alta'; if (v >= 15) return 'media'; return 'bassa'; }
@@ -237,6 +250,52 @@
     NOT_FOUND: "Non abbiamo trovato questo profilo: verifica l'indirizzo, oppure carica uno screenshot.",
     PLATFORM_UNKNOWN: "Non abbiamo riconosciuto la piattaforma di questo indirizzo: carica uno screenshot.",
   };
+
+  function mostraLivelloC(riga, code) {
+    riga.querySelector('.ai-messaggio').textContent = MESSAGGI_ERRORE[code] || MESSAGGI_ERRORE.NOT_SUPPORTED;
+    riga.querySelector('.ai-livello-c').style.display = 'block';
+  }
+
+  var btnAIExtra = document.getElementById('btn-ai-extra');
+  var statoAIExtra = document.getElementById('ai-stato-extra');
+
+  btnAIExtra.addEventListener('click', function () {
+    var righe = Array.prototype.slice.call(extraList.querySelectorAll('.social-row'));
+    if (!righe.length) return;
+
+    btnAIExtra.disabled = true;
+    statoAIExtra.style.color = '';
+    statoAIExtra.innerHTML = '<span class="spinner-inline" aria-hidden="true"></span> Recupero i dati dai canali aggiunti, può richiedere qualche secondo...';
+
+    fetch('/social/<%= sessione.id %>/ai-aiuto', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ canali: righe.map(function (r) { return { url: r.dataset.url, platform: r.dataset.platform }; }) }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (dati) {
+        btnAIExtra.disabled = false;
+        if (!dati.ok) {
+          statoAIExtra.style.color = 'var(--bad)';
+          statoAIExtra.textContent = dati.error || 'Non è stato possibile completare la richiesta.';
+          return;
+        }
+        var riuscite = 0;
+        dati.risultati.forEach(function (ris) {
+          var riga = righe.filter(function (r) { return r.dataset.url === ris.url; })[0];
+          if (!riga) return;
+          if (ris.ok) { riuscite += 1; applicaMetriche(riga, ris.metrics); } else { mostraLivelloC(riga, ris.code); }
+        });
+        statoAIExtra.textContent = riuscite === righe.length
+          ? 'Dati recuperati per tutti i canali: controlla e correggi se serve, poi premi Continua.'
+          : 'Dati recuperati per ' + riuscite + ' su ' + righe.length + ' canali. Per gli altri scegli le fasce a mano o carica uno screenshot.';
+      })
+      .catch(function () {
+        btnAIExtra.disabled = false;
+        statoAIExtra.style.color = 'var(--bad)';
+        statoAIExtra.textContent = 'Errore di rete: riprova tra poco.';
+      });
+  });
 
   function fileToBase64(file) {
     return new Promise(function (resolve, reject) {

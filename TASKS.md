@@ -1,3 +1,23 @@
+## Stato al 2026-10-03 (notte, 9) — lettura di fino a 10 pagine in più + riquadro AI social
+
+Richiesta di Andrea: scaricare le pagine dedicate per verificare le competenze (max 10), partendo dalla sitemap.
+- [x] **`lib/pages.js` (`raccogliPagineExtra`, `scegliPagineExtra`)**: dopo home + max 4 pagine generiche si leggono
+      fino a **10 pagine in più** (home esclusa). Ordine: (1) sitemap (`/sitemap.xml`, poi `robots.txt`, poi
+      `wp-sitemap.xml`/`sitemap_index.xml`; le sotto-sitemap "page" vengono lette per prime) — se manca, i link della home;
+      (2) se ci sono pagine **specifiche** (indirizzo con una parola chiave di una competenza, es.
+      `/certificazioni-linguistiche/`, esclusi articoli datati/di news) si leggono quelle; (3) altrimenti le **pagine
+      statiche** (max 2 livelli di profondità) e gli **ultimi 5 articoli** per data della sitemap. Scartati file, feed,
+      tag, categorie, privacy/cookie/login. Pagine non raggiungibili ignorate; un errore non blocca l'audit.
+- [x] `lib/temi.js`: nuova `temiDaIndirizzo(url)` (quali temi compaiono nell'indirizzo). `lib/sitemap.js`: ricerca
+      della sitemap anche da robots.txt (prima solo /sitemap.xml).
+- [x] `lib/runAudit.js`: le pagine extra finiscono solo in `pagineHtml`/`pagineUrl` (rilevamento temi, newsletter, social,
+      località); il **punteggio tecnico resta su home + generiche**. `audit.pagineExtra = {lette, tipo, daSitemap}`.
+- [x] Passaggio 6: il riquadro "Chiedo l'aiuto dell'AI" non compare se non ci sono canali trovati.
+      Passaggio 7: lo stesso riquadro compare (nascosto all'inizio) solo dopo aver aggiunto almeno un canale
+      e agisce sui canali aggiunti (rotta esistente `/social/:id/ai-aiuto`). Da rivedere con il test Firecrawl del 2026-10-04.
+- Costo: nessun credito API; fino a 10 richieste HTTP in parallelo al sito della scuola (timeout 7s) + sitemap/robots.
+      70 test verdi (nuovo `lib/pages.test.js`).
+
 ## Stato al 2026-10-03 (notte, 8) — testo passaggio 6 quando non ci sono canali social
 
 `views/social-conferma.ejs`: la frase "Non abbiamo trovato link a canali social (esclusi YouTube e Google Business

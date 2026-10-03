@@ -29,8 +29,9 @@
 </style>
 
 <h1>Canali social indicati sul sito</h1>
-<p class="lead">Abbiamo cercato i link ai canali social nelle pagine del sito. Conferma quelli corretti ed escludi quelli sbagliati. I social non condividono pubblicamente frequenza e interazioni: se conosci indicativamente questi dati (li trovi negli Insights/Statistiche della piattaforma), scegli la fascia corrispondente — oppure lascia fare all'AI qui sotto. Nel passaggio successivo troverai YouTube, la scheda Google Business Profile e la possibilità di aggiungere altri canali a mano.</p>
+<p class="lead">Abbiamo cercato i link ai canali social nelle pagine del sito. <% if (trovati.length) { %>Conferma quelli corretti ed escludi quelli sbagliati. I social non condividono pubblicamente frequenza e interazioni: se conosci indicativamente questi dati (li trovi negli Insights/Statistiche della piattaforma), scegli la fascia corrispondente — oppure lascia fare all'AI qui sotto. <% } %>Nel passaggio successivo troverai YouTube, la scheda Google Business Profile e la possibilità di aggiungere altri canali a mano.</p>
 
+<% if (trovati.length > 0) { %>
 <div class="ai-blocco">
   <div class="riga-bottone">
     <button type="button" id="btn-ai-tutti" class="btn btn-principale">🤖 Chiedo l'aiuto dell'AI</button>
@@ -38,6 +39,7 @@
   </div>
   <p class="ai-privacy">Leggiamo solo i dati pubblici del profilo indicato, o quelli che ci fornisci tu, per precompilare il modulo. Non conserviamo gli screenshot caricati: li usiamo solo per calcolare le metriche, poi li scartiamo.</p>
 </div>
+<% } %>
 
 <form method="POST" action="/social/<%= sessione.id %>" id="form-social">
   <div class="card">
@@ -251,7 +253,7 @@
   var btnTutti = document.getElementById('btn-ai-tutti');
   var statoTutti = document.getElementById('ai-stato');
 
-  btnTutti.addEventListener('click', function () {
+  if (btnTutti) btnTutti.addEventListener('click', function () {
     var righe = Array.prototype.slice.call(document.querySelectorAll('.social-row'));
     if (!righe.length) {
       statoTutti.className = 'errore';
