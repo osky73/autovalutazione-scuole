@@ -161,14 +161,13 @@ app.post('/dichiarazione/:id', (req, res) => {
     dichiarati.push(t);
   }
 
-  if (!dichiarati.length) {
-    return res.redirect(`/dichiarazione/${sessione.id}`);
-  }
-
+  // Nessuna competenza indicata: si può comunque proseguire (richiesta di Andrea, 2026-10-03). Nel
+  // passaggio 4 si vedranno solo le competenze individuate nel sito.
   sessione.dichiarati = dichiarati;
   sessione.temi = null;
   sessione.confermati = null;
   sessione.posizionamento = null;
+  sessione.posizionamentoSaltato = false;
 
   res.redirect(`/verifica/${sessione.id}`);
 });
@@ -185,7 +184,9 @@ app.get('/verifica/:id', (req, res) => {
     const temaPiuCitato = estrazione.temiTrovati[0] || null;
 
     let finding = null;
-    if (temaPiuCitato && !chiaviDichiarate.has(temaPiuCitato.key)) {
+    if (temaPiuCitato && !sessione.dichiarati.length) {
+      finding = `Il tema più citato nel sito è "${temaPiuCitato.label}".`;
+    } else if (temaPiuCitato && !chiaviDichiarate.has(temaPiuCitato.key)) {
       const elenco = sessione.dichiarati.map((t) => t.label).join(', ');
       finding = `Il tema più citato nel sito è "${temaPiuCitato.label}", ma non è tra le competenze dichiarate dalla scuola (${elenco}).`;
     }
@@ -215,7 +216,10 @@ app.get('/posizionamento/:id', (req, res) => {
     sessione.confermati = calcolaConfermati(sessione);
   }
   if (!sessione.confermati.length) {
-    return res.redirect(`/dichiarazione/${sessione.id}`);
+    // Nessuna competenza dichiarata e nessuna individuata nel sito: non c'è nulla da cercare su Google,
+    // il passaggio viene saltato.
+    sessione.posizionamentoSaltato = true;
+    return res.redirect(`/social/${sessione.id}`);
   }
 
   if (sessione.localita === undefined) {
@@ -240,6 +244,16 @@ app.get('/posizionamento/:id', (req, res) => {
   res.render('posizionamento', { sessione, risultati: sessione.posizionamento });
 });
 
+// Salta il passaggio 5 (nessuna ricerca su Google, nessun credito consumato).
+app.get('/posizionamento/:id/salta', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.temi) return res.redirect(`/verifica/${sessione.id}`);
+
+  sessione.posizionamentoSaltato = true;
+  res.redirect(`/social/${sessione.id}`);
+});
+
 app.get('/posizionamento/:id/esegui', async (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.status(404).json({ ok: false });
@@ -251,6 +265,7 @@ app.get('/posizionamento/:id/esegui', async (req, res) => {
     }));
 
     sessione.posizionamento = await verificaPosizionamentoCluster(valoriConQuery, sessione.audit.homeUrl);
+    sessione.posizionamentoSaltato = false;
   }
 
   res.json({ ok: true });
@@ -295,7 +310,7 @@ function parseDatiAI(json) {
 app.get('/social/:id', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
-  if (!sessione.posizionamento) return res.redirect(`/posizionamento/${sessione.id}`);
+  if (!sessione.posizionamento && !sessione.posizionamentoSaltato) return res.redirect(`/posizionamento/${sessione.id}`);
 
   if (sessione.socialTrovati === undefined) {
     sessione.socialTrovati = discoverSocialLinks(sessione.pagineHtml || []);

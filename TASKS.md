@@ -1,3 +1,16 @@
+## Stato al 2026-10-03 (pomeriggio) — passaggio 3 senza competenze + possibilità di saltare il passaggio 5
+
+Richiesta di Andrea.
+- [x] **Passaggio 3**: si può continuare senza indicare nessuna competenza (prima si tornava alla stessa pagina).
+      Il passaggio 4 mostra "Non è stata indicata nessuna competenza" e le sole competenze individuate nel sito
+      (osservazione: "Il tema più citato nel sito è X"). Se non ne trova nessuna, il passaggio 5 viene saltato da solo.
+- [x] **Passaggio 4**: sotto il box bianco, sopra i bottoni, testo piccolo che descrive il passaggio 5; sotto "Continua"
+      link piccolo "Salta il passaggio successivo (posizionamento su Google)" -> `GET /posizionamento/:id/salta`
+      (imposta `sessione.posizionamentoSaltato`, nessuna ricerca, nessun credito Serper). Il passaggio 6 accetta
+      `posizionamentoSaltato`; il suo "← Indietro" porta al passaggio 4 invece che rieseguire il 5.
+- Nota: senza competenze confermate, nel passaggio 9 "relazione con le competenze" risulta "Assente" (lista vuota).
+      Da rivedere se si vuole un testo diverso.
+
 ## DA FARE — nuovi pezzi di sviluppo (elenco di Andrea, 2026-10-03)
 
 Da affrontare dopo il test Firecrawl sui social (2026-10-04). Per ognuno serve prima un confronto con Andrea.
