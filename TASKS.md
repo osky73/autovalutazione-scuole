@@ -1,3 +1,10 @@
+## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
+
+Finché questa nota c'è, `autoanalisi-scuole.vercel.app` NON deve comparire su Google: header `X-Robots-Tag: noindex...` su
+ogni risposta (`server.js`), `<meta name="robots" content="noindex...">` in `views/partials/layout-top.ejs`,
+`GET /robots.txt` con `Disallow: /`. **Ricordare ad Andrea, a ogni sessione e prima di qualsiasi lancio/promozione,
+che il sito è bloccato**. Per sbloccarlo (solo se Andrea lo chiede): togliere i tre punti sopra e rimettere robots.txt permissivo.
+
 ## Stato al 2026-10-04 (sessione schedulata, seconda) — 4 ritocchi testo non ambigui del punto 5 (voce "Da fare")
 
 Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.

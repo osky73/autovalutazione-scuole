@@ -36,6 +36,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// SITO BLOCCATO AI MOTORI DI RICERCA (richiesta di Andrea, 2026-10-04): intestazione noindex su ogni risposta,
+// meta robots nelle pagine (views/partials/layout-top.ejs) e robots.txt che vieta la scansione.
+// Per riaprire il sito ai motori di ricerca: togliere questo blocco, il meta e rimettere robots.txt permissivo.
+app.use((req, res, next) => {
+  res.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
+  next();
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain').send('User-agent: *\nDisallow: /\n');
+});
+
 const PORT = process.env.PORT || 3000;
 
 function calcolaConfermati(sessione) {
