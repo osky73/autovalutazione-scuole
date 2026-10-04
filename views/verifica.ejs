@@ -14,7 +14,7 @@
     %>
       <span class="theme-chip" style="cursor:default;">
         <%= t.label %>
-        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %><% if (trovato.url) { %> — <a href="<%= trovato.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span><% } else if (t.key) { %><span class="muted">(non trovato sul sito)</span><% } %>
+        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %><% if (trovato.url) { %> — <a href="<%= trovato.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span><% } else if (t.key) { %><span class="text-bad">(non trovato sul sito)</span><% } %>
       </span>
     <% }) %>
   </div>
@@ -22,9 +22,9 @@
   <% var chiaviDichiarate = new Set(sessione.dichiarati.filter(function(t){ return t.key; }).map(function(t){ return t.key; }));
      var aggiuntive = temi.temiTrovati.filter(function(t){ return !chiaviDichiarate.has(t.key); });
   %>
-  <h2>Competenze aggiuntive individuate nel sito</h2>
+  <h2>Competenze individuate nel sito</h2>
   <% if (aggiuntive.length === 0) { %>
-    <p class="muted">Non abbiamo individuato altre competenze consolidate analizzando i contenuti del sito, rispetto a quelle dichiarate.</p>
+    <p class="muted">Abbiamo controllato i contenuti del sito e non abbiamo trovato una quantità omogenea di contenuti che identificasse una competenza tra quelle standard.</p>
   <% } else { %>
     <div class="theme-list">
       <% aggiuntive.forEach(function(t) { %>

@@ -1,3 +1,59 @@
+## Stato al 2026-10-04 (sessione schedulata, seconda) — 4 ritocchi testo non ambigui del punto 5 (voce "Da fare")
+
+Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati e deployati (nessuna novità rispetto alle sessioni precedenti) — nessuna
+      azione necessaria.
+- [x] **Voce 4 ("Verifica E2E aiuto AI Gemini") — ora OBSOLETA**: il bottone "🤖 Chiedo l'aiuto
+      dell'AI" e tutto il flusso collegato sono stati rimossi del tutto nella sessione precedente
+      (vedi "RISOLTO il 2026-10-04" più sotto) — non c'è più nulla da verificare end-to-end. Voce da
+      considerare chiusa, non riaprire.
+- **5 nuove voci in cima al file (domande al dirigente, punteggi, report finale, firme, ingaggio
+  commerciale)**: tutte richiedono esplicitamente un confronto con Andrea prima di qualunque
+  implementazione (lo dice il file stesso) — nessuna scelta implementativa semplice possibile,
+  non toccate.
+- **Voce 3 (andamento social 3 mesi)**: richiede ancora conferma di Andrea sul livello di
+  automazione — non toccata.
+- [x] **Voce 5 (revisione testi/UX), altro sottoinsieme non ambiguo implementato** (incremento
+      piccolo e autoconclusivo, scelto per budget di sessione conservativo): nel punto 4 ("Passaggio
+      conferma competenze + risultati ricerche, da accorpare") solo i pezzi di puro testo/stile,
+      indipendenti dalla fusione delle schermate 4+5 (quella resta non toccata, è una
+      ristrutturazione, non un testo):
+  - **Punto 3**: titolo del passaggio dichiarazione competenze cambiato in "Quali competenze o
+        specificità comunichi sul sito della tua scuola?" (`views/dichiarazione.ejs`).
+  - **Punto 4**: titolo "Competenze aggiuntive individuate nel sito" → "Competenze individuate nel
+        sito" (parola "aggiuntive" tolta, come richiesto); aggiunta la spiegazione richiesta da
+        Andrea quando non si trova nessuna competenza aggiuntiva ("Abbiamo controllato i contenuti
+        del sito e non abbiamo trovato una quantità omogenea di contenuti che identificasse una
+        competenza tra quelle standard.") al posto del testo precedente, in `views/verifica.ejs`.
+  - **Punto 4**: nel blocco risultati di posizionamento, "Non presente nei risultati analizzati" →
+        "Non presente nei primi 10 risultati su Google." (`views/posizionamento.ejs`, ramo quando
+        nessuna query del cluster ha risultati analizzabili).
+  - **Nuova classe CSS `.text-bad`** (`views/partials/layout-top.ejs`, usa la variabile colore
+        `--bad` già esistente) applicata al tag "(non trovato sul sito)" già presente in
+        `views/verifica.ejs` per le competenze dichiarate dal vocabolario e non trovate sul sito —
+        ora mostrato in rosso come richiesto ("mostrare... in rosso").
+  - **Non toccato, stesso punto 4** (richiede nuova logica, non solo testo — lasciato per sicurezza,
+        servirebbe una decisione sull'algoritmo di matching): la prima parte del punto, "verificare
+        se le competenze indicate nel TESTO LIBERO dall'utente sono state trovate sul sito". Oggi
+        `estraiTemi()` (`lib/temi.js`) confronta solo il VOCABOLARIO fisso con le pagine scaricate —
+        non esiste alcun controllo che cerchi la label scritta a mano dall'utente (key `null`) nel
+        contenuto del sito; andrebbe deciso come definire "trovato" per un testo libero arbitrario
+        (corrispondenza esatta? parole significative? case-insensitive? quante occorrenze minime?)
+        prima di scrivere il codice, per non introdurre falsi positivi/negativi arbitrari. La fusione
+        dei passaggi 4+5 e il resto dei punti 1/2/5/6/8 restano come già segnalato dalle sessioni
+        precedenti (richiedono conferma di Andrea su numerazione/ambiguità, vedi sezione completa più
+        sotto).
+- [x] **Verificato prima del deploy**: 70 test unitari esistenti ancora verdi (nessuna logica
+      toccata, solo testo/markup/CSS), `require('./server.js')` pulito, rendering con
+      `ejs.renderFile` delle 3 view toccate (`dichiarazione`, `verifica`, `posizionamento`) su più
+      casi (competenza dichiarata trovata/non trovata, nessuna competenza dichiarata, con/senza
+      competenze aggiuntive, risultato posizionamento senza query analizzabili) per confermare
+      l'assenza di errori EJS e la presenza dei nuovi testi/classe CSS.
+- [x] **Commit, push e deploy**: vedi commit e deployment riportati subito sotto questa voce
+      (sessione conclusa con questo incremento; nessun'altra voce azionabile senza Andrea trovata).
+
 ## Stato al 2026-10-04 — Test Firecrawl sui social eseguito: FALLISCE (blocco di dominio) → rimosso il bottone AI
 
 Sessione schedulata. Letto TASKS.md per intero prima di iniziare, come richiesto. Eseguito oggi il test
@@ -1589,7 +1645,16 @@ cliente oltre alla richiesta):
   automazione si aspetta (calcolo automatico solo per YouTube, vs. richiedere dati storici manuali
   per gli altri canali), perché le due strade hanno costi di sviluppo molto diversi.
 
-### 4. Verifica end-to-end dell'aiuto AI (Gemini) in produzione
+### 4. Verifica end-to-end dell'aiuto AI (Gemini) in produzione — OBSOLETA, vedi "RISOLTO il 2026-10-04"
+
+**Non più applicabile**: il bottone "🤖 Chiedo l'aiuto dell'AI" e tutto il flusso collegato (testo/
+URL e screenshot) sono stati rimossi del tutto il 2026-10-04 in seguito al test Firecrawl negativo
+sui social (vedi sezione "RISOLTO il 2026-10-04" più sotto in questo file) — non c'è più nulla da
+verificare end-to-end. Voce chiusa, non riaprire salvo che Andrea non richieda esplicitamente una
+nuova automazione (es. Graph API di Meta).
+
+<details>
+<summary>Testo originale della voce, per riferimento storico</summary>
 
 Il codice e la chiave sono a posto e deployati (vedi "Completati" in cima), ma finora è stato
 verificato solo con una chiamata di test diretta a `generateObject`/`estraiDati` da una deployment
@@ -1599,6 +1664,8 @@ tempo/token: aprire il wizard in produzione fino allo step "Canali social indica
 screenshot caricato) e controllare che i dati vengano estratti e mostrati correttamente. Se ricompare
 l'errore "modello sovraccarico" (`AI_RetryError`) più volte a distanza di ore, vale la pena
 raccontarlo al cliente/segnalarlo, perché a quel punto non sarebbe più un problema transitorio.
+
+</details>
 
 ### 5. Revisione testi e UX del wizard fino al passaggio 8 (richiesta di Andrea, 2026-09-30)
 
@@ -1611,22 +1678,30 @@ implementa).
   Etichetta del bottone: "Iniziamo".
 - **2) Passaggio con l'ultimo contenuto pubblicato** — L'etichetta negativa deve diventare
   "Troppo vecchio". Togliere il box "Il dato peggiore: Scheda Google...".
-- **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
-  sul sito della tua scuola?".
+- [x] **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
+  sul sito della tua scuola?". **FATTO il 2026-10-04** (`views/dichiarazione.ejs`).
 - **4) Passaggio conferma competenze + risultati ricerche (da accorpare)**:
-  - Verificare se le competenze indicate nel testo libero dall'utente sono state trovate sul sito;
-    se non trovate, mostrare la scritta "(non trovato sul sito)" in rosso.
-  - Cambiare il titolo "Competenze aggiuntive..." togliendo la parola "aggiuntive".
-  - Aggiungere una spiegazione: abbiamo controllato i contenuti del sito e non abbiamo trovato una
-    quantità omogenea di contenuti che identificasse una competenza tra quelle standard.
-  - Accorpare in questo stesso passaggio anche l'attuale passaggio 5 (risultati delle ricerche
-    Google per le competenze/temi).
-  - In quel blocco risultati, cambiare la dicitura "Non presente nei risultati analizzati" in
-    "Non presente nei primi 10 risultati su G[oogle]".
-  - Quando l'utente aggiunge una competenza personalizzata (testo libero), il sistema deve
+  - **Non toccato** (richiede nuova logica di matching, non solo testo — vedi nota nella sessione
+    "Stato al 2026-10-04 (sessione schedulata, seconda)" in cima al file): verificare se le
+    competenze indicate nel testo libero dall'utente sono state trovate sul sito; se non trovate,
+    mostrare la scritta "(non trovato sul sito)" in rosso. La classe CSS rossa esiste già
+    (`.text-bad`, usata per ora solo sul caso analogo delle competenze da vocabolario non trovate),
+    manca solo la verifica per il testo libero.
+  - [x] Cambiare il titolo "Competenze aggiuntive..." togliendo la parola "aggiuntive". **FATTO il
+    2026-10-04** (`views/verifica.ejs`, ora "Competenze individuate nel sito").
+  - [x] Aggiungere una spiegazione: abbiamo controllato i contenuti del sito e non abbiamo trovato una
+    quantità omogenea di contenuti che identificasse una competenza tra quelle standard. **FATTO il
+    2026-10-04** (`views/verifica.ejs`, mostrata quando non ci sono competenze aggiuntive).
+  - **Non toccato** (ristrutturazione di schermate, non un testo — resta da pianificare): accorpare
+    in questo stesso passaggio anche l'attuale passaggio 5 (risultati delle ricerche Google per le
+    competenze/temi).
+  - [x] In quel blocco risultati, cambiare la dicitura "Non presente nei risultati analizzati" in
+    "Non presente nei primi 10 risultati su Google". **FATTO il 2026-10-04**
+    (`views/posizionamento.ejs`).
+  - [x] Quando l'utente aggiunge una competenza personalizzata (testo libero), il sistema deve
     costruire delle varianti di query standard (tail, come per le competenze del vocabolario) su
-    cui effettuare la ricerca — attualmente probabilmente le competenze aggiunte a mano non hanno
-    query associate.
+    cui effettuare la ricerca — **GIÀ implementato** (vedi "Stato al 2026-10-03 (notte, 3)" più
+    sotto in questo file), confermato di nuovo in questa sessione, nessuna azione necessaria.
 - **5) Passaggio canali social trovati sul sito**:
   - [x] Nella spiegazione/istruzioni, togliere i riferimenti agli screenshot. **FATTO il 2026-10-04**
     insieme alla rimozione del bottone AI (vedi "Stato al 2026-10-04" in cima al file): il blocco con
