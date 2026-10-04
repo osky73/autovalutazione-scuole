@@ -1,3 +1,67 @@
+## Stato al 2026-10-04 — Test Firecrawl sui social eseguito: FALLISCE (blocco di dominio) → rimosso il bottone AI
+
+Sessione schedulata. Letto TASKS.md per intero prima di iniziare, come richiesto. Eseguito oggi il test
+pianificato nella sezione "PROSSIMO TASK" più sotto (rinominata "RISOLTO" in questa sessione), nel giorno
+indicato da Andrea per il ripristino dei crediti gratuiti Firecrawl.
+
+- [x] **Test Firecrawl su profili reali** (`mcp__Firecrawl__firecrawl_scrape`, proxy `stealth` e `auto`,
+      `maxAge: 0` per una lettura live): provati 5 profili reali di scuole italiane trovati via ricerca web
+      (non siti di test): `facebook.com/scuolalazolla`, `instagram.com/scuolalazolla`,
+      `instagram.com/istitutoleonexiii`, `facebook.com/i.c.barlassina`, `instagram.com/scuolamediamontanari`.
+      **Risultato identico e immediato per tutti e 5, su entrambe le piattaforme e con entrambi i proxy
+      provati**: l'API Firecrawl rifiuta la richiesta ancora prima di provare a scaricare la pagina, con
+      l'errore esplicito `"We apologize for the inconvenience but we do not support this site."` — non un
+      timeout, non un muro di login, non un errore di crediti: un blocco di POLITICA a livello di intero
+      dominio (`instagram.com` e `facebook.com` esclusi dal servizio), uguale per ogni profilo e ogni
+      impostazione di proxy provata. **Nessun credito Firecrawl consumato** (la richiesta viene rifiutata
+      prima di qualunque fetch/screenshot).
+- [x] **Esito del test = decisione presa da Andrea in anticipo** (vedi sezione sotto, ora "RISOLTO"): dato
+      che Firecrawl non è utilizzabile per Instagram/Facebook (le due piattaforme che contano per le scuole),
+      si applica la regola già scritta: **"niente bottone AI"**. Non serve un nuovo confronto con Andrea:
+      l'esito del test era esplicitamente la decisione stessa.
+- [x] **Implementato**: rimosso del tutto il bottone "🤖 Chiedo l'aiuto dell'AI" e il flusso di upload
+      screenshot, sia nel passaggio 6 (`views/social-conferma.ejs`) sia nel passaggio 7 — canali aggiunti a
+      mano (`views/social-altri.ejs`). Restano solo i menù a tendina per l'autodichiarazione delle fasce
+      (post/settimana, interazioni, follower), sempre attivi (non più "grigi e disabilitati" in attesa
+      di un dato automatico che non arriverà mai).
+  - **Rotte rimosse da `server.js`**: `POST /social/:id/ai-aiuto`, `POST /social/:id/ai-estrai`, e le due
+        rotte pubbliche gemelle non collegate a nessuna view (`POST /api/social/fetch`, `POST /api/social/extract`)
+        — stesso meccanismo abbandonato, mai usate dal wizard, nessun test le referenziava.
+  - **File lib diventati inutilizzati, eliminati**: `lib/social/fetchService.js`, `lib/social/platforms.js`,
+        `lib/social/extract.js`, `lib/social/adapters/index.js` (lo stub `infoPiattaforma()` che ritornava
+        sempre `null`, causa originaria del problema).
+  - **Non toccati, per scelta**: `lib/social/ai.js` (`providerDisponibile`/`ottieniModello`) e
+        `lib/social/assess.js` (`valutaPresenza`) — restano in uso per la valutazione AI complessiva dei
+        canali già confermati dall'utente (passaggio `/social/:id/esegui`, mostrata in `social-analisi.ejs`),
+        un criterio indipendente che non dipende da scraping di Instagram/Facebook e quindi non è toccato
+        dall'esito di questo test. Anche `POST /api/social/assess` (stessa logica, rotta pubblica non
+        collegata a nessuna view) lasciato intatto per lo stesso motivo. `lib/social/cache.js` lasciato
+        intatto: usato anche da `lib/social/youtube-analysis.js` e `lib/social/gbp.js`, non solo dal
+        meccanismo rimosso. Il campo `datiAI`/`parseDatiAI` in `server.js` e la gestione di `canale.datiAI`
+        in `lib/social.js` (`analizzaCanaleGenerico`) sono stati lasciati come sono (ora semplicemente
+        sempre `null`, gestito correttamente da codice già esistente) per non toccare logica di punteggio
+        non necessaria a questo intervento — nessun impatto, nessun input potrà più popolarli.
+- [x] **Verificato prima del deploy**: 70 test unitari esistenti ancora verdi, `require('./server.js')`
+      pulito, rendering EJS di `social-conferma`/`social-altri` su più combinazioni (nessun canale/alcuni
+      canali trovati, YouTube presente/assente, GBP nei vari stati) senza errori. Test end-to-end con il
+      server Express reale: le 4 rotte rimosse rispondono `404`, `/api/social/assess` resta raggiungibile
+      (`501` senza provider AI, come da comportamento esistente), e l'intero percorso
+      `GET/POST /social/:id` → `GET/POST /social/:id/altri` con una sessione simulata e fasce scelte a mano
+      salva correttamente `socialConfermati` (con `datiAI: null`) e prosegue il wizard.
+- [x] **Commit, push e deploy**: commit `be70f28`, deploy automatico via Git `dpl_Dn8rjv8o1FrFG231iXwiZ75htgaG`
+      (`READY` in ~14s). **Promosso in produzione**: `list_aliases` prima del cambio confermava ancora il
+      deployment precedente (`dpl_H1xQn173pVk5HEgmuvwBdsVMrKPp`, commit `a2a1a28` — nessuna sessione
+      concorrente), poi `assign_alias` su `autoanalisi-scuole.vercel.app` (`oldDeploymentId` di ritorno
+      uguale a quanto atteso), verificato stabile con un secondo `list_aliases`. Alias di fallback `-osky2`
+      non toccato (resta il redirect permanente verso l'alias primario, come da regola). Non è stato
+      possibile un controllo HTTP diretto dal vivo (stesso limite di rete delle sessioni schedulate
+      precedenti verso `vercel.app`) — verifica basata su `readyState: READY`, sui 70 test locali, sul
+      rendering EJS e sul test end-to-end descritti sopra.
+- **Nota per Andrea**: se in futuro si vuole riprovare l'automazione per Instagram, l'unica via concreta
+  già discussa (non Firecrawl) è la Graph API di Meta/Business Discovery, limitata ai profili
+  business/creator e che richiede un'app Meta approvata — un lavoro di integrazione a parte, non un
+  piccolo ritocco. Nessuna azione presa in questa direzione, solo annotata come riferimento.
+
 ## Stato al 2026-10-03 (sera, 3) — riga unica centrata sotto il box: "Prossimo passaggio: … - Salta il prox passaggio"
 
 Richiesta di Andrea: il link di salto va sulla stessa riga della descrizione, centrato e più vicino al box bianco (prima il
@@ -46,7 +110,9 @@ Richiesta di Andrea.
 
 ## DA FARE — nuovi pezzi di sviluppo (elenco di Andrea, 2026-10-03)
 
-Da affrontare dopo il test Firecrawl sui social (2026-10-04). Per ognuno serve prima un confronto con Andrea.
+Da affrontare dopo il test Firecrawl sui social (2026-10-04, fatto — vedi "Stato al 2026-10-04" in cima
+al file). Per ognuno serve comunque prima un confronto con Andrea: nessuna di queste 5 voci è stata
+affrontata in questa sessione, il test completato tocca solo il bottone AI dei canali social.
 - [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
 - [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
 - [ ] **Report finale scaricabile**: documento (probabilmente PDF) con i risultati di tutti i passaggi e i punteggi.
@@ -151,11 +217,13 @@ Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto
         checkbox di fianco al canale TROVATO sul sito in `views/social-conferma.ejs` (a differenza del
         checkbox YouTube, qui il testo introduttivo della schermata invita esplicitamente l'utente a
         "escludere quelli sbagliati" tramite quel checkbox — rimuoverlo senza un meccanismo
-        sostitutivo toglierebbe una funzione, non solo un dettaglio estetico); riferimenti allo
+        sostitutivo toglierebbe una funzione, non solo un dettaglio estetico); ~~riferimenti allo
         screenshot nel testo di `social-conferma.ejs`/`social-altri.ejs` (intrecciati con il flusso
         AI/upload che il "PROSSIMO TASK" Firecrawl prevede di riscrivere comunque, test previsto per
-        il 2026-10-04 — modificarli ora rischia di essere lavoro buttato); numerazione mancante
-        (punto 7) e caso multi-plessi GBP (feature più ampia).
+        il 2026-10-04 — modificarli ora rischia di essere lavoro buttato)~~ **RISOLTO il 2026-10-04**:
+        il flusso AI/upload (bottone e relativi riferimenti a screenshot) è stato rimosso del tutto,
+        vedi "Stato al 2026-10-04" in cima al file; numerazione mancante
+        (punto 7) e caso multi-plessi GBP (feature più ampia) restano aperti.
       **Nota**: il punto 4 "quando l'utente aggiunge una competenza personalizzata... il sistema deve
       costruire delle varianti di query" risultava GIÀ implementato (vedi "Stato al 2026-10-03
       (notte, 3)" più sotto in questo file) — nessuna azione necessaria lì.
@@ -305,40 +373,51 @@ preview) — il valore NON va scritto nel repo (è stata incollata in chiaro in 
 - NB: lo strumento di fetch usato nelle sessioni NON mantiene la query string degli URL (una rotta con `?t=...`
       dava 404); passare i parametri nel percorso. Inoltre i percorsi che iniziano con `__` danno 404 su Vercel.
 
-## PROSSIMO TASK (richiesto da Andrea il 2026-10-03) — passaggio "Canali social": rilevazione automatica via Firecrawl al posto del caricamento screenshot
+## RISOLTO il 2026-10-04 — passaggio "Canali social": test Firecrawl fatto, esito negativo, bottone AI rimosso
 
-**Decisione di Andrea**: il caricamento di uno screenshot da parte del dirigente scolastico NON è accettabile (troppo
-attrito per un'autoanalisi rapida). Nessun riquadro di upload, in nessun caso. Il bottone
-"🤖 Chiedo l'aiuto dell'AI" va ripensato così. Non è una funzione già implementata: oggi il bottone chiama
-`/social/:id/ai-aiuto`, ma `lib/social/adapters/index.js` è uno stub (`infoPiattaforma()` ritorna sempre `null`), quindi
-ogni canale risulta "non supportato" e compaiono solo i box di upload (`mostraLivelloC` in `views/social-conferma.ejs`).
+Vedi la sezione "Stato al 2026-10-04" in cima al file per il dettaglio completo (risultato del test,
+cosa è stato rimosso/lasciato, verifica, deploy). Riepilogo: Firecrawl rifiuta l'intero dominio sia di
+Instagram sia di Facebook (`"we do not support this site"`, non un problema di singolo profilo/crediti/
+proxy) — per la regola già scritta qui sotto ("se Firecrawl fallisce → niente bottone AI"), il bottone
+"🤖 Chiedo l'aiuto dell'AI" e tutto il flusso di upload screenshot sono stati rimossi; restano solo i menù
+a tendina per l'autodichiarazione. Non riaprire questa voce salvo che Andrea non chieda esplicitamente di
+valutare un'alternativa (es. Graph API di Meta, solo profili business/creator — non Firecrawl).
 
-### Comportamento richiesto
-- [ ] **Il bottone attiva Firecrawl** (server-side, in background) sui canali social indicati dal sito della scuola
-      (apre la pagina del profilo, ne ricava lo screenshot/dati e legge i valori: follower, post, like, commenti).
-- [ ] **Se Firecrawl funziona** per un canale: i valori trovati vengono stampati **di fianco ai menù a tendina**
-      (fasce like / follower / frequenza) di quel canale, e i menù diventano **disattivati e grigi** (disabled).
-- [ ] **Se Firecrawl fallisce per qualsiasi motivo** (blocco, login wall, crediti finiti, timeout, errore API,
-      chiave assente): compare un messaggio che invita a **inserire a mano i valori delle attività social usando i menù
-      a tendina sottostanti**, che restano attivi. NESSUN box di caricamento immagine.
-- [ ] **Rimuovere il flusso di upload**: riquadri screenshot, `/social/:id/ai-estrai` e il relativo codice client
-      (`mostraLivelloC`, `fileToBase64`, ecc.). Valutare se `lib/social/extract.js` e `lib/social/ai.js` (Gemini) servono
-      ancora per leggere lo screenshot di Firecrawl; altrimenti eliminarli.
-- [x] **Dipendenza risolta (2026-10-03)**: la chiave API Firecrawl è già impostata su Vercel come env var
-      `FIRECRAWL_API_KEY` ("sensitive", production + preview), fornita da Andrea. Valida solo per i deploy FUTURI e non ancora
-      verificata (account senza crediti fino al reset del 2026-10-04). Il valore NON va scritto nel repo; Andrea
-      valuta di rigenerarla dopo il test (è stata incollata in chiaro in chat).
-- [ ] Gestire in modo sicuro il fallimento: timeout breve, un solo tentativo per canale, nessun blocco del wizard,
-      rate limit già esistente (`consentito`), nessuna chiave esposta al client.
+**Decisione di Andrea (2026-10-03, per riferimento storico)**: il caricamento di uno screenshot da parte del
+dirigente scolastico NON è accettabile (troppo attrito per un'autoanalisi rapida). Nessun riquadro di upload,
+in nessun caso. Il bottone "🤖 Chiedo l'aiuto dell'AI" andava ripensato così, provando prima Firecrawl.
 
-### Test da fare prima di implementare (domani, 2026-10-04, crediti Firecrawl gratuiti ripristinati)
-- [ ] Provare solo i **social** (NON le posizioni su Google): 4-5 profili reali di scuole, mix Instagram/Facebook.
-- [ ] Per ognuno: richiesta con proxy `stealth` + screenshot + estrazione dati; annotare se la pagina si apre o appare
-      il muro di login, quali valori escono, e quanti crediti consuma ogni richiesta (piano gratuito: 1.000 crediti/mese).
-- [ ] **Esito del test = decisione**: se i dati escono in modo utilizzabile → implementare il comportamento sopra.
-      Se Firecrawl fallisce → **niente bottone AI**: restano solo i menù a tendina con autodichiarazione delle attività
-      social, e si rimuove il codice AI/upload. (Alternativa già discussa se serve dato completo su Instagram:
-      Graph API di Meta / Business Discovery, solo per profili business/creator.)
+<details>
+<summary>Comportamento richiesto e piano di test originali (2026-10-03), per riferimento storico — superati dall'esito negativo del test</summary>
+
+### Comportamento richiesto (se il test Firecrawl fosse riuscito — NON è il caso, vedi sopra)
+- [x] ~~Il bottone attiva Firecrawl (server-side, in background) sui canali social...~~ non implementato:
+      test negativo, vedi sopra.
+- [x] ~~Se Firecrawl funziona per un canale: i valori trovati vengono stampati di fianco ai menù...~~ non
+      applicabile.
+- [x] **Se Firecrawl fallisce per qualsiasi motivo**: compare un messaggio che invita a inserire a mano i
+      valori usando i menù a tendina, che restano attivi. NESSUN box di caricamento immagine. — **Questo è
+      esattamente il ramo implementato** (Firecrawl fallisce sempre per Instagram/Facebook), semplificato:
+      dato che l'esito è sempre lo stesso, non serve più nemmeno il bottone/il tentativo — i menù a tendina
+      sono semplicemente sempre attivi fin da subito, senza messaggio di errore intermedio.
+- [x] **Rimosso il flusso di upload**: riquadri screenshot, `/social/:id/ai-estrai` e il relativo codice
+      client (`mostraLivelloC`, `fileToBase64`, ecc.). `lib/social/extract.js` eliminato (non serviva più);
+      `lib/social/ai.js` mantenuto (serve ancora alla valutazione AI complessiva dei canali, indipendente).
+- [x] **Dipendenza (chiave Firecrawl)**: rimasta impostata su Vercel (`FIRECRAWL_API_KEY`) ma non più usata
+      da nessun codice — non è stata rimossa la env var in sé (non necessario, nessun costo a restare
+      impostata e non lo si può comunque fare dal repo). Andrea può rigenerarla/rimuoverla quando vuole,
+      visto che non viene più letta da nessuna chiamata.
+- [x] ~~Gestire in modo sicuro il fallimento: timeout, un tentativo per canale, ecc.~~ non applicabile,
+      non c'è più nessuna chiamata a Firecrawl nel codice.
+
+### Test da fare prima di implementare (fatto il 2026-10-04, crediti Firecrawl gratuiti ripristinati)
+- [x] Provati i **social** (NON le posizioni su Google): 5 profili reali di scuole, mix Instagram/Facebook.
+- [x] Per ognuno: richiesta con proxy `stealth`/`auto`; annotato che l'intero dominio è bloccato dal
+      servizio stesso (non un muro di login sul singolo profilo) — zero crediti consumati, errore
+      immediato e identico per tutti.
+- [x] **Esito del test = decisione**: Firecrawl fallisce → **niente bottone AI**, implementato (vedi sopra).
+
+</details>
 
 ## Stato al 2026-10-03 (ritocco 2) — passaggio 5: 6 query visibili prima di "… altro"
 
@@ -1549,7 +1628,10 @@ implementa).
     cui effettuare la ricerca — attualmente probabilmente le competenze aggiunte a mano non hanno
     query associate.
 - **5) Passaggio canali social trovati sul sito**:
-  - Nella spiegazione/istruzioni, togliere i riferimenti agli screenshot.
+  - [x] Nella spiegazione/istruzioni, togliere i riferimenti agli screenshot. **FATTO il 2026-10-04**
+    insieme alla rimozione del bottone AI (vedi "Stato al 2026-10-04" in cima al file): il blocco con
+    "o quelli che ci fornisci tu... screenshot caricati" e il rimando "oppure lascia fare all'AI qui
+    sotto" non esistono più.
   - I testi delle select (fasce like/follower/frequenza ecc.) devono avere lo stesso stile
     (colore e dimensione) degli altri testi della pagina.
   - Nei select, togliere le etichette qualitative "buono", "sufficiente", "insufficiente"; al posto
