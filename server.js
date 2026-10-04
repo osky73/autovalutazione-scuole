@@ -14,13 +14,9 @@ const {
 const { fetchPage } = require('./lib/http');
 const { verificaPosizionamentoCluster } = require('./lib/serp');
 const { discoverSocialLinks, analizzaCanali } = require('./lib/social');
-const { eseguiFetch } = require('./lib/social/fetchService');
-const { riconosciPiattaforma } = require('./lib/social/platforms');
-const { estraiDati } = require('./lib/social/extract');
 const { valutaPresenza } = require('./lib/social/assess');
 const { providerDisponibile } = require('./lib/social/ai');
 const { consentito } = require('./lib/social/rateLimit');
-const { computeMetrics } = require('./lib/social/metrics');
 const { analizzaGBP } = require('./lib/social/gbp');
 
 const app = express();
@@ -493,60 +489,6 @@ app.post('/social/:id/altri', (req, res) => {
   res.redirect(`/social/${sessione.id}/analisi`);
 });
 
-app.post('/social/:id/ai-aiuto', async (req, res) => {
-  const sessione = getSessione(req.params.id);
-  if (!sessione) return res.status(404).json({ ok: false });
-
-  if (!consentito(req.ip)) {
-    return res.status(429).json({ ok: false, error: 'Troppe richieste, riprova tra un minuto' });
-  }
-
-  let canali = (req.body && req.body.canali) || [];
-  if (!Array.isArray(canali)) canali = [];
-
-  const risultati = await Promise.all(
-    canali.map(async (c) => {
-      const riconosciuta = riconosciPiattaforma(c.url, c.platform);
-      if (!riconosciuta.platform) {
-        return { url: c.url, ok: false, code: 'PLATFORM_UNKNOWN', supportLevel: 'C' };
-      }
-      const esito = await eseguiFetch(riconosciuta.platform, riconosciuta.handle);
-      if (!esito.ok) {
-        return { url: c.url, platform: riconosciuta.platform, ok: false, code: esito.code, message: esito.message, supportLevel: 'C' };
-      }
-      return { url: c.url, platform: riconosciuta.platform, ok: true, supportLevel: 'A', metrics: esito.metrics };
-    })
-  );
-
-  res.json({ ok: true, risultati });
-});
-
-app.post('/social/:id/ai-estrai', async (req, res) => {
-  const sessione = getSessione(req.params.id);
-  if (!sessione) return res.status(404).json({ ok: false });
-  if (!consentito(req.ip)) return res.status(429).json({ ok: false, error: 'Troppe richieste, riprova tra un minuto' });
-  if (!providerDisponibile()) {
-    return res.status(501).json({ ok: false, error: 'Servizio di estrazione AI non configurato lato server' });
-  }
-
-  const { platform, testo, immagineBase64 } = req.body || {};
-  try {
-    const estratto = await estraiDati({ platform, testo, immagineBase64 });
-    const posts = (estratto.post || []).map((p) => ({ timestamp: p.dataApprox, likes: p.like, comments: p.commenti }));
-    const metrics = computeMetrics({ followers: estratto.followers, posts, historyTruncated: false });
-
-    if (estratto.dataAperturaVisibile) {
-      metrics.dataApertura = estratto.dataAperturaVisibile;
-      metrics.aperturaStimata = false;
-    }
-
-    res.json({ ok: true, metrics, estratto });
-  } catch (e) {
-    const status = e.code === 'EMPTY_INPUT' ? 422 : e.code === 'AI_NOT_CONFIGURED' ? 501 : 502;
-    res.status(status).json({ ok: false, error: e.message || 'Estrazione non riuscita' });
-  }
-});
-
 app.get('/social/:id/analisi', (req, res) => {
   const sessione = getSessione(req.params.id);
   if (!sessione) return res.redirect('/');
@@ -783,45 +725,6 @@ app.get('/newsletter/:id', (req, res) => {
   const discrepanzaNewsletter = sessione.newsletterImportante === true && !!newsletter && newsletter.stato === 'assente';
 
   res.render('newsletter', { sessione, newsletter, newsletterImportante: sessione.newsletterImportante, discrepanzaNewsletter });
-});
-
-app.post('/api/social/fetch', async (req, res) => {
-  if (!consentito(req.ip)) return res.status(429).json({ error: 'Troppe richieste, riprova tra un minuto' });
-
-  const { handle, url, platform } = req.body || {};
-  const input = url || handle;
-  if (!input) return res.status(422).json({ error: 'Indirizzo o handle mancante' });
-
-  const riconosciuta = riconosciPiattaforma(input, platform);
-  if (!riconosciuta.platform) {
-    return res.status(422).json({ error: 'Piattaforma non riconosciuta: indicala esplicitamente', ambiguo: true });
-  }
-
-  const esito = await eseguiFetch(riconosciuta.platform, riconosciuta.handle);
-  if (!esito.ok) {
-    const status = esito.code === 'RATE_LIMIT' ? 429 : esito.code === 'NOT_SUPPORTED' ? 501 : 422;
-    return res
-      .status(status)
-      .json({ error: esito.message || 'Impossibile leggere il profilo automaticamente', code: esito.code, supportLevel: esito.supportLevel });
-  }
-
-  res.json({ platform: riconosciuta.platform, supportLevel: 'A', metrics: esito.metrics });
-});
-
-app.post('/api/social/extract', async (req, res) => {
-  if (!consentito(req.ip)) return res.status(429).json({ error: 'Troppe richieste, riprova tra un minuto' });
-  if (!providerDisponibile()) {
-    return res.status(501).json({ error: 'Servizio di estrazione AI non configurato lato server' });
-  }
-
-  const { platform, testo, immagineBase64 } = req.body || {};
-  try {
-    const dati = await estraiDati({ platform, testo, immagineBase64 });
-    res.json({ platform: platform || null, estratto: dati });
-  } catch (e) {
-    const status = e.code === 'EMPTY_INPUT' ? 422 : e.code === 'AI_NOT_CONFIGURED' ? 501 : 502;
-    res.status(status).json({ error: e.message || 'Estrazione non riuscita' });
-  }
 });
 
 app.post('/api/social/assess', async (req, res) => {

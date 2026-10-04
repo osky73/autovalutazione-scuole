@@ -1,45 +1,12 @@
 <%- include('partials/layout-top', { titolo: 'Canali social indicati sul sito', step: 6 }) %>
 
 <style>
-  .ai-blocco { background: var(--brand-light); border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
-  .ai-blocco .riga-bottone { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  #ai-stato { font-size: 0.88rem; font-weight: 600; color: var(--brand); }
-  #ai-stato.errore { color: var(--bad); }
-  .ai-privacy { font-size: 0.78rem; color: var(--muted); margin: 8px 0 0; }
-  .ai-badge {
-    display: none; align-items: center; gap: 5px; background: #e3f4ea; color: var(--good);
-    font-size: 0.72rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; margin-left: 8px;
-  }
-  .ai-riepilogo { display: none; font-size: 0.82rem; color: var(--ink); background: #f6f5f2; border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
-  .ai-riepilogo .avviso { color: var(--mid); display: block; margin-top: 4px; }
-  .ai-livello-c {
-    display: none; margin-top: 10px; padding: 12px; border: 1px dashed var(--border); border-radius: 10px; background: #fff;
-  }
-  .ai-livello-c .riga-azioni { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-  .ai-c-status { font-size: 0.8rem; margin-top: 6px; }
-  .ai-c-status.errore { color: var(--bad); }
-  .ai-c-status.ok { color: var(--good); }
   .fascia-select { font-size: 0.82rem; font-family: inherit; color: var(--ink); background: #fff; }
   .fascia-select option[value=""] { font-style: italic; color: var(--muted); }
-  .spinner-inline {
-    display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(43,74,99,0.25);
-    border-top-color: var(--brand); border-radius: 50%; animation: girare 0.8s linear infinite; vertical-align: -2px;
-  }
-  @keyframes girare { to { transform: rotate(360deg); } }
 </style>
 
 <h1>Canali social indicati sul sito</h1>
-<p class="lead">Abbiamo cercato i link ai canali social nelle pagine del sito. <% if (trovati.length) { %>Conferma quelli corretti ed escludi quelli sbagliati. I social non condividono pubblicamente frequenza e interazioni: se conosci indicativamente questi dati (li trovi negli Insights/Statistiche della piattaforma), scegli la fascia corrispondente — oppure lascia fare all'AI qui sotto. <% } %>Nel passaggio successivo troverai YouTube, la scheda Google Business Profile e la possibilità di aggiungere altri canali a mano.</p>
-
-<% if (trovati.length > 0) { %>
-<div class="ai-blocco">
-  <div class="riga-bottone">
-    <button type="button" id="btn-ai-tutti" class="btn btn-principale">🤖 Chiedo l'aiuto dell'AI</button>
-    <span id="ai-stato" role="status" aria-live="polite"></span>
-  </div>
-  <p class="ai-privacy">Leggiamo solo i dati pubblici del profilo indicato, o quelli che ci fornisci tu, per precompilare il modulo. Non conserviamo gli screenshot caricati: li usiamo solo per calcolare le metriche, poi li scartiamo.</p>
-</div>
-<% } %>
+<p class="lead">Abbiamo cercato i link ai canali social nelle pagine del sito. <% if (trovati.length) { %>Conferma quelli corretti ed escludi quelli sbagliati. I social non condividono pubblicamente frequenza e interazioni: se conosci indicativamente questi dati (li trovi negli Insights/Statistiche della piattaforma), scegli la fascia corrispondente. <% } %>Nel passaggio successivo troverai YouTube, la scheda Google Business Profile e la possibilità di aggiungere altri canali a mano.</p>
 
 <form method="POST" action="/social/<%= sessione.id %>" id="form-social">
   <div class="card">
@@ -53,7 +20,6 @@
               <input type="checkbox" name="includiTrovato" value="<%= c.url %>" checked style="margin:0; width:auto;" />
               <span><%= c.label %></span>
             </label>
-            <span class="ai-badge">✨ Compilato dall'AI</span>
             <a href="<%= c.url %>" target="_blank" rel="noopener" class="muted" style="font-size:0.82rem; word-break:break-all;"><%= c.url %></a>
             <label style="display:flex; align-items:center; gap:6px; margin:0; font-size:0.82rem; font-weight:400; white-space:nowrap;">
               <input type="checkbox" name="meno6mesiTrovato" value="<%= c.url %>" class="meno6mesi-check" style="margin:0; width:auto;" />
@@ -89,16 +55,6 @@
               </select>
             </label>
           </div>
-          <div class="ai-riepilogo"></div>
-          <div class="ai-livello-c">
-            <p class="muted ai-messaggio" style="margin-top:0;"></p>
-            <div class="riga-azioni">
-              <input type="file" class="ai-file" accept="image/*" aria-label="Carica uno screenshot del profilo" />
-              <button type="button" class="btn secondary btn-estrai-ai">Estrai con AI</button>
-              <span class="ai-c-status" role="status" aria-live="polite"></span>
-            </div>
-          </div>
-          <input type="hidden" name="aiDatiTrovato" class="ai-dati-hidden" value="" />
         </div>
       <% }) %>
     <% } %>
@@ -112,8 +68,6 @@
 </form>
 
 <script>
-  var SESSION_ID = <%- JSON.stringify(sessione.id) %>;
-
   function collegaMeno6Mesi(checkbox, campi) {
     function aggiorna() {
       campi.forEach(function (el) {
@@ -129,180 +83,9 @@
     var checkbox = riga.querySelector('.meno6mesi-check');
     var campi = Array.prototype.slice.call(riga.querySelectorAll('.fascia-select'));
     if (checkbox && campi.length) collegaMeno6Mesi(checkbox, campi);
-
-    campi.forEach(function (sel) {
-      sel.addEventListener('change', function () {
-        if (riga.dataset.aiApplicato === '1') azzeraAI(riga);
-      });
-    });
-
-    var btnEstrai = riga.querySelector('.btn-estrai-ai');
-    if (btnEstrai) btnEstrai.addEventListener('click', function () { estraiConAI(riga); });
   }
 
   document.querySelectorAll('.social-row').forEach(collegaRiga);
-
-  function fasciaDaFrequenza(v) { if (v == null) return ''; if (v >= 3) return 'alta'; if (v >= 1.5) return 'media'; return 'bassa'; }
-  function fasciaDaInterazioni(v) { if (v == null) return ''; if (v >= 30) return 'alta'; if (v >= 15) return 'media'; return 'bassa'; }
-  function fasciaDaFollower(v) { if (v == null) return ''; if (v > 1000) return 'alta'; if (v >= 500) return 'media'; return 'bassa'; }
-
-  function selectDellaRiga(riga, name) { return riga.querySelector('select[name="' + name + '"]'); }
-
-  function formatDataApertura(iso, stimata) {
-    if (!iso) return null;
-    var d = new Date(iso);
-    var testo = isNaN(d) ? iso : d.toLocaleDateString('it-IT');
-    return testo + (stimata ? ' (stimata)' : '');
-  }
-
-  function applicaMetriche(riga, metrics) {
-    riga.dataset.aiApplicato = '1';
-    riga.querySelector('.ai-dati-hidden').value = JSON.stringify(metrics);
-    riga.querySelector('.ai-badge').style.display = 'inline-flex';
-    riga.querySelector('.ai-livello-c').style.display = 'none';
-
-    var selFreq = selectDellaRiga(riga, 'freqTrovato');
-    var selLike = selectDellaRiga(riga, 'likeTrovato');
-    var selFollower = selectDellaRiga(riga, 'followerTrovato');
-    var interazioni = metrics.mediaInterazioni != null ? metrics.mediaInterazioni : metrics.mediaLike;
-    if (selFreq && metrics.postSettimana != null) selFreq.value = fasciaDaFrequenza(metrics.postSettimana);
-    if (selLike && interazioni != null) selLike.value = fasciaDaInterazioni(interazioni);
-    if (selFollower && metrics.followers != null) selFollower.value = fasciaDaFollower(metrics.followers);
-
-    var righe = [];
-    if (metrics.followers != null) righe.push(metrics.followers + ' follower');
-    var apertura = formatDataApertura(metrics.dataApertura, metrics.aperturaStimata);
-    if (apertura) righe.push('apertura ' + apertura);
-    if (metrics.postSettimana != null) righe.push(metrics.postSettimana + ' post/settimana');
-    if (interazioni != null) righe.push(interazioni + ' interazioni medie');
-    if (metrics.engagementRate != null) righe.push('engagement rate ' + metrics.engagementRate + '%');
-
-    var riepilogo = riga.querySelector('.ai-riepilogo');
-    var html = 'Rilevato dall\'AI: ' + (righe.length ? righe.join(' · ') : 'nessun dato numerico disponibile') + '.';
-    (metrics.avvisi || []).forEach(function (a) { html += '<span class="avviso">⚠ ' + a + '</span>'; });
-    riepilogo.innerHTML = html;
-    riepilogo.style.display = 'block';
-  }
-
-  function azzeraAI(riga) {
-    riga.dataset.aiApplicato = '0';
-    riga.querySelector('.ai-dati-hidden').value = '';
-    riga.querySelector('.ai-badge').style.display = 'none';
-    riga.querySelector('.ai-riepilogo').style.display = 'none';
-  }
-
-  var MESSAGGI_ERRORE = {
-    NOT_SUPPORTED: "Per questa piattaforma non possiamo leggere i dati in automatico: carica uno screenshot del tuo profilo e proviamo a leggerlo per te.",
-    NOT_BUSINESS: "Non riusciamo a leggere questo profilo in automatico (deve essere un account business/creator, o il profilo è privato): carica uno screenshot.",
-    RATE_LIMIT: "Il servizio è momentaneamente occupato: riprova tra qualche minuto, oppure carica uno screenshot.",
-    NOT_FOUND: "Non abbiamo trovato questo profilo: verifica l'indirizzo, oppure carica uno screenshot.",
-    PLATFORM_UNKNOWN: "Non abbiamo riconosciuto la piattaforma di questo indirizzo: carica uno screenshot.",
-  };
-
-  function mostraLivelloC(riga, code) {
-    var pannello = riga.querySelector('.ai-livello-c');
-    riga.querySelector('.ai-messaggio').textContent = MESSAGGI_ERRORE[code] || MESSAGGI_ERRORE.NOT_SUPPORTED;
-    pannello.style.display = 'block';
-  }
-
-  function fileToBase64(file) {
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function () { resolve(reader.result); };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function estraiConAI(riga) {
-    var stato = riga.querySelector('.ai-c-status');
-    var fileInput = riga.querySelector('.ai-file');
-    var file = fileInput.files && fileInput.files[0];
-
-    if (!file) {
-      stato.className = 'ai-c-status errore';
-      stato.textContent = 'Carica uno screenshot prima di procedere.';
-      return;
-    }
-
-    stato.className = 'ai-c-status';
-    stato.innerHTML = '<span class="spinner-inline" aria-hidden="true"></span> Estrazione in corso...';
-
-    fileToBase64(file).then(function (immagineBase64) {
-      return fetch('/social/' + SESSION_ID + '/ai-estrai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform: riga.dataset.platform, immagineBase64: immagineBase64 }),
-      });
-    }).then(function (r) { return r.json().then(function (dati) { return { status: r.status, dati: dati }; }); })
-      .then(function (res) {
-        if (res.status !== 200 || !res.dati.ok) {
-          stato.className = 'ai-c-status errore';
-          stato.textContent = res.dati.error || 'Estrazione non riuscita: puoi comunque scegliere le fasce qui sopra a mano.';
-          return;
-        }
-        stato.className = 'ai-c-status ok';
-        stato.textContent = 'Dati estratti e applicati qui sopra.';
-        applicaMetriche(riga, res.dati.metrics);
-      })
-      .catch(function () {
-        stato.className = 'ai-c-status errore';
-        stato.textContent = 'Errore di rete durante l\'estrazione: puoi comunque scegliere le fasce qui sopra a mano.';
-      });
-  }
-
-  var btnTutti = document.getElementById('btn-ai-tutti');
-  var statoTutti = document.getElementById('ai-stato');
-
-  if (btnTutti) btnTutti.addEventListener('click', function () {
-    var righe = Array.prototype.slice.call(document.querySelectorAll('.social-row'));
-    if (!righe.length) {
-      statoTutti.className = 'errore';
-      statoTutti.textContent = 'Non ci sono canali da analizzare in questo passaggio.';
-      return;
-    }
-
-    btnTutti.disabled = true;
-    statoTutti.className = '';
-    statoTutti.innerHTML = '<span class="spinner-inline" aria-hidden="true"></span> Recupero i dati dai canali indicati, può richiedere qualche secondo...';
-
-    var canali = righe.map(function (r) { return { url: r.dataset.url, platform: r.dataset.platform }; });
-
-    fetch('/social/' + SESSION_ID + '/ai-aiuto', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ canali: canali }),
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (dati) {
-        btnTutti.disabled = false;
-        if (!dati.ok) {
-          statoTutti.className = 'errore';
-          statoTutti.textContent = dati.error || 'Non è stato possibile completare la richiesta.';
-          return;
-        }
-        var riuscite = 0;
-        dati.risultati.forEach(function (ris) {
-          var riga = righe.filter(function (r) { return r.dataset.url === ris.url; })[0];
-          if (!riga) return;
-          if (ris.ok) {
-            riuscite += 1;
-            applicaMetriche(riga, ris.metrics);
-          } else {
-            mostraLivelloC(riga, ris.code);
-          }
-        });
-        statoTutti.className = '';
-        statoTutti.textContent = riuscite === righe.length
-          ? 'Dati recuperati per tutti i canali: controlla e correggi se serve, poi premi Continua.'
-          : 'Dati recuperati automaticamente per ' + riuscite + ' su ' + righe.length + ' canali. Per gli altri, carica uno screenshot nel riquadro apparso sotto il canale.';
-      })
-      .catch(function () {
-        btnTutti.disabled = false;
-        statoTutti.className = 'errore';
-        statoTutti.textContent = 'Errore di rete: riprova tra poco.';
-      });
-  });
 </script>
 
 <%- include('partials/layout-bottom', { step: 6, sessione: sessione }) %>
