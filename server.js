@@ -432,7 +432,8 @@ app.get('/social/:id/altri', async (req, res) => {
     // non correlata (es. "LZ" per "Istituto La Zolla" che matcha un'altra attività con "LZ" nel nome).
     const nomeScuola = (sessione.organizzazioneSito && sessione.organizzazioneSito.nome) || sessione.scuola;
     const indirizzo = sessione.organizzazioneSito && sessione.organizzazioneSito.indirizzo;
-    sessione.gbp = await analizzaGBP({ nomeScuola, localita: sessione.localita, indirizzo });
+    const citta = (sessione.organizzazioneSito && sessione.organizzazioneSito.citta) || sessione.localita;
+    sessione.gbp = await analizzaGBP({ nomeScuola, localita: sessione.localita, indirizzo, citta, sitoUrl: sessione.audit && sessione.audit.homeUrl });
   }
 
   res.render('social-altri', { sessione, youtube, gbp: sessione.gbp });

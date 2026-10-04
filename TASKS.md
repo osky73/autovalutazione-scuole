@@ -1,3 +1,8 @@
+## ✅ Scheda GBP cercata con l'indirizzo scritto sul sito (2026-10-04)
+- Caso segnalato: scuolamariaconsolatrice.org mostrava la scheda "Scuola di Badia a Firenze" (omonimo).
+- `lib/localita.js`: indirizzo (via + civico + CAP/città) letto anche dal testo del sito (footer/contatti) quando mancano i dati schema.org; nome scuola preso dalla prima parte non generica del `<title>`.
+- `lib/social/gbp.js`: query Places = nome + indirizzo; tra i primi risultati si sceglie quello con stesso sito web, altrimenti stessa via/città; se nessuno corrisponde → "nessuna scheda trovata" (mai un omonimo).
+
 ## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
 
 Finché questa nota c'è, `autoanalisi-scuole.vercel.app` NON deve comparire su Google: header `X-Robots-Tag: noindex...` su
