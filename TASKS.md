@@ -51,8 +51,18 @@ Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto
       casi (competenza dichiarata trovata/non trovata, nessuna competenza dichiarata, con/senza
       competenze aggiuntive, risultato posizionamento senza query analizzabili) per confermare
       l'assenza di errori EJS e la presenza dei nuovi testi/classe CSS.
-- [x] **Commit, push e deploy**: vedi commit e deployment riportati subito sotto questa voce
-      (sessione conclusa con questo incremento; nessun'altra voce azionabile senza Andrea trovata).
+- [x] **Commit, push e deploy**: commit `737b93e`, deploy automatico via Git
+      (`dpl_FHdouHFs3vQ99BYK6U9a12k7suef`, `READY` in ~16s). **Promosso in produzione**:
+      `list_aliases` prima del cambio confermava ancora il deployment precedente
+      (`dpl_Dn8rjv8o1FrFG231iXwiZ75htgaG`, commit `be70f28` — nessuna sessione concorrente), poi
+      `assign_alias` su `autoanalisi-scuole.vercel.app` (`oldDeploymentId` di ritorno uguale a
+      quanto atteso), verificato stabile con un secondo `list_aliases`. Alias di fallback `-osky2`
+      non toccato (resta il redirect permanente verso l'alias primario). Non è stato possibile un
+      controllo HTTP diretto dal vivo (stesso limite di rete delle sessioni schedulate precedenti
+      verso `vercel.app`) — verifica basata su `readyState: READY`, sui 70 test locali e sul
+      rendering EJS descritti sopra. Nessun'altra voce azionabile senza il contributo di Andrea
+      trovata in questa sessione (vedi i punti elencati sopra) — sessione conclusa con questo solo
+      incremento.
 
 ## Stato al 2026-10-04 — Test Firecrawl sui social eseguito: FALLISCE (blocco di dominio) → rimosso il bottone AI
 
