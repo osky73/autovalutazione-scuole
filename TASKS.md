@@ -384,7 +384,7 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
         meccanismo senza ESP 25, assente 0).
       - **Fasce** (blocchi e giudizio finale): voto >= 70 alta, 40-69 media, < 40 bassa.
       - **Pesi dei blocchi per obiettivo** (tabella decisa da Andrea, più sotto); più obiettivi = media; nessuno predefinito = 25/40/35.
-      **Ancora da decidere con Andrea**: i pesi interni sopra sono una MIA PROPOSTA (da rivedere); se mostrare i voti dei blocchi
+      **Pesi interni approvati da Andrea il 2026-10-05 ("Vanno bene")**. **Ancora da decidere con Andrea**: se mostrare i voti dei blocchi
       all'utente (per ora no); collocazione definitiva della scheda GBP; la scala 0-100 resta interna.
       **Impostazione concordata con Andrea (2026-10-05)** — l'autoanalisi si divide in 3 blocchi:
       - **SEO tecnica** (1 schermata): audit tecnico del sito.
