@@ -1,7 +1,7 @@
 const express = require('express');
 const { creaSessione, getSessione } = require('./lib/store');
 const { runAudit } = require('./lib/runAudit');
-const { estraiTemi, elencoTemi, queryPerTema, VOCABOLARIO } = require('./lib/temi');
+const { estraiTemi, elencoTemi, queryPerTema, verificaTemaLibero, VOCABOLARIO } = require('./lib/temi');
 const { estraiLocalita, estraiDatiOrganizzazione } = require('./lib/localita');
 const {
   calcolaFrequenzaEditoriale,
@@ -84,7 +84,15 @@ function preparaTemi(sessione) {
     finding = `Il tema più citato nel sito è "${temaPiuCitato.label}", ma non è tra le competenze dichiarate dalla scuola (${elenco}).`;
   }
 
-  sessione.temi = { estrazione, finding };
+  // Competenze scritte a mano dall'utente (testo libero, key null): verificate con la stessa logica
+  // delle competenze del vocabolario (TASKS.md, voce 5 punto 4). Mappa etichetta -> risultato (o null
+  // se non trovata), così la vista mostra "(non trovato sul sito)" anche per queste.
+  const liberiTrovati = {};
+  for (const t of sessione.dichiarati) {
+    if (!t.key) liberiTrovati[t.label] = verificaTemaLibero(sessione.pagineHtml || [], sessione.pagineUrl || [], t.label);
+  }
+
+  sessione.temi = { estrazione, finding, liberiTrovati };
   sessione.confermati = calcolaConfermati(sessione);
 }
 
@@ -238,7 +246,12 @@ app.get('/verifica/:id', (req, res) => {
     });
   }
 
-  res.render('verifica', { sessione, temi: sessione.temi.estrazione, finding: sessione.temi.finding });
+  res.render('verifica', {
+    sessione,
+    temi: sessione.temi.estrazione,
+    finding: sessione.temi.finding,
+    liberiTrovati: sessione.temi.liberiTrovati || {},
+  });
 });
 
 app.get('/posizionamento/:id', (req, res) => {

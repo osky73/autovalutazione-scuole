@@ -10,11 +10,13 @@
   <% } %>
   <div class="theme-list">
     <% sessione.dichiarati.forEach(function(t) {
-         var trovato = temi.temiTrovati.find(function(x){ return x.key === t.key; });
+         var trovato = t.key
+           ? temi.temiTrovati.find(function(x){ return x.key === t.key; })
+           : (liberiTrovati || {})[t.label];
     %>
       <span class="theme-chip" style="cursor:default;">
         <%= t.label %>
-        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %><% if (trovato.url) { %> — <a href="<%= trovato.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span><% } else if (t.key) { %><span class="text-bad">(non trovato sul sito)</span><% } %>
+        <% if (trovato) { %><span class="muted">(trovato, <%= trovato.count %><% if (trovato.url) { %> — <a href="<%= trovato.url %>" target="_blank" rel="noopener">vedi pagina</a><% } %>)</span><% } else { %><span class="text-bad">(non trovato sul sito)</span><% } %>
       </span>
     <% }) %>
   </div>
