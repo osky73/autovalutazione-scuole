@@ -312,6 +312,16 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
       - Da decidere con Andrea: posizione nel percorso (prima del report?), come legare gli obiettivi ai pesi dei
         punteggi, mappa esatta attività → obiettivi.
 - [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
+- [ ] **Schermata "Giudizio sull'efficacia della comunicazione" (richiesta di Andrea, 2026-10-05)**: viene dopo il passaggio
+      sugli obiettivi e dopo tutte le analisi. Valuta l'efficacia della comunicazione della scuola **in base all'analisi fatta
+      e agli obiettivi dichiarati** dal dirigente.
+      - **Lista dei 3 blocchi** (SEO tecnica, SEO contenuti, Comunicazione) con l'importanza di ciascuno per gli obiettivi
+        scelti, su 3 livelli: **Fondamentale / Importante / Accessorio**. Ipotesi: derivare i livelli dai pesi per obiettivo
+        (es. peso più alto = fondamentale, medio = importante, più basso = accessorio) — da confermare con Andrea.
+      - **Sotto la lista, un commento di 5-6 righe** che fa emergere il senso del giudizio rispetto a quanto è stato trovato
+        (punti di forza e carenze reali dell'analisi, collegati agli obiettivi dichiarati). Da generare con testi a regole
+        dai dati dell'analisi (come nel resto dell'app) o con l'AI: da decidere.
+      - Da decidere: dove sta nel percorso rispetto al report finale; se il giudizio usa i punteggi per blocco.
 - [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
       **Impostazione concordata con Andrea (2026-10-05)** — l'autoanalisi si divide in 3 blocchi:
       - **SEO tecnica** (1 schermata): audit tecnico del sito.
