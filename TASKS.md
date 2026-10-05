@@ -38,6 +38,16 @@ come per il passaggio 12: rotta `GET /contatto/:id` + vista `views/contatto.ejs`
 5. Aggiornare questo TASKS.md (segnare fatto con data e dettagli), eseguire i test, fare commit/push, promuovere il deployment come
    sempre e **ricordare ad Andrea che il sito è bloccato ai motori di ricerca**.
 
+## 🕓 DA VALUTARE IN UN SECONDO MOMENTO (non iniziare senza Andrea)
+
+- **Invio e-mail dal server (oltre al `mailto:` del modulo di contatto)** — segnato da Andrea il 2026-10-05. Vercel non ha un
+  server di posta: servirebbe un servizio esterno. Opzione discussa: **SMTP di Gmail** (`smtp.gmail.com`, porta 465 SSL o 587
+  STARTTLS, utente = indirizzo Gmail, password = "password per le app" a 16 caratteri, richiede la verifica in due passaggi;
+  parametri da ricontrollare sulla guida ufficiale prima di usarli). Credenziali SOLO come variabili d'ambiente su Vercel
+  (mai nel codice né in chat). Limiti: mittente = account di Andrea, non il dirigente (per questo il modulo usa `mailto:`);
+  limite giornaliero di invii di un Gmail personale. Alternative più adatte se i volumi crescono: Resend, Brevo, SendGrid.
+  Possibile uso futuro: invio automatico del report finale al dirigente.
+
 ## ✅ Scheda GBP cercata con l'indirizzo scritto sul sito (2026-10-04)
 - Caso segnalato: scuolamariaconsolatrice.org mostrava la scheda "Scuola di Badia a Firenze" (omonimo).
 - `lib/localita.js`: indirizzo (via + civico + CAP/città) letto anche dal testo del sito (footer/contatti) quando mancano i dati schema.org; nome scuola preso dalla prima parte non generica del `<title>`.
