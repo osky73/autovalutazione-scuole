@@ -30,8 +30,10 @@
   <% } %>
 </div>
 
+<%- include('partials/prossimo-passo', { testo: "giudizio sull'efficacia della comunicazione" }) %>
 <div class="actions">
   <a class="btn secondary" href="/contenuti/<%= sessione.id %>">← Indietro</a>
+  <a class="btn btn-principale" href="/giudizio/<%= sessione.id %>">Continua →</a>
 </div>
 
 <%- include('partials/layout-bottom', { step: 11, sessione: sessione }) %>

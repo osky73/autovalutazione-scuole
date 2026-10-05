@@ -324,7 +324,14 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
       - Da decidere con Andrea: posizione nel percorso (prima del report?), come legare gli obiettivi ai pesi dei
         punteggi, mappa esatta attività → obiettivi.
 - [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
-- [ ] **Schermata "Giudizio sull'efficacia della comunicazione" (richiesta di Andrea, 2026-10-05)**: viene dopo il passaggio
+- [x] **FATTA il 2026-10-05 — PASSAGGIO 12 (ultimo)** della schermata "Giudizio sull'efficacia della comunicazione": rotta
+      `GET /giudizio/:id`, vista `views/giudizio.ejs`, testi in `lib/giudizio.js` (+ 6 test, 95 totali verdi). Il percorso ora ha
+      12 passaggi ("Passaggio X di 12"); la newsletter (11) porta al giudizio. Mostra la lista dei 3 blocchi con Fondamentale/
+      Importante/Accessorio (dai pesi dell'obiettivo), il giudizio (efficace / efficace solo in parte / non ancora sufficiente) e un
+      commento di 5-6 righe: apertura con gli obiettivi → frase sul blocco fondamentale → importante → riga breve sull'accessorio →
+      dato concreto dall'analisi reale (indicatore più debole del blocco fondamentale) → chiusura. Nessuna AI, voti mai mostrati.
+      Gli obiettivi liberi non entrano nel commento. Bozza testi sotto = testi in uso; da rivedere con Andrea.
+- [ ] (storico, richiesta originale) **Schermata "Giudizio sull'efficacia della comunicazione" (richiesta di Andrea, 2026-10-05)**: viene dopo il passaggio
       sugli obiettivi e dopo tutte le analisi. Valuta l'efficacia della comunicazione della scuola **in base all'analisi fatta
       e agli obiettivi dichiarati** dal dirigente.
       **Decisioni di Andrea (2026-10-05)**

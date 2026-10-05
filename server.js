@@ -19,6 +19,7 @@ const { providerDisponibile } = require('./lib/social/ai');
 const { consentito } = require('./lib/social/rateLimit');
 const { analizzaGBP } = require('./lib/social/gbp');
 const { OBIETTIVI, normalizzaObiettivi } = require('./lib/obiettivi');
+const { costruisciGiudizio } = require('./lib/giudizio');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -768,6 +769,16 @@ app.get('/newsletter/:id', (req, res) => {
   const discrepanzaNewsletter = sessione.newsletterImportante === true && !!newsletter && newsletter.stato === 'assente';
 
   res.render('newsletter', { sessione, newsletter, newsletterImportante: sessione.newsletterImportante, discrepanzaNewsletter });
+});
+
+// Passaggio 12: giudizio sull'efficacia della comunicazione rispetto agli obiettivi dichiarati (richiesta di Andrea,
+// 2026-10-05). Usa i voti interni di lib/punteggi.js (mai mostrati) per scegliere i testi di lib/giudizio.js.
+app.get('/giudizio/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.audit) return res.redirect(`/audit/${sessione.id}`);
+
+  res.render('giudizio', { sessione, g: costruisciGiudizio(sessione) });
 });
 
 app.post('/api/social/assess', async (req, res) => {

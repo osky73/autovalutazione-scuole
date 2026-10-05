@@ -1,0 +1,32 @@
+<%- include('partials/layout-top', { titolo: 'Giudizio sull\'efficacia', step: 12 }) %>
+
+<h1>L'efficacia della tua comunicazione</h1>
+<p class="lead">Un giudizio sintetico basato su quanto abbiamo analizzato, in relazione agli obiettivi che ci hai indicato.</p>
+
+<div class="card">
+  <h2 style="margin-top:0;">Quanto contano le diverse aree per i tuoi obiettivi</h2>
+  <% g.blocchi.forEach(function(b) { %>
+    <div class="indicator-row">
+      <div>
+        <div><strong><%= b.etichetta %></strong></div>
+        <div class="meta"><%= b.comprende %></div>
+      </div>
+      <span class="pill <%= b.importanza === 'fondamentale' ? 'assente' : b.importanza === 'importante' ? 'parziale' : 'sufficiente' %>" style="<%= b.importanza === 'accessorio' ? 'background:#eef0f2; color:#6b7280;' : '' %>"><%= b.importanzaEtichetta %></span>
+    </div>
+  <% }) %>
+
+  <% if (g.giudizio) { %>
+    <h2>Il nostro giudizio: <%= g.giudizio.etichetta %></h2>
+  <% } else { %>
+    <h2>Il nostro giudizio</h2>
+  <% } %>
+  <% g.commento.forEach(function(riga) { %>
+    <p style="margin:0 0 8px;"><%= riga %></p>
+  <% }) %>
+</div>
+
+<div class="actions">
+  <a class="btn secondary" href="/newsletter/<%= sessione.id %>">← Indietro</a>
+</div>
+
+<%- include('partials/layout-bottom', { step: 12, sessione: sessione }) %>
