@@ -53,8 +53,15 @@ Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto
       documentato nelle sessioni precedenti), quindi `assign_alias` manuale su
       `autoanalisi-scuole.vercel.app` (`oldDeploymentId` di ritorno uguale a quanto atteso),
       verificato stabile con un secondo `list_aliases`. Alias di fallback `-osky2` non toccato
-      (resta il redirect permanente verso l'alias primario). Deploy via Git integration (non il
-      vecchio meccanismo "by file list"), quindi nessun rischio del troncamento di
+      (resta il redirect permanente verso l'alias primario). **Nota**: con la Git integration ogni
+      push su `main` genera un nuovo deployment, incluso questo stesso commit di solo `TASKS.md` (che
+      ha prodotto `dpl_GrmMC7Rkqy4GU3teS6HfdaTY6wKm`, codice applicativo identico a
+      `dpl_CM8hji2VHaouzzHaUFTxaVMBJiW7` — `TASKS.md` non viene servito dall'app) — anche questo
+      secondo deployment non è stato aliasato automaticamente, quindi riassegnato a mano allo stesso
+      modo. **L'alias primario in produzione punta quindi, a fine sessione, a
+      `dpl_GrmMC7Rkqy4GU3teS6HfdaTY6wKm`** (non a `dpl_CM8hji2VHaouzzHaUFTxaVMBJiW7` come scritto
+      sopra prima di questa scoperta), verificato con un terzo `list_aliases`. Deploy via Git
+      integration (non il vecchio meccanismo "by file list"), quindi nessun rischio del troncamento di
       `list_deployment_files` che aveva causato l'incidente del 2026-10-01. Non è stato possibile un
       controllo HTTP diretto dal vivo (stesso limite di rete delle sessioni schedulate precedenti
       verso `vercel.app`) — verifica basata su `readyState: READY`, sui 78 test locali e sul
