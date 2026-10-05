@@ -10,6 +10,56 @@ ogni risposta (`server.js`), `<meta name="robots" content="noindex...">` in `vie
 `GET /robots.txt` con `Disallow: /`. **Ricordare ad Andrea, a ogni sessione e prima di qualsiasi lancio/promozione,
 che il sito è bloccato**. Per sbloccarlo (solo se Andrea lo chiede): togliere i tre punti sopra e rimettere robots.txt permissivo.
 
+## Stato al 2026-10-05 (sessione schedulata) — verifica testo libero sul sito (voce 5, punto 4) + 2 correzioni di spunta
+
+Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati e deployati (nessuna novità rispetto alle sessioni precedenti) — nessuna
+      azione necessaria.
+- [x] **Voce 5, punto 4 ("verificare se le competenze indicate nel TESTO LIBERO sono state trovate
+      sul sito")**: implementato — vedi il dettaglio nella sezione "5) Revisione testi e UX" più
+      sotto in questo file. In breve: nuova `verificaTemaLibero()` in `lib/temi.js`, che riusa la
+      stessa identica logica di corrispondenza già usata per i temi del vocabolario (non un nuovo
+      criterio arbitrario, risolvendo così il dubbio lasciato aperto dalla sessione del 2026-10-04).
+      4 nuovi test (78 totali verdi), rendering EJS verificato su 6 combinazioni,
+      `require('./server.js')` pulito.
+- [x] **2 correzioni di sola documentazione** (nessun codice toccato): nella voce 5 punto 5, due
+      spunte mancanti per lavoro già fatto in sessioni precedenti ma mai segnato come completo —
+      "stesso stile delle select" (fatto il 2026-10-02, commit `2398f9f`) e "simboli matematici al
+      posto delle etichette qualitative" (fatto il 2026-10-03). Rilette e verificate entrambe contro
+      il codice attuale prima di spuntarle.
+- **Controllato se esisteva un'altra voce azionabile senza il contributo di Andrea — nessuna
+  trovata oltre a quella sopra**: voce 0 (bug sessione in-memory, Andrea ha deciso di lasciare
+  com'è); voce 3 (andamento social 3 mesi, richiede conferma del livello di automazione); voce 4
+  (obsoleta); voce 5 restante (checkbox canale trovato — toglierlo romperebbe la funzione di
+  esclusione omonimi senza un meccanismo sostitutivo, serve conferma; accorpamento passaggi 4+5,
+  ristrutturazione di schermate; multi-plessi GBP, feature più ampia con scelte di aggregazione
+  punteggio non specificate — valutata ma non iniziata per lo stesso motivo delle sessioni
+  precedenti: serve decidere come il punteggio GBP si aggrega su più schede selezionate, non è "la
+  scelta più semplice" quando tocca la logica di valutazione); le 5 nuove voci in cima al file
+  (domande dirette, punteggi, report finale, firme, ingaggio commerciale) richiedono tutte
+  esplicitamente un confronto con Andrea.
+- [x] **Verificato prima del deploy**: 78 test unitari verdi (74 esistenti + 4 nuovi), `npm install`
+      (node_modules mancanti in questa sessione), `require('./server.js')` pulito, rendering con
+      `ejs.renderFile` di `verifica.ejs` su 6 combinazioni (nessuna competenza, vocabolario
+      trovato/non trovato, testo libero trovato/non trovato, mix), e una pipeline end-to-end contro
+      un sito fittizio servito in locale (`http.createServer`) per `verificaTemaLibero`.
+- [x] **Commit, push e deploy**: commit `c577231`, push su `main` senza conflitti (`git fetch
+      origin main` prima del commit, nessuna sessione concorrente). Deploy automatico via Git
+      integration: `dpl_CM8hji2VHaouzzHaUFTxaVMBJiW7`, `READY` in ~14s. **Promosso in produzione**:
+      l'alias automatico NON ha aggiornato l'alias primario (restava su `dpl_9uoJfgJ9e2CAnzAk69ovxNP4nHgm`,
+      il deployment del commit precedente `c3574cc` — stesso comportamento inaffidabile già
+      documentato nelle sessioni precedenti), quindi `assign_alias` manuale su
+      `autoanalisi-scuole.vercel.app` (`oldDeploymentId` di ritorno uguale a quanto atteso),
+      verificato stabile con un secondo `list_aliases`. Alias di fallback `-osky2` non toccato
+      (resta il redirect permanente verso l'alias primario). Deploy via Git integration (non il
+      vecchio meccanismo "by file list"), quindi nessun rischio del troncamento di
+      `list_deployment_files` che aveva causato l'incidente del 2026-10-01. Non è stato possibile un
+      controllo HTTP diretto dal vivo (stesso limite di rete delle sessioni schedulate precedenti
+      verso `vercel.app`) — verifica basata su `readyState: READY`, sui 78 test locali e sul
+      rendering EJS descritti sopra.
+
 ## Stato al 2026-10-04 (sessione schedulata, seconda) — 4 ritocchi testo non ambigui del punto 5 (voce "Da fare")
 
 Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
@@ -1703,12 +1753,25 @@ implementa).
 - [x] **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
   sul sito della tua scuola?". **FATTO il 2026-10-04** (`views/dichiarazione.ejs`).
 - **4) Passaggio conferma competenze + risultati ricerche (da accorpare)**:
-  - **Non toccato** (richiede nuova logica di matching, non solo testo — vedi nota nella sessione
-    "Stato al 2026-10-04 (sessione schedulata, seconda)" in cima al file): verificare se le
-    competenze indicate nel testo libero dall'utente sono state trovate sul sito; se non trovate,
-    mostrare la scritta "(non trovato sul sito)" in rosso. La classe CSS rossa esiste già
-    (`.text-bad`, usata per ora solo sul caso analogo delle competenze da vocabolario non trovate),
-    manca solo la verifica per il testo libero.
+  - [x] Verificare se le competenze indicate nel TESTO LIBERO dall'utente sono state trovate sul sito;
+    se non trovate, mostrare "(non trovato sul sito)" in rosso. **FATTO il 2026-10-05**: nuova
+    `verificaTemaLibero(pagesHtml, pagesUrl, etichetta)` in `lib/temi.js` — stessa identica logica
+    già in uso per i temi del vocabolario (`estraiTemi`/`costruisciRegexKeyword`: stessa regex con
+    radice per le variazioni singolare/plurale, stesso conteggio di occorrenze, stesso criterio per
+    il link "vedi pagina"), applicata all'etichetta scritta dall'utente trattata come un'unica
+    keyword — scelta deliberata per non introdurre un criterio di corrispondenza diverso/arbitrario
+    (il dubbio lasciato aperto dalla sessione "Stato al 2026-10-04, seconda": "corrispondenza
+    esatta? parole significative? quante occorrenze minime?" si risolve riusando lo stesso
+    meccanismo già validato, non inventandone uno nuovo). `server.js` (`preparaTemi`): calcola
+    `sessione.temi.liberiTrovati` (mappa etichetta → risultato o `null`) per ogni competenza con
+    `key: null`; passato alla vista come `liberiTrovati`. `views/verifica.ejs`: il blocco "Competenze
+    dichiarate dalla scuola" ora usa un'unica logica per vocabolario e testo libero (stesso
+    `.text-bad` quando non trovato, stesso `.muted` con link "vedi pagina" quando trovato) invece del
+    ramo separato che per il testo libero non mostrava nulla. 4 nuovi test in `lib/temi.test.js`
+    (trovata con link, non trovata, variazione singolare/plurale, nessuna pagina disponibile) — 78
+    test totali verdi. Verificato anche il rendering di `verifica.ejs` con `ejs.renderFile` su 6
+    combinazioni (nessuna dichiarata, vocabolario trovato/non trovato, libero trovato/non trovato,
+    mix vocabolario+libero) e `require('./server.js')` pulito.
   - [x] Cambiare il titolo "Competenze aggiuntive..." togliendo la parola "aggiuntive". **FATTO il
     2026-10-04** (`views/verifica.ejs`, ora "Competenze individuate nel sito").
   - [x] Aggiungere una spiegazione: abbiamo controllato i contenuti del sito e non abbiamo trovato una
@@ -1729,11 +1792,18 @@ implementa).
     insieme alla rimozione del bottone AI (vedi "Stato al 2026-10-04" in cima al file): il blocco con
     "o quelli che ci fornisci tu... screenshot caricati" e il rimando "oppure lascia fare all'AI qui
     sotto" non esistono più.
-  - I testi delle select (fasce like/follower/frequenza ecc.) devono avere lo stesso stile
-    (colore e dimensione) degli altri testi della pagina.
-  - Nei select, togliere le etichette qualitative "buono", "sufficiente", "insufficiente"; al posto
+  - [x] I testi delle select (fasce like/follower/frequenza ecc.) devono avere lo stesso stile
+    (colore e dimensione) degli altri testi della pagina. **Già FATTO il 2026-10-02** (commit
+    `2398f9f`, non ancora spuntato qui): regola CSS esplicita `.fascia-select { font-size: 0.82rem;
+    font-family: inherit; color: var(--ink); ... }` in `views/social-conferma.ejs` e
+    `views/social-altri.ejs` — prima il font-size 0.82rem era impostato solo sul contenitore
+    `.fascia-row`, ma gli elementi form non ereditano il font per default nei browser, quindi non
+    aveva mai avuto effetto visivo sul `<select>`. Verificato in questa sessione (2026-10-05)
+    rileggendo il CSS attuale: la regola è presente e corretta, nessuna azione necessaria.
+  - [x] Nei select, togliere le etichette qualitative "buono", "sufficiente", "insufficiente"; al posto
     di "meno di", "oltre", "tra ... e ..." e "sotto" usare i simboli matematici corrispondenti
-    (es. "<", ">", "–"/intervallo, "<").
+    (es. "<", ">", "–"/intervallo, "<"). **FATTO il 2026-10-03** (vedi "Stato al 2026-10-03
+    (sessione schedulata, notte, 11)" più sotto in questo file), non ancora spuntato qui.
   - Togliere il checkbox di fianco al nome del canale social trovato sul sito (probabilmente reso
     superfluo/ridondante da altro controllo).
 - **6) Passaggio "altri canali" (YouTube + extra) e scheda GBP**:
