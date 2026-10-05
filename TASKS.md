@@ -313,7 +313,7 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
         interessare per la tua scuola?". Il dirigente marca quelli che gli interessano (scelta multipla) e c'è anche un
         **campo libero** per indicarne altri (anche più di uno).
       - Obiettivi proposti (concordati con Andrea, 2026-10-05):
-        1. Aumentare le iscrizioni.
+        1. Aumentare le iscrizioni e ottimizzare l'occupazione dei posti nelle classi (testo corretto da Andrea, 2026-10-05).
         2. Raggiungere più velocemente i numeri necessari per attivare classi e corsi.
         3. Migliorare la reputazione della scuola e il gradimento degli iscritti.
         (Scartati perché concettualmente uguali al punto 2: riempire gli ultimi posti, far partire un corso nuovo.)
@@ -344,7 +344,7 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
          nell'analisi (es. "newsletter assente", "blog fermo da X mesi", posizione trovata/non trovata) → chiusura.
       **Bozza dei testi (da rivedere con Andrea)** — fascia di blocco: Solido (>=70) / Migliorabile (40-69) / Debole (<40)
       - Apertura: "Rispetto all'obiettivo di {obiettivo}, la comunicazione della tua scuola risulta {efficace | efficace solo
-        in parte | non ancora sufficiente}." — {obiettivo}: "aumentare le iscrizioni" / "raggiungere prima i numeri per classi e
+        in parte | non ancora sufficiente}." — {obiettivo}: "aumentare le iscrizioni e ottimizzare l'occupazione dei posti nelle classi" / "raggiungere prima i numeri per classi e
         corsi" / "migliorare la reputazione e il gradimento degli iscritti" (più obiettivi: elencati con "e").
       - SEO tecnica — Solido: "Il sito è tecnicamente solido: si carica bene, funziona da mobile ed è leggibile dai motori di
         ricerca, quindi non ostacola chi arriva dalla ricerca." / Migliorabile: "Il sito funziona, ma ha alcune carenze
