@@ -366,7 +366,26 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
       - Il dato concreto va preso dall'analisi reale (non inventato) e inserito nella frase del blocco corrispondente.
       Da decidere: dove sta nel percorso rispetto al report finale; calcolo del voto interno 0-100 dei singoli indicatori
       di ogni blocco (parte della voce "Definire i punteggi").
-- [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
+- [~] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
+      ✅ **CALCOLO FATTO il 2026-10-05** (`lib/punteggi.js`, 7 test, 89 totali verdi; funzioni pure, NON ancora collegate
+      a nessuna schermata: servono alla schermata "Giudizio sull'efficacia" e al report). `calcolaPunteggi(sessione)`
+      restituisce voti 0-100 per indicatore e per blocco, pesi, importanza dei blocchi e voto finale — mai mostrati all'utente.
+      **Indicatori e pesi interni** (voto di blocco = media pesata dei soli indicatori valutabili; null/saltato = escluso e i
+      pesi si ridistribuiscono; blocco senza nessun dato = null, escluso dal finale con ridistribuzione dei pesi dei blocchi):
+      - **SEO tecnica**: audit tecnico (già 0-100, ha i suoi pesi interni in `lib/score.js`) = 100%.
+      - **SEO contenuti**: competenze dichiarate ritrovate nel sito 25% (quota trovate/dichiarate) · posizionamento su Google
+        30% (per competenza: pos. 1-3 = 100, 4-7 = 70, 8-10 = 50, assente = 0; media) · attività del blog 20% (attivo 100,
+        rallentato 50, fermo 15, assente 0) · frequenza di pubblicazione 10% (ottimo 100, sufficiente 60, insufficiente 0) ·
+        ottimizzazione articoli 10% (buona 100, parziale 50, scarsa 0) · competenze trattate nel blog 5% (sì 100, no 0).
+        Frequenza/ottimizzazione/competenze del blog solo se il blog esiste.
+      - **Comunicazione**: canali social 40% (livelli Buono 100 / Sufficiente 50 / Insufficiente 0, media tra indicatori
+        disponibili e poi tra canali; passaggio saltato = escluso; analisi fatta senza alcun canale = 0) · scheda Google
+        Business Profile 30% (assente 0; trovata = livello complessivo; errore = escluso) · newsletter 30% (presente 100,
+        meccanismo senza ESP 25, assente 0).
+      - **Fasce** (blocchi e giudizio finale): voto >= 70 alta, 40-69 media, < 40 bassa.
+      - **Pesi dei blocchi per obiettivo** (tabella decisa da Andrea, più sotto); più obiettivi = media; nessuno predefinito = 25/40/35.
+      **Ancora da decidere con Andrea**: i pesi interni sopra sono una MIA PROPOSTA (da rivedere); se mostrare i voti dei blocchi
+      all'utente (per ora no); collocazione definitiva della scheda GBP; la scala 0-100 resta interna.
       **Impostazione concordata con Andrea (2026-10-05)** — l'autoanalisi si divide in 3 blocchi:
       - **SEO tecnica** (1 schermata): audit tecnico del sito.
       - **SEO contenuti**: blog/aggiornamento contenuti, competenze comunicate sul sito e loro verifica, posizionamento su Google.
