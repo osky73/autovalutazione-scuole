@@ -296,6 +296,21 @@ Richiesta di Andrea.
 Da affrontare dopo il test Firecrawl sui social (2026-10-04, fatto — vedi "Stato al 2026-10-04" in cima
 al file). Per ognuno serve comunque prima un confronto con Andrea: nessuna di queste 5 voci è stata
 affrontata in questa sessione, il test completato tocca solo il bottone AI dei canali social.
+- [ ] **Passaggio "Obiettivi della comunicazione" (richiesta di Andrea, 2026-10-05)** — fa parte delle domande dirette al dirigente.
+      - **Schermata 1**: domanda "Quali sono gli obiettivi di una efficace attività di comunicazione che ti possono
+        interessare per la tua scuola?". Il dirigente marca quelli che gli interessano (scelta multipla) e c'è anche un
+        **campo libero** per indicarne altri (anche più di uno).
+      - Obiettivi proposti (concordati con Andrea, 2026-10-05):
+        1. Aumentare le iscrizioni.
+        2. Raggiungere più velocemente i numeri necessari per attivare classi e corsi.
+        3. Migliorare la reputazione della scuola e il gradimento degli iscritti.
+        (Scartati perché concettualmente uguali al punto 2: riempire gli ultimi posti, far partire un corso nuovo.)
+      - **Schermata successiva**: creare i collegamenti tra le attività di marketing e comunicazione indagate finora
+        (posizionamento su Google, competenze sul sito, canali social, scheda Google Business Profile, newsletter,
+        blog/contenuti, aspetti tecnici del sito) e gli obiettivi indicati. **Esclusi gli obiettivi scritti nel campo
+        libero**, per cui non ci sono collegamenti predefiniti.
+      - Da decidere con Andrea: posizione nel percorso (prima del report?), come legare gli obiettivi ai pesi dei
+        punteggi, mappa esatta attività → obiettivi.
 - [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
 - [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
 - [ ] **Report finale scaricabile**: documento (probabilmente PDF) con i risultati di tutti i passaggi e i punteggi.
