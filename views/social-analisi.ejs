@@ -137,9 +137,7 @@
             <div>
               <div>Follower</div>
               <div class="meta">
-                <% if (c.meno6mesi) { %>
-                  Aperto di recente (meno di 6 mesi): dato non considerato nel giudizio<% if (c.followerAutomatico != null) { %> (~<%= c.followerAutomatico %> follower rilevati)<% } %>
-                <% } else if (c.followerFonte === 'ai') { %>
+                <% if (c.followerFonte === 'ai') { %>
                   <%= c.followerEtichetta %>
                 <% } else if (c.followerFonte === 'manuale') { %>
                   Fascia indicata dalla scuola: <%= c.followerEtichetta %>

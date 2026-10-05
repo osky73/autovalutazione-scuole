@@ -1,3 +1,8 @@
+## ✅ Tolta la casella "Aperto di recente (meno di 6 mesi)" dai canali social (2026-10-05, richiesta di Andrea)
+- Rimossa da passaggio 7 (canali trovati sul sito) e 8 (altri canali), dal salvataggio in `server.js`, dal testo di
+  `views/social-analisi.ejs` e dalle ramificazioni `meno6mesi` in `lib/social.js` e `lib/social/assess.js`.
+  Ora il follower indicato (fascia, rilevato o automatico) viene sempre considerato nel giudizio. 82 test verdi.
+
 ## ✅ Scheda GBP cercata con l'indirizzo scritto sul sito (2026-10-04)
 - Caso segnalato: scuolamariaconsolatrice.org mostrava la scheda "Scuola di Badia a Firenze" (omonimo).
 - `lib/localita.js`: indirizzo (via + civico + CAP/città) letto anche dal testo del sito (footer/contatti) quando mancano i dati schema.org; nome scuola preso dalla prima parte non generica del `<title>`.

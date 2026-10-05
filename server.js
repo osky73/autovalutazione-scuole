@@ -414,9 +414,6 @@ app.post('/social/:id', (req, res) => {
 
   let includiTrovato = req.body.includiTrovato || [];
   if (!Array.isArray(includiTrovato)) includiTrovato = [includiTrovato];
-  let meno6mesiTrovato = req.body.meno6mesiTrovato || [];
-  if (!Array.isArray(meno6mesiTrovato)) meno6mesiTrovato = [meno6mesiTrovato];
-  const meno6mesiSet = new Set(meno6mesiTrovato);
 
   let freqTrovato = req.body.freqTrovato || [];
   if (!Array.isArray(freqTrovato)) freqTrovato = [freqTrovato];
@@ -431,7 +428,6 @@ app.post('/social/:id', (req, res) => {
   const confermati = trovatiSenzaYoutube
     .map((c, i) => ({
       ...c,
-      meno6mesi: meno6mesiSet.has(c.url),
       frequenzaFascia: parseFascia(freqTrovato[i]),
       likeFascia: parseFascia(likeTrovato[i]),
       followerFascia: parseFascia(followerTrovato[i]),
@@ -490,8 +486,6 @@ app.post('/social/:id/altri', (req, res) => {
   if (!Array.isArray(extraUrl)) extraUrl = [extraUrl];
   let extraPlatform = req.body.extraPlatform || [];
   if (!Array.isArray(extraPlatform)) extraPlatform = [extraPlatform];
-  let extraMeno6mesi = req.body.extraMeno6mesi || [];
-  if (!Array.isArray(extraMeno6mesi)) extraMeno6mesi = [extraMeno6mesi];
   let extraFreq = req.body.extraFreq || [];
   if (!Array.isArray(extraFreq)) extraFreq = [extraFreq];
   let extraLike = req.body.extraLike || [];
@@ -506,7 +500,6 @@ app.post('/social/:id/altri', (req, res) => {
       platform: extraPlatform[i] || 'altro',
       label: ETICHETTE_PIATTAFORMA[extraPlatform[i]] || 'Altro',
       url: (url || '').trim(),
-      meno6mesi: extraMeno6mesi[i] === 'si',
       frequenzaFascia: parseFascia(extraFreq[i]),
       likeFascia: parseFascia(extraLike[i]),
       followerFascia: parseFascia(extraFollower[i]),

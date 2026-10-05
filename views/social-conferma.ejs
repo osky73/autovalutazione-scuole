@@ -21,10 +21,6 @@
               <span><%= c.label %></span>
             </label>
             <a href="<%= c.url %>" target="_blank" rel="noopener" class="muted" style="font-size:0.82rem; word-break:break-all;"><%= c.url %></a>
-            <label style="display:flex; align-items:center; gap:6px; margin:0; font-size:0.82rem; font-weight:400; white-space:nowrap;">
-              <input type="checkbox" name="meno6mesiTrovato" value="<%= c.url %>" class="meno6mesi-check" style="margin:0; width:auto;" />
-              Aperto di recente (meno di 6 mesi)
-            </label>
           </div>
           <div class="fascia-row" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; font-size:0.82rem;">
             <label style="display:flex; align-items:center; gap:6px; margin:0; font-weight:400;">
@@ -66,26 +62,5 @@
     <button type="submit" class="btn btn-principale">Continua →</button>
   </div>
 </form>
-
-<script>
-  function collegaMeno6Mesi(checkbox, campi) {
-    function aggiorna() {
-      campi.forEach(function (el) {
-        el.disabled = checkbox.checked;
-        if (checkbox.checked) el.value = '';
-      });
-    }
-    checkbox.addEventListener('change', aggiorna);
-    aggiorna();
-  }
-
-  function collegaRiga(riga) {
-    var checkbox = riga.querySelector('.meno6mesi-check');
-    var campi = Array.prototype.slice.call(riga.querySelectorAll('.fascia-select'));
-    if (checkbox && campi.length) collegaMeno6Mesi(checkbox, campi);
-  }
-
-  document.querySelectorAll('.social-row').forEach(collegaRiga);
-</script>
 
 <%- include('partials/layout-bottom', { step: 7, sessione: sessione }) %>

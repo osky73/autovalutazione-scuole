@@ -109,9 +109,6 @@
       '<div style="display:flex; align-items:center; flex-wrap:wrap; gap:10px;">' +
         '<span style="font-weight:600; flex:1; min-width:160px;">' + (ETICHETTE_PIATTAFORMA[piattaforma] || 'Altro') + '</span>' +
         '<a href="' + url + '" target="_blank" rel="noopener" class="muted" style="font-size:0.82rem; word-break:break-all;">' + url + '</a>' +
-        '<label style="display:flex; align-items:center; gap:6px; margin:0; font-size:0.82rem; font-weight:400; white-space:nowrap;">' +
-          '<input type="checkbox" class="meno6mesi-check" style="margin:0; width:auto;" /> Aperto di recente (meno di 6 mesi)' +
-        '</label>' +
         '<span class="muted" title="Rimuovi" style="cursor:pointer;">✕</span>' +
       '</div>' +
       '<div class="fascia-row" style="display:flex; flex-wrap:wrap; gap:14px; margin-top:8px; font-size:0.82rem;">' +
@@ -132,16 +129,8 @@
           '</select></label>' +
       '</div>' +
       '<input type="hidden" name="extraUrl" value="' + url.replace(/"/g, '&quot;') + '" />' +
-      '<input type="hidden" name="extraPlatform" value="' + piattaforma + '" />' +
-      '<input type="hidden" name="extraMeno6mesi" class="extra-meno6-hidden" value="no" />';
+      '<input type="hidden" name="extraPlatform" value="' + piattaforma + '" />';
 
-    riga.querySelector('.meno6mesi-check').addEventListener('change', function (e) {
-      riga.querySelector('.extra-meno6-hidden').value = e.target.checked ? 'si' : 'no';
-      riga.querySelectorAll('.fascia-select').forEach(function (el) {
-        el.disabled = e.target.checked;
-        if (e.target.checked) el.value = '';
-      });
-    });
     riga.querySelector('span[title="Rimuovi"]').addEventListener('click', function () { riga.remove(); });
 
     extraList.appendChild(riga);
