@@ -10,6 +10,47 @@ ogni risposta (`server.js`), `<meta name="robots" content="noindex...">` in `vie
 `GET /robots.txt` con `Disallow: /`. **Ricordare ad Andrea, a ogni sessione e prima di qualsiasi lancio/promozione,
 che il sito è bloccato**. Per sbloccarlo (solo se Andrea lo chiede): togliere i tre punti sopra e rimettere robots.txt permissivo.
 
+## Stato al 2026-10-05 (sessione schedulata, seconda) — nessun codice nuovo, 8 correzioni di spunta nella voce 5
+
+Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto. Repo già presente
+in questa sandbox (nessun `add_repo`/clone necessario), `git pull` senza novità rispetto all'ultimo
+commit (`121a905`, della sessione precedente di oggi).
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati e deployati (nessuna novità rispetto alle sessioni precedenti) — nessuna
+      azione necessaria.
+- **Ricontrollata per intero la voce 5 (revisione testi/UX)**, bullet per bullet, contro il codice
+  attuale (non solo contro le note delle sessioni precedenti), per cercare altri casi come i 2 trovati
+  dalla sessione precedente di oggi (lavoro già fatto ma mai spuntato in questa lista specifica). Ne
+  sono emersi **8 altri**: punto 1 (Landing), punto 6 (checkbox YouTube, "(stimato)", testo "Aggiungi
+  un altro canale...", card GBP sintetica) e punto 8 (messaggio "codice 400" sostituito, voce
+  "Community" rimossa) — tutti implementati in sessioni precedenti (perlopiù "2026-10-03, notte, 11"
+  e "2026-10-02, sessione Andrea") ma non ancora spuntati in questa lista. Spuntati ora con nota e
+  verifica puntuale contro il file attuale (vedi dettaglio nella sezione "5) Revisione testi e UX" più
+  sotto in questo file) — **nessuna riga di codice modificata**, solo documentazione.
+- **Confermati ancora apertI, nessuna novità rispetto alle sessioni precedenti** (richiedono conferma
+  di Andrea o sono feature più ampie, non "la scelta più semplice"): punto 2 (box "dato peggiore",
+  ambiguo da quando l'indicatore "ultimo contenuto pubblicato" è stato rimosso); punto 4 parte
+  "accorpare passaggio 4+5" (ristrutturazione di schermate); checkbox di fianco al canale TROVATO in
+  `views/social-conferma.ejs` (funzione di esclusione omonimi, serve un meccanismo sostitutivo prima
+  di toglierlo); caso multi-plessi GBP (serve decidere l'aggregazione del punteggio su più schede);
+  numerazione mancante del punto 7. Voce n. 0 (bug sessione in-memory): Andrea ha deciso di lasciare
+  com'è, non riaperta. Voce n. 3 (andamento social 3 mesi): richiede ancora conferma di Andrea sul
+  livello di automazione. Le 5 nuove voci in cima al file (domande dirette, punteggi, report finale,
+  firme, ingaggio commerciale): richiedono tutte esplicitamente un confronto con Andrea.
+- [x] **Verificato lo stato di salute del codice** (nessuna modifica): `npm install` (node_modules
+      mancanti in questa sessione), `npm test` → **78/78 test unitari verdi** (nessuna variazione,
+      coerente col fatto che non è stato toccato codice), `node -e "require('./server.js')"` pulito.
+- **Nessun deploy fatto in questa sessione**: nessun codice applicativo è stato modificato (solo
+  `TASKS.md`), quindi non c'è nulla di nuovo da deployare — evitato un deployment Vercel superfluo
+  (a differenza della sessione del 2026-10-05 precedente, dove il solo push di `TASKS.md` aveva
+  comunque generato un nuovo deployment identico lato codice tramite la Git integration: qui si
+  preferisce non generare quel rumore quando non è nemmeno strettamente necessario per il backlog).
+- [x] **Commit e push**: solo questo aggiornamento di `TASKS.md`. La prossima sessione può ripartire
+  da qui: la voce 5 del backlog è ora quasi tutta spuntata, i pochi punti restanti sono tutti
+  esplicitamente in attesa di una decisione di Andrea (non codificabili "nel modo più semplice" senza
+  rischiare di andare contro il suo intento).
+
 ## Stato al 2026-10-05 (sessione schedulata) — verifica testo libero sul sito (voce 5, punto 4) + 2 correzioni di spunta
 
 Sessione schedulata: letto TASKS.md per intero prima di iniziare, come richiesto.
@@ -1753,8 +1794,11 @@ implementare in una prossima sessione (non ancora iniziato). Numerazione dei pun
 da Andrea (mancano i numeri 7 nella sua lista, verificare a quale schermata corrisponda quando si
 implementa).
 
-- **1) Landing/passaggio 1** — Titolo: cambiare in "La tua scuola c'è?" con "(sul web)" a capo.
-  Etichetta del bottone: "Iniziamo".
+- [x] **1) Landing/passaggio 1** — Titolo: cambiare in "La tua scuola c'è?" con "(sul web)" a capo.
+  Etichetta del bottone: "Iniziamo". **Già FATTO il 2026-10-03 (notte, 11)** (`views/landing.ejs`),
+  non ancora spuntato qui — verificato di nuovo il 2026-10-05 (sessione schedulata, seconda)
+  rileggendo il file attuale: `<h1>La tua scuola c'è?<br>(sul web)</h1>` e
+  `<button type="submit" class="btn-principale">Iniziamo</button>`, esattamente come richiesto.
 - **2) Passaggio con l'ultimo contenuto pubblicato** — L'etichetta negativa deve diventare
   "Troppo vecchio". Togliere il box "Il dato peggiore: Scheda Google...".
 - [x] **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
@@ -1811,25 +1855,49 @@ implementa).
     di "meno di", "oltre", "tra ... e ..." e "sotto" usare i simboli matematici corrispondenti
     (es. "<", ">", "–"/intervallo, "<"). **FATTO il 2026-10-03** (vedi "Stato al 2026-10-03
     (sessione schedulata, notte, 11)" più sotto in questo file), non ancora spuntato qui.
-  - Togliere il checkbox di fianco al nome del canale social trovato sul sito (probabilmente reso
-    superfluo/ridondante da altro controllo).
+  - **Non toccato (serve conferma di Andrea)**: togliere il checkbox di fianco al nome del canale
+    social TROVATO sul sito in `views/social-conferma.ejs` — a differenza del checkbox YouTube (vedi
+    punto 6 sotto), qui il testo introduttivo della schermata invita esplicitamente l'utente a
+    "escludere quelli sbagliati" tramite quel checkbox: rimuoverlo senza un meccanismo sostitutivo
+    toglierebbe una funzione, non solo un dettaglio estetico. Verificato di nuovo il 2026-10-05
+    (sessione schedulata, seconda): il checkbox è ancora lì, nessuna novità.
 - **6) Passaggio "altri canali" (YouTube + extra) e scheda GBP**:
-  - Togliere il checkbox di fianco a YouTube.
-  - Togliere "(stimato)" di fianco a "Probabilmente gestita".
-  - Cambiare "Aggiungi un altro canale" in "Aggiungi un altro canale social non trovato sul sito".
-  - **Caso scuole con più plessi/sedi**: una scuola con più plessi può avere diverse schede GBP.
-    Bisogna proporle tutte in questa schermata, con la possibilità di spuntarle/deselezionarle,
-    per permettere all'utente di "spegnere" le sedi che non sono di sua competenza o interesse.
-    Attualmente il codice (`lib/social/gbp.js`/`analizzaGBP`) restituisce una sola scheda (il primo
-    risultato di Google Places) — va esteso per restituire più candidati quando pertinente.
-  - La/e scheda/e GBP mostrate in questa schermata devono essere più sintetiche: togliere tutti i
-    criteri di valutazione dettagliati, che vanno invece riportati nella schermata successiva
-    (quella dove si dà il giudizio complessivo sui social).
+  - [x] Togliere il checkbox di fianco a YouTube. **Già FATTO il 2026-10-03 (notte, 11)**
+    (`views/social-altri.ejs`), non ancora spuntato qui — verificato di nuovo il 2026-10-05
+    (sessione schedulata, seconda): ora un campo nascosto (`<input type="hidden" name="includiYoutube">`),
+    nessun checkbox visibile.
+  - [x] Togliere "(stimato)" di fianco a "Probabilmente gestita". **Già FATTO il 2026-10-03 (notte,
+    11)** (`views/social-analisi.ejs`), non ancora spuntato qui — verificato di nuovo il 2026-10-05:
+    nessuna occorrenza di "(stimato)" in nessuna view (il campo `confidenzaStato: 'stimato'' resta solo
+    come valore interno in `lib/social/gbp.js`, mai mostrato all'utente).
+  - [x] Cambiare "Aggiungi un altro canale" in "Aggiungi un altro canale social non trovato sul sito".
+    **Già FATTO il 2026-10-03 (notte, 11)** (`views/social-altri.ejs`), non ancora spuntato qui —
+    verificato di nuovo il 2026-10-05: testo esatto presente nell'`<h2>` della sezione.
+  - **Non toccato (feature più ampia, serve decidere la logica di aggregazione punteggio — non è "la
+    scelta più semplice")**: caso scuole con più plessi/sedi, diverse schede GBP da proporre tutte con
+    possibilità di spuntarle/deselezionarle. Attualmente il codice (`lib/social/gbp.js`/`analizzaGBP`)
+    restituisce una sola scheda (il primo risultato di Google Places pertinente) — va esteso per
+    restituire più candidati quando pertinente, ma prima va deciso come il punteggio GBP si aggrega su
+    più schede selezionate (media? la peggiore? la scheda principale scelta dall'utente?). Verificato
+    di nuovo il 2026-10-05: nessuna novità, stesso blocco delle sessioni precedenti.
+  - [x] La/e scheda/e GBP mostrate in questa schermata devono essere più sintetiche: togliere tutti i
+    criteri di valutazione dettagliati, che vanno invece riportati nella schermata successiva (quella
+    dove si dà il giudizio complessivo sui social). **Già FATTO il 2026-10-02** ("Box Google Business
+    Profile minimizzato nello step 7", vedi sezione "Stato al 2026-10-02 (sessione Andrea)" più sotto
+    in questo file), non ancora spuntato qui — verificato di nuovo il 2026-10-05 rileggendo
+    `views/social-altri.ejs`: la card GBP mostra solo nome/pill di stato/indirizzo/link Maps e la nota
+    "Il dettaglio completo è nella schermata successiva.", nessun criterio di valutazione elencato.
 - **8) Passaggio giudizio/analisi social finale** — (manca il punto 7 nella lista di Andrea, da
   chiarire):
-  - Se l'utente non indica i valori per un determinato social, sostituire il messaggio tecnico
-    "Il canale ha risposto con codice 400" con "Non sono state fornite o trovate indicazioni".
-  - Togliere la voce "Post della scheda Community...".
+  - [x] Se l'utente non indica i valori per un determinato social, sostituire il messaggio tecnico
+    "Il canale ha risposto con codice 400" con "Non sono state fornite o trovate indicazioni". **Già
+    FATTO il 2026-10-03 (notte, 11)** (`lib/social.js`/`views/social-analisi.ejs`), non ancora
+    spuntato qui — verificato di nuovo il 2026-10-05: `views/social-analisi.ejs` usa
+    `c.motivo || 'Non sono state fornite o trovate indicazioni.'`, nessuna costruzione di messaggio
+    tecnico rimasta in `lib/social.js`.
+  - [x] Togliere la voce "Post della scheda Community...". **Già FATTO il 2026-10-03 (notte, 11)**
+    (`lib/social/youtube-analysis.js`/`views/social-analisi.ejs`), non ancora spuntato qui —
+    verificato di nuovo il 2026-10-05: nessuna occorrenza di "Community" in `lib/` o `views/`.
 
 Prima di implementare, conviene rileggere con Andrea la numerazione (manca il punto 7) e capire
 esattamente a quali view corrispondono i passaggi 1-8 nell'attuale flusso (`views/*.ejs`,
