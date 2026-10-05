@@ -3,6 +3,41 @@
   `views/social-analisi.ejs` e dalle ramificazioni `meno6mesi` in `lib/social.js` e `lib/social/assess.js`.
   Ora il follower indicato (fascia, rilevato o automatico) viene sempre considerato nel giudizio. 82 test verdi.
 
+## ▶️ DA FARE ALLA PROSSIMA AZIONE PROGRAMMATA (richiesta di Andrea, 2026-10-05) — nuova schermata "Punti deboli e contatto"
+
+**Priorità assoluta per la prossima sessione schedulata: realizzare questo passaggio.** Nuova schermata dopo il giudizio
+(passaggio 12 → nuovo passaggio **13**, il percorso passa a 13 passaggi: aggiornare "di 12" → "di 13" in
+`views/partials/layout-bottom.ejs`, la barra in `layout-top.ejs` e il pulsante "Continua" del giudizio; l'ordine dei file/stile
+come per il passaggio 12: rotta `GET /contatto/:id` + vista `views/contatto.ejs` + test). Contenuto:
+1. **Lista dei punti deboli rispetto ai blocchi individuati**: per ciascuno dei 3 blocchi (SEO tecnica, SEO contenuti,
+   Comunicazione, già ordinati per importanza come nel giudizio) elencare gli indicatori con voto basso (< 50) usando
+   `calcolaPunteggi(sessione)` di `lib/punteggi.js` e le frasi concrete di `dettaglioIndicatore` in `lib/giudizio.js` (esportarla).
+   Non mostrare i voti numerici. Se un blocco non ha punti deboli, scriverlo ("nessun punto debole rilevato"). Se non c'è nessun punto
+   debole in assoluto, messaggio di conferma e la schermata resta utile solo per il contatto.
+2. **Box con l'avatar di Andrea** (immagine piccola, tonda) e a fianco il testo: "Andrea Valle lavora da oltre 25 anni in ambito web
+   marketing e ha realizzato questa piattaforma di audit per aiutarti a migliorare questi aspetti." — **l'immagine dell'avatar la deve
+   fornire Andrea**: nel frattempo usare un segnaposto (cerchio con le iniziali "AV") in un file sostituibile
+   (`public/` o equivalente, ad esempio `public/andrea.jpg` con fallback alle iniziali) e dirlo nel riepilogo finale.
+3. **Sotto, un modulo di contatto** con: Nome, Cognome (con la dicitura "dirigente di <nome dichiarato della scuola>", cioè
+   `sessione.scuola`), Telefono, e un campo di testo con messaggio **precompilato e modificabile** che si aggiorna con nome, cognome
+   e telefono digitati:
+   > Buongiorno Andrea, sono interessato a valutare una collaborazione tra te e la nostra scuola.
+   > Attendo di ricevere un tuo contatto per fissare una riunione conoscitiva.
+   >
+   > Grazie,
+   > [nome] [cognome]
+   > [telefono]
+4. **Pulsante INVIA**: deve far arrivare ad Andrea **un'e-mail inviata dal dispositivo del dirigente** (così Andrea ha anche
+   direttamente l'indirizzo e-mail del mittente). Implementazione prevista: link `mailto:` verso l'indirizzo di Andrea (da
+   chiedergli o da leggere da una variabile d'ambiente, NON scriverlo a caso: l'indirizzo noto è andrea.valle.1973@gmail.com ma
+   confermare se è quello giusto per i contatti commerciali) con oggetto e corpo precompilati (`encodeURIComponent`); si apre il
+   programma di posta del dirigente col messaggio già scritto e lui preme Invia. **Limite da dire ad Andrea**: con `mailto:` il
+   dirigente deve confermare l'invio nel suo programma di posta (non parte da solo) e non funziona se non ha un programma di posta
+   configurato; l'alternativa (invio dal server con un servizio e-mail) non avrebbe come mittente il dirigente e non darebbe
+   l'indirizzo e-mail di lui. Validare i campi prima dell'invio (nome, cognome e telefono obbligatori).
+5. Aggiornare questo TASKS.md (segnare fatto con data e dettagli), eseguire i test, fare commit/push, promuovere il deployment come
+   sempre e **ricordare ad Andrea che il sito è bloccato ai motori di ricerca**.
+
 ## ✅ Scheda GBP cercata con l'indirizzo scritto sul sito (2026-10-04)
 - Caso segnalato: scuolamariaconsolatrice.org mostrava la scheda "Scuola di Badia a Firenze" (omonimo).
 - `lib/localita.js`: indirizzo (via + civico + CAP/città) letto anche dal testo del sito (footer/contatti) quando mancano i dati schema.org; nome scuola preso dalla prima parte non generica del `<title>`.
@@ -368,7 +403,7 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
         canali social fermi o mancanti, scheda Google poco curata e nessuna newsletter, quindi poco contatto con le famiglie."
       - Per il blocco **accessorio** si usa solo la prima metà della frase (una riga).
       - Chiusura — giudizio Efficace: "L'impostazione è buona: conviene consolidarla e misurarne i risultati." / solo in
-        parte: "Intervenendo sui punti indicati, l'efficacia può crescere in modo sensibile." / Non ancora sufficiente: "Serve
+        parte: "Intervenendo sui punti deboli, l'efficacia della tua comunicazione può crescere in modo sensibile." / Non ancora sufficiente: "Serve
         un intervento mirato, partendo dal blocco più importante per il tuo obiettivo."
       - Il dato concreto va preso dall'analisi reale (non inventato) e inserito nella frase del blocco corrispondente.
       Da decidere: dove sta nel percorso rispetto al report finale; calcolo del voto interno 0-100 dei singoli indicatori
