@@ -1,0 +1,90 @@
+<%- include('partials/layout-top', { titolo: 'Obiettivi della comunicazione', step: 2 }) %>
+
+<h1>Quali sono gli obiettivi di una efficace attività di comunicazione che ti possono interessare per la tua scuola?</h1>
+<p class="lead">Marca quelli che ti interessano. Se ne hai altri, puoi aggiungerli in testo libero (anche più di uno).</p>
+
+<form method="POST" action="/obiettivi/<%= sessione.id %>" id="form-obiettivi">
+  <div class="card">
+    <div class="theme-list" id="obiettivi-list" style="flex-direction:column; align-items:stretch;">
+      <% elenco.forEach(function(o) { %>
+        <label class="theme-chip" style="border-radius:12px;">
+          <input type="checkbox" name="obiettivi" value="<%= o.key %>" <%= scelti.indexOf(o.key) !== -1 ? 'checked' : '' %> />
+          <%= o.label %>
+        </label>
+      <% }) %>
+    </div>
+
+    <div class="theme-list" id="liberi-list">
+      <% liberi.forEach(function(t) { %>
+        <span class="theme-chip"><input type="hidden" name="liberi" value="<%= t %>" /><%= t %> <a href="#" class="rimuovi-libero" aria-label="Rimuovi" style="margin-left:6px; text-decoration:none;">✕</a></span>
+      <% }) %>
+    </div>
+
+    <label for="nuovo-obiettivo">Aggiungi un altro obiettivo</label>
+    <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <input type="text" id="nuovo-obiettivo" maxlength="200" placeholder="es. far conoscere il nuovo corso di musica" style="margin-bottom:0;" />
+      <button type="button" id="btn-aggiungi-obiettivo" class="btn secondary" style="white-space:nowrap;">+ Aggiungi</button>
+    </div>
+    <p class="muted" id="limite-obiettivi" style="display:none;">Hai raggiunto il massimo di 5 obiettivi in testo libero: rimuovine uno per aggiungerne un altro.</p>
+  </div>
+
+  <%- include('partials/prossimo-passo', { testo: "audit tecnico del sito" }) %>
+  <div class="actions">
+    <a class="btn secondary" href="/">← Indietro</a>
+    <button type="submit" class="btn-principale">Continua →</button>
+  </div>
+</form>
+
+<script>
+(function () {
+  var MAX = 5;
+  var lista = document.getElementById('liberi-list');
+  var campo = document.getElementById('nuovo-obiettivo');
+  var btn = document.getElementById('btn-aggiungi-obiettivo');
+  var avviso = document.getElementById('limite-obiettivi');
+
+  function aggiorna() {
+    var pieno = lista.querySelectorAll('input[name="liberi"]').length >= MAX;
+    avviso.style.display = pieno ? 'block' : 'none';
+    btn.disabled = pieno;
+  }
+
+  function aggiungi() {
+    var testo = (campo.value || '').replace(/\s+/g, ' ').trim();
+    if (!testo || lista.querySelectorAll('input[name="liberi"]').length >= MAX) return;
+    var esiste = Array.prototype.some.call(lista.querySelectorAll('input[name="liberi"]'), function (i) {
+      return i.value.toLowerCase() === testo.toLowerCase();
+    });
+    if (!esiste) {
+      var chip = document.createElement('span');
+      chip.className = 'theme-chip';
+      var hidden = document.createElement('input');
+      hidden.type = 'hidden'; hidden.name = 'liberi'; hidden.value = testo;
+      var x = document.createElement('a');
+      x.href = '#'; x.className = 'rimuovi-libero'; x.setAttribute('aria-label', 'Rimuovi');
+      x.style.cssText = 'margin-left:6px; text-decoration:none;'; x.textContent = '✕';
+      chip.appendChild(hidden);
+      chip.appendChild(document.createTextNode(testo + ' '));
+      chip.appendChild(x);
+      lista.appendChild(chip);
+    }
+    campo.value = '';
+    aggiorna();
+  }
+
+  btn.addEventListener('click', aggiungi);
+  campo.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); aggiungi(); }
+  });
+  lista.addEventListener('click', function (e) {
+    if (e.target.classList && e.target.classList.contains('rimuovi-libero')) {
+      e.preventDefault();
+      e.target.parentNode.remove();
+      aggiorna();
+    }
+  });
+  aggiorna();
+})();
+</script>
+
+<%- include('partials/layout-bottom', { step: 2, sessione: sessione }) %>

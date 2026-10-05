@@ -1,4 +1,4 @@
-<%- include('partials/layout-top', { titolo: 'Audit tecnico', step: 2 }) %>
+<%- include('partials/layout-top', { titolo: 'Audit tecnico', step: 3 }) %>
 
 <h1><%= sessione.scuola %></h1>
 <p class="lead">Audit tecnico di <a href="<%= audit.homeUrl %>" target="_blank" rel="noopener"><%= audit.homeUrl %></a> — velocità mobile, struttura SEO di base, scheda Google.</p>
@@ -32,8 +32,8 @@
 
 <%- include('partials/prossimo-passo', { testo: "indicazione competenze della scuola", salta: true, href: "/dichiarazione/" + sessione.id + "/salta" }) %>
 <div class="actions">
-  <a class="btn secondary" href="/">← Indietro</a>
+  <a class="btn secondary" href="/obiettivi/<%= sessione.id %>">← Indietro</a>
   <a class="btn btn-principale" href="/dichiarazione/<%= sessione.id %>">Continua →</a>
 </div>
 
-<%- include('partials/layout-bottom', { step: 2, sessione: sessione }) %>
+<%- include('partials/layout-bottom', { step: 3, sessione: sessione }) %>

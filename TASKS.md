@@ -296,8 +296,15 @@ Richiesta di Andrea.
 Da affrontare dopo il test Firecrawl sui social (2026-10-04, fatto — vedi "Stato al 2026-10-04" in cima
 al file). Per ognuno serve comunque prima un confronto con Andrea: nessuna di queste 5 voci è stata
 affrontata in questa sessione, il test completato tocca solo il bottone AI dei canali social.
-- [ ] **Passaggio "Obiettivi della comunicazione" (richiesta di Andrea, 2026-10-05)** — fa parte delle domande dirette al dirigente.
-      - **Schermata 1**: domanda "Quali sono gli obiettivi di una efficace attività di comunicazione che ti possono
+- [~] **Passaggio "Obiettivi della comunicazione" (richiesta di Andrea, 2026-10-05)** — fa parte delle domande dirette al dirigente.
+      - ✅ **Schermata 1 FATTA il 2026-10-05, ora è il PASSAGGIO 2 del percorso** (subito dopo la landing; i passaggi
+        successivi sono scalati di uno: l'audit tecnico è il 3, ... la newsletter l'11, "Passaggio X di 11"). Rotte
+        `GET/POST /obiettivi/:id`, vista `views/obiettivi.ejs`, `lib/obiettivi.js` (+ 4 test, 82 totali verdi). Scelta multipla
+        con i 3 obiettivi + campo libero (max 5, aggiunti con "+ Aggiungi"), si può proseguire anche senza sceglierne
+        nessuno; dati in `sessione.obiettivi = {scelti: [...chiavi], liberi: [...testi]}`. Nessun "salta" su questo
+        passaggio (il successivo, l'audit tecnico, è la base dei dati). I commenti nel codice che citano numeri di passaggio
+        ("passaggio 9", ecc.) sono ora sfasati di uno: i riferimenti di sola documentazione non sono stati aggiornati.
+      - **Schermata 1 (testo originale richiesto)**: domanda "Quali sono gli obiettivi di una efficace attività di comunicazione che ti possono
         interessare per la tua scuola?". Il dirigente marca quelli che gli interessano (scelta multipla) e c'è anche un
         **campo libero** per indicarne altri (anche più di uno).
       - Obiettivi proposti (concordati con Andrea, 2026-10-05):

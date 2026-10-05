@@ -18,6 +18,7 @@ const { valutaPresenza } = require('./lib/social/assess');
 const { providerDisponibile } = require('./lib/social/ai');
 const { consentito } = require('./lib/social/rateLimit');
 const { analizzaGBP } = require('./lib/social/gbp');
+const { OBIETTIVI, normalizzaObiettivi } = require('./lib/obiettivi');
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -112,6 +113,29 @@ app.post('/avvia', async (req, res) => {
   }
 
   const sessione = creaSessione({ scuola, url });
+  res.redirect(`/obiettivi/${sessione.id}`);
+});
+
+// Passaggio 2: obiettivi della comunicazione che interessano al dirigente (richiesta di Andrea, 2026-10-05).
+// Scelta multipla tra obiettivi predefiniti + campo libero (anche più di uno). Servono più avanti per collegare
+// le attività analizzate agli obiettivi (gli obiettivi liberi non hanno collegamenti predefiniti).
+const MAX_OBIETTIVI_LIBERI = 5;
+
+app.get('/obiettivi/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  res.render('obiettivi', {
+    sessione,
+    elenco: OBIETTIVI,
+    scelti: (sessione.obiettivi && sessione.obiettivi.scelti) || [],
+    liberi: (sessione.obiettivi && sessione.obiettivi.liberi) || [],
+  });
+});
+
+app.post('/obiettivi/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  sessione.obiettivi = normalizzaObiettivi(req.body.obiettivi, req.body.liberi, MAX_OBIETTIVI_LIBERI);
   res.redirect(`/audit/${sessione.id}`);
 });
 
@@ -126,7 +150,7 @@ app.get('/audit/:id', (req, res) => {
   if (!sessione.audit) {
     return res.render('attesa', {
       titolo: 'Analisi in corso',
-      step: 2,
+      step: 3,
       sessione,
       messaggi: ['Scansione del sito...', 'Lettura dei contenuti...', 'Verifica SEO...', 'Quasi pronto...'],
       pollUrl: `/audit/${sessione.id}/esegui`,
@@ -238,7 +262,7 @@ app.get('/verifica/:id', (req, res) => {
 
     return res.render('attesa', {
       titolo: 'Verifica in corso',
-      step: 4,
+      step: 5,
       sessione,
       messaggi: ['Lettura dei contenuti...', 'Confronto con le competenze dichiarate...', 'Quasi pronto...'],
       redirectUrl: `/verifica/${sessione.id}`,
@@ -280,7 +304,7 @@ app.get('/posizionamento/:id', (req, res) => {
   if (!sessione.posizionamento) {
     return res.render('attesa', {
       titolo: 'Verifica posizionamento',
-      step: 5,
+      step: 6,
       sessione,
       messaggi: ['Interrogazione di Google...', 'Analisi dei risultati...', 'Quasi pronto...'],
       pollUrl: `/posizionamento/${sessione.id}/esegui`,
@@ -547,7 +571,7 @@ app.get('/social/:id/analisi', (req, res) => {
   if (!sessione.socialAnalisi) {
     return res.render('attesa', {
       titolo: 'Analisi canali social',
-      step: 8,
+      step: 9,
       sessione,
       messaggi: ['Verifica dei canali social...', 'Lettura dei profili pubblici...', 'Quasi pronto...'],
       pollUrl: `/social/${sessione.id}/esegui`,
@@ -630,7 +654,7 @@ app.get('/contenuti/:id', (req, res) => {
   if (!sessione.attivitaEditoriale) {
     return res.render('attesa', {
       titolo: 'Attività editoriale',
-      step: 9,
+      step: 10,
       sessione,
       messaggi: [
         'Analisi della sezione news/blog...',
