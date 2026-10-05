@@ -38,6 +38,17 @@ come per il passaggio 12: rotta `GET /contatto/:id` + vista `views/contatto.ejs`
 5. Aggiornare questo TASKS.md (segnare fatto con data e dettagli), eseguire i test, fare commit/push, promuovere il deployment come
    sempre e **ricordare ad Andrea che il sito è bloccato ai motori di ricerca**.
 
+## 📌 DA FARE — Privacy policy (richiesta di Andrea, 2026-10-05)
+
+Bisogna **creare una privacy policy** per la piattaforma. Serve in particolare perché il modulo di contatto (passaggio 13) raccoglie
+nome, cognome, telefono e un messaggio, e perché l'app analizza siti e profili della scuola e usa servizi esterni (Serper, Google
+Places/PageSpeed, ecc.). Punti da definire con Andrea prima di scriverla: chi è il titolare del trattamento (dati e indirizzo da
+indicare), quali dati vengono trattati e perché (modulo di contatto, dati inseriti nel percorso, obiettivi), per quanto tempo si
+conservano (oggi i dati stanno solo in memoria sul server e si perdono al riavvio), quali servizi esterni li ricevono, i diritti
+dell'interessato e come esercitarli, cookie/tracciamento (oggi non risultano usati). Collocazione prevista: pagina `/privacy` con
+link nel piè di pagina di tutte le schermate e vicino al modulo di contatto (con una dicitura di consenso). Nota: non sono un
+avvocato: il testo andrebbe fatto rivedere da un professionista prima della pubblicazione.
+
 ## 🕓 DA VALUTARE IN UN SECONDO MOMENTO (non iniziare senza Andrea)
 
 - **Invio e-mail dal server (oltre al `mailto:` del modulo di contatto)** — segnato da Andrea il 2026-10-05. Vercel non ha un
