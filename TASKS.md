@@ -315,13 +315,45 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
 - [ ] **Schermata "Giudizio sull'efficacia della comunicazione" (richiesta di Andrea, 2026-10-05)**: viene dopo il passaggio
       sugli obiettivi e dopo tutte le analisi. Valuta l'efficacia della comunicazione della scuola **in base all'analisi fatta
       e agli obiettivi dichiarati** dal dirigente.
-      - **Lista dei 3 blocchi** (SEO tecnica, SEO contenuti, Comunicazione) con l'importanza di ciascuno per gli obiettivi
-        scelti, su 3 livelli: **Fondamentale / Importante / Accessorio**. Ipotesi: derivare i livelli dai pesi per obiettivo
-        (es. peso più alto = fondamentale, medio = importante, più basso = accessorio) — da confermare con Andrea.
-      - **Sotto la lista, un commento di 5-6 righe** che fa emergere il senso del giudizio rispetto a quanto è stato trovato
-        (punti di forza e carenze reali dell'analisi, collegati agli obiettivi dichiarati). Da generare con testi a regole
-        dai dati dell'analisi (come nel resto dell'app) o con l'AI: da decidere.
-      - Da decidere: dove sta nel percorso rispetto al report finale; se il giudizio usa i punteggi per blocco.
+      **Decisioni di Andrea (2026-10-05)**
+      - **Il giudizio dipende dall'efficacia trovata nei blocchi**: durante l'analisi si calcola per ogni blocco un voto
+        interno (0-100, **mai mostrato all'utente**); il giudizio finale rispetto all'obiettivo è la media pesata
+        `voto = peso_tecnica*v_tecnica + peso_contenuti*v_contenuti + peso_comunicazione*v_comunicazione`, con i pesi della
+        tabella per obiettivo (più obiettivi = media dei pesi). Più un blocco è efficace, più alza il giudizio — e più lo
+        alza quanto più è importante per l'obiettivo.
+      - **Nessuna AI**: testi scritti a mano per ogni combinazione, scelti da regole.
+      **Struttura della schermata**
+      1. **Lista dei 3 blocchi con importanza**: ordinati per peso dell'obiettivo — il più pesante = **Fondamentale**, il
+         secondo = **Importante**, il terzo = **Accessorio** (con più obiettivi si usano i pesi medi; a pari peso, ordine
+         tecnica < contenuti < comunicazione).
+      2. **Giudizio complessivo**: Efficace (voto >= 70) / Efficace solo in parte (40-69) / Non ancora sufficiente (< 40).
+      3. **Commento di 5-6 righe**, composto da frasi pre-scritte in quest'ordine: apertura (giudizio + obiettivo) → frase
+         sul blocco fondamentale → frase sul blocco importante → frase sul blocco accessorio (breve) → un dato concreto trovato
+         nell'analisi (es. "newsletter assente", "blog fermo da X mesi", posizione trovata/non trovata) → chiusura.
+      **Bozza dei testi (da rivedere con Andrea)** — fascia di blocco: Solido (>=70) / Migliorabile (40-69) / Debole (<40)
+      - Apertura: "Rispetto all'obiettivo di {obiettivo}, la comunicazione della tua scuola risulta {efficace | efficace solo
+        in parte | non ancora sufficiente}." — {obiettivo}: "aumentare le iscrizioni" / "raggiungere prima i numeri per classi e
+        corsi" / "migliorare la reputazione e il gradimento degli iscritti" (più obiettivi: elencati con "e").
+      - SEO tecnica — Solido: "Il sito è tecnicamente solido: si carica bene, funziona da mobile ed è leggibile dai motori di
+        ricerca, quindi non ostacola chi arriva dalla ricerca." / Migliorabile: "Il sito funziona, ma ha alcune carenze
+        tecniche che rallentano chi arriva e riducono la resa dei contenuti." / Debole: "Il sito ha problemi tecnici rilevanti
+        che penalizzano visibilità ed esperienza di chi lo visita: conviene risolverli prima di investire in altro."
+      - SEO contenuti — Solido: "I contenuti lavorano bene: le competenze della scuola emergono sul sito, compaiono nelle
+        ricerche delle famiglie e il blog è aggiornato con regolarità." / Migliorabile: "I contenuti ci sono ma raccontano
+        solo in parte ciò che distingue la scuola: alcune competenze non emergono o non compaiono nelle ricerche, e il blog è
+        poco regolare." / Debole: "Le famiglie che cercano online faticano a trovare la scuola e a capire che cosa la
+        distingue: poche competenze comunicate, scarsa presenza nelle ricerche, blog fermo o assente."
+      - Comunicazione — Solido: "La scuola comunica con continuità: social attivi, scheda Google curata e newsletter regolare
+        mantengono vivo il rapporto con le famiglie." / Migliorabile: "La comunicazione c'è ma è discontinua: alcuni canali
+        sono attivi, altri trascurati (social, scheda Google o newsletter)." / Debole: "La comunicazione è quasi assente:
+        canali social fermi o mancanti, scheda Google poco curata e nessuna newsletter, quindi poco contatto con le famiglie."
+      - Per il blocco **accessorio** si usa solo la prima metà della frase (una riga).
+      - Chiusura — giudizio Efficace: "L'impostazione è buona: conviene consolidarla e misurarne i risultati." / solo in
+        parte: "Intervenendo sui punti indicati, l'efficacia può crescere in modo sensibile." / Non ancora sufficiente: "Serve
+        un intervento mirato, partendo dal blocco più importante per il tuo obiettivo."
+      - Il dato concreto va preso dall'analisi reale (non inventato) e inserito nella frase del blocco corrispondente.
+      Da decidere: dove sta nel percorso rispetto al report finale; calcolo del voto interno 0-100 dei singoli indicatori
+      di ogni blocco (parte della voce "Definire i punteggi").
 - [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
       **Impostazione concordata con Andrea (2026-10-05)** — l'autoanalisi si divide in 3 blocchi:
       - **SEO tecnica** (1 schermata): audit tecnico del sito.
