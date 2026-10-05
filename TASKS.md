@@ -314,7 +314,7 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
         **campo libero** per indicarne altri (anche più di uno).
       - Obiettivi proposti (concordati con Andrea, 2026-10-05):
         1. Aumentare le iscrizioni e ottimizzare l'occupazione dei posti nelle classi (testo corretto da Andrea, 2026-10-05).
-        2. Raggiungere più velocemente i numeri necessari per attivare classi e corsi.
+        2. Raggiungere più velocemente i numeri per attivare classi e corsi (testo corretto da Andrea, 2026-10-05).
         3. Migliorare la reputazione della scuola e il gradimento degli iscritti.
         (Scartati perché concettualmente uguali al punto 2: riempire gli ultimi posti, far partire un corso nuovo.)
       - **Schermata successiva**: creare i collegamenti tra le attività di marketing e comunicazione indagate finora
