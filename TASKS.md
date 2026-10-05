@@ -313,6 +313,20 @@ affrontata in questa sessione, il test completato tocca solo il bottone AI dei c
         punteggi, mappa esatta attività → obiettivi.
 - [ ] **Domande dirette al dirigente**: da definire quali domande e in quale punto del percorso.
 - [ ] **Definire i punteggi**: criteri e pesi per ogni area/passaggio e punteggio complessivo.
+      **Impostazione concordata con Andrea (2026-10-05)** — l'autoanalisi si divide in 3 blocchi:
+      - **SEO tecnica** (1 schermata): audit tecnico del sito.
+      - **SEO contenuti**: blog/aggiornamento contenuti, competenze comunicate sul sito e loro verifica, posizionamento su Google.
+      - **Comunicazione**: newsletter, social e scheda Google Business Profile (recensioni, foto, risposte).
+      **Pesi del punteggio finale, per obiettivo scelto dal dirigente** (decisi da Andrea):
+      | Obiettivo | SEO tecnica | SEO contenuti | Comunicazione |
+      |---|---|---|---|
+      | Aumentare le iscrizioni | 25% | 45% | 30% |
+      | Raggiungere prima i numeri per classi e corsi | 25% | 30% | 45% |
+      | Reputazione e gradimento degli iscritti | 20% | 30% | 50% |
+      Più obiettivi scelti → media dei pesi; solo obiettivo libero → pesi di base (da fissare, ipotesi 25/40/35).
+      Dentro ogni blocco: pesi uguali tra gli indicatori salvo i più importanti (es. posizionamento e competenze nel blocco contenuti).
+      **Ancora da decidere**: mostrare i 3 punteggi per blocco + uno complessivo (proposta) o solo uno; scala 0-100 o
+      livelli Insufficiente/Sufficiente/Buono già usati; collocazione definitiva della scheda GBP (Comunicazione o blocco "Visibilità locale").
 - [ ] **Report finale scaricabile**: documento (probabilmente PDF) con i risultati di tutti i passaggi e i punteggi.
 - [ ] **Aggiungere le firme**: da chiarire di chi (consulente? dirigente?) e dove compaiono nel report.
 - [ ] **Dinamiche di ingaggio commerciale**: come si passa dall'autoanalisi al contatto/proposta (invito a un
