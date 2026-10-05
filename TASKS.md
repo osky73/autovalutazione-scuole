@@ -41,15 +41,22 @@ commit (`121a905`, della sessione precedente di oggi).
 - [x] **Verificato lo stato di salute del codice** (nessuna modifica): `npm install` (node_modules
       mancanti in questa sessione), `npm test` → **78/78 test unitari verdi** (nessuna variazione,
       coerente col fatto che non è stato toccato codice), `node -e "require('./server.js')"` pulito.
-- **Nessun deploy fatto in questa sessione**: nessun codice applicativo è stato modificato (solo
-  `TASKS.md`), quindi non c'è nulla di nuovo da deployare — evitato un deployment Vercel superfluo
-  (a differenza della sessione del 2026-10-05 precedente, dove il solo push di `TASKS.md` aveva
-  comunque generato un nuovo deployment identico lato codice tramite la Git integration: qui si
-  preferisce non generare quel rumore quando non è nemmeno strettamente necessario per il backlog).
-- [x] **Commit e push**: solo questo aggiornamento di `TASKS.md`. La prossima sessione può ripartire
-  da qui: la voce 5 del backlog è ora quasi tutta spuntata, i pochi punti restanti sono tutti
-  esplicitamente in attesa di una decisione di Andrea (non codificabili "nel modo più semplice" senza
-  rischiare di andare contro il suo intento).
+- [x] **Commit e push**: solo questo aggiornamento di `TASKS.md` (commit `ee7fa79`), nessun codice
+      applicativo modificato. **Come già notato dalla sessione precedente**, con la Git integration
+      anche un push di solo `TASKS.md` genera comunque un nuovo deployment di produzione (codice
+      applicativo identico, `TASKS.md` non è servito dall'app): `dpl_HekAURQH5C71tRv9ZecVM9Y86Kt6`,
+      `READY`. **Alias**: `list_aliases` prima del cambio confermava ancora il deployment precedente
+      (`dpl_GrmMC7Rkqy4GU3teS6HfdaTY6wKm`, commit `84a98d0` — nessuna sessione concorrente), poi
+      `assign_alias` su `autoanalisi-scuole.vercel.app` (`oldDeploymentId` di ritorno uguale a quanto
+      atteso), verificato stabile con un secondo `list_aliases` (anche l'alias
+      `autoanalisi-scuole-git-main-osky2.vercel.app` risultava già aggiornato automaticamente). Alias
+      di fallback `-osky2` non toccato (resta il redirect permanente verso l'alias primario). Nessun
+      controllo HTTP diretto dal vivo (stesso limite di rete delle sessioni schedulate precedenti) —
+      verifica basata su `readyState: READY` e sul fatto che il codice applicativo è bit-per-bit
+      identico alla produzione precedente (solo `TASKS.md` è cambiato). La prossima sessione può
+      ripartire da qui: la voce 5 del backlog è ora quasi tutta spuntata, i pochi punti restanti sono
+      tutti esplicitamente in attesa di una decisione di Andrea (non codificabili "nel modo più
+      semplice" senza rischiare di andare contro il suo intento).
 
 ## Stato al 2026-10-05 (sessione schedulata) — verifica testo libero sul sito (voce 5, punto 4) + 2 correzioni di spunta
 
