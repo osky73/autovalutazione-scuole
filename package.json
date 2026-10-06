@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "fixture": "node test/fixture-site.js",
-    "test": "node --test lib/**/*.test.js"
+    "test": "node --test"
   },
   "keywords": [],
   "author": "",
