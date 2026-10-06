@@ -1,3 +1,60 @@
+## Stato al 2026-10-06 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; trovato e corretto un bug nello script di test; deploy del fix NON promosso in produzione (permesso negato)
+
+Sessione schedulata: repo già presente, `git pull` senza novità rispetto all'ultimo commit (`3e51204`,
+della sessione precedente di oggi). Letto TASKS.md per intero prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare — in ordine di
+      priorità")**: ri-confermati completi, agganciati e deployati da sessioni precedenti — nessuna
+      azione necessaria.
+- **Nessun'altra voce azionabile senza il contributo di Andrea trovata**, ricontrollando per intero
+  la sezione "Da fare" e le altre voci aperte nel file: privacy policy (in attesa delle risposte di
+  Andrea su titolare/base giuridica/conservazione), le "5 nuove voci" (domande dirette, report
+  finale, firme, ingaggio commerciale — tutte richiedono esplicitamente un confronto con Andrea),
+  andamento social 3 mesi (serve decidere il livello di automazione), voce 5/punto 2 (box "dato
+  peggiore", ambiguo), voce 5/punto 4 (accorpamento passaggi 4+5, ristrutturazione non pianificata),
+  voce 5/punto 5 (checkbox canale trovato, funzione di esclusione omonimi) e voce 5/punto 6
+  (multi-plessi GBP, serve decidere l'aggregazione del punteggio). Anche una ricerca di `TODO`/`FIXME`
+  nel codice (`lib/`, `views/`, `server.js`) non ha trovato nulla non già tracciato in questo file.
+- [x] **Trovato e corretto un bug reale nello script `npm test`** (non una voce del backlog, ma un
+      controllo di qualità rientrante nel passo "esegui un controllo rapido locale prima del
+      deploy"): `package.json` aveva `"test": "node --test lib/**/*.test.js"`. Il pattern `**`
+      dipende dall'opzione bash `globstar` (non attiva di default, e non supportata affatto da `sh`/
+      `dash`, la shell con cui `npm` esegue gli script) — lanciando `npm test` in una shell normale
+      venivano eseguiti **solo i 4 test di `lib/social/gbp.test.js`** (l'unico file esattamente a un
+      livello di sottocartella sotto `lib/`), con esito "4/4 verdi" che sembrava un successo mentre
+      95 test su 99 non venivano nemmeno avviati — un falso senso di sicurezza per chiunque (sessioni
+      precedenti incluse) lanci `npm test` così com'è scritto, invece di un comando equivalente con
+      `globstar` attivato a mano. **Fix**: `"test": "node --test"` — il test runner di Node scopre da
+      solo, in modo ricorsivo e senza dipendere dalla shell, tutti i file `*.test.js` sotto la
+      cartella corrente. Verificato: 99/99 test verdi sia con `npm test` che con `node --test`
+      diretto, `require('./server.js')` pulito. Nessuna modifica di logica applicativa, zero rischio
+      per il wizard in produzione.
+- [x] **Commit e push**: commit `8c78d31` (`git fetch origin main` prima del commit, confermato
+      nessuna sessione concorrente: HEAD remoto fermo a `3e51204`), push su `main` senza conflitti.
+- **Deploy automatico avvenuto, ma NON promosso in produzione in questa sessione**: come da
+  comportamento ormai noto con la Git integration, il push ha generato un nuovo deployment READY
+  (`dpl_F4xBaofNEShg7JEtBLfPDRqtkJit`, commit `8c78d31` confermato in `githubCommitSha`) e l'alias
+  secondario `autoanalisi-scuole-git-main-osky2.vercel.app` si è aggiornato da solo, ma l'alias
+  primario `autoanalisi-scuole.vercel.app` è rimasto sul deployment precedente
+  (`dpl_BExem4bz9zQoDp2WuampMWNrJ2xh`, commit `3e51204`, solo documentazione). **Il tentativo di
+  `assign_alias` per promuoverlo è stato bloccato dal classificatore di permessi della modalità
+  automatica di questa sessione, con motivo esplicito "Production Deploy"** — non un errore tecnico,
+  un diniego di permesso per un'azione di produzione in una sessione schedulata non presidiata.
+  Non è stato tentato nessun modo alternativo per eseguire comunque l'azione (come richiesto dalle
+  regole del diniego). **Nessun rischio pratico**: la modifica è solo allo script `test` di
+  `package.json`, senza alcun effetto sul comportamento a runtime del sito — l'alias primario può
+  restare puntato al deployment precedente senza che il wizard ne risenta in alcun modo. **Da fare
+  nella prossima sessione (o se Andrea vuole farlo lui stesso)**: verificare con `list_aliases` se
+  l'alias primario è stato promosso nel frattempo (da un'altra sessione con permessi diversi, o
+  manualmente); se è ancora su `dpl_BExem4bz9zQoDp2WuampMWNrJ2xh`, promuoverlo a
+  `dpl_F4xBaofNEShg7JEtBLfPDRqtkJit` (o al deployment più recente a quel punto) con `assign_alias`.
+  Alias di fallback `-osky2` non toccato, come da regola.
+- **Promemoria per Andrea, come sempre**: il sito resta **bloccato ai motori di ricerca** (nessuna
+  modifica fatta su questo in questa sessione, vedi la nota dedicata più sotto in questo file).
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", ancora in attesa di un
+  confronto con Andrea sui punti elencati nella sezione dedicata più sotto in questo file (titolare
+  del trattamento, base giuridica, conservazione dei dati, ecc.).
+
 ## Stato al 2026-10-06 (sessione schedulata) — nuovo passaggio 13 "Punti deboli e contatto" implementato
 
 Sessione schedulata: repo già presente in questa sandbox (nessun `add_repo`/clone necessario, solo `git pull`,
