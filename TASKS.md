@@ -69,6 +69,12 @@ nessuna novità rispetto all'ultimo commit `12bd887`). Letto TASKS.md per intero
       utente presente, assente in questa sessione schedulata, stesso limite di tutte le sessioni schedulate
       precedenti) — verifica basata su `readyState: READY`, sulla corrispondenza esatta del commit SHA nel
       deployment, sui 99 test locali e sui rendering EJS descritti sopra.
+- **Nota**: il commit successivo, di sola documentazione (`721d11c`, aggiunta di questo stesso paragrafo), ha
+  generato come sempre un altro deployment via Git integration (`dpl_624t3p8snwJoJ7xhBDHBtHPkm2AB`, `READY`,
+  codice applicativo identico — solo `TASKS.md` è cambiato, non servito dall'app) — anch'esso non aliasato in
+  automatico, quindi riassegnato a mano allo stesso modo. **L'alias primario in produzione punta quindi, a fine
+  sessione, a `dpl_624t3p8snwJoJ7xhBDHBtHPkm2AB`** (non a `dpl_BRS1nRHo4KddhdcRKFT3uSiqjNHk` come scritto sopra
+  prima di questo secondo push), verificato con un ulteriore `list_aliases`.
 - **Promemoria per Andrea** (come richiesto esplicitamente dal punto 5 della spec originale): il sito resta
   **bloccato ai motori di ricerca** (nessuna modifica fatta su questo, vedi la nota dedicata più sotto in questo
   file) — da togliere solo quando Andrea lo chiederà esplicitamente. Inoltre: l'avatar di Andrea nella nuova
