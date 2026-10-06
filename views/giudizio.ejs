@@ -25,8 +25,10 @@
   <% }) %>
 </div>
 
+<%- include('partials/prossimo-passo', { testo: "punti deboli e contatto" }) %>
 <div class="actions">
   <a class="btn secondary" href="/newsletter/<%= sessione.id %>">← Indietro</a>
+  <a class="btn btn-principale" href="/contatto/<%= sessione.id %>">Continua →</a>
 </div>
 
 <%- include('partials/layout-bottom', { step: 12, sessione: sessione }) %>

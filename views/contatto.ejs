@@ -1,0 +1,111 @@
+<%- include('partials/layout-top', { titolo: 'Punti deboli e contatto', step: 13 }) %>
+
+<h1>I punti su cui conviene lavorare</h1>
+<p class="lead">Un riepilogo di dove la tua scuola può migliorare, nelle stesse aree analizzate finora. Nessun voto: solo i punti concreti emersi dall'analisi.</p>
+
+<div class="card">
+  <% if (nessunPuntoDebole) { %>
+    <p>Complimenti: dall'analisi non sono emersi punti deboli rilevanti. La comunicazione web della tua scuola risulta già solida sugli aspetti che abbiamo controllato.</p>
+  <% } else { %>
+    <% blocchi.forEach(function(b, i) { %>
+      <h2 style="margin-top: <%= i === 0 ? 0 : 28 %>px;">
+        <%= b.etichetta %>
+        <span class="pill <%= b.importanza === 'fondamentale' ? 'assente' : b.importanza === 'importante' ? 'parziale' : 'sufficiente' %>" style="<%= b.importanza === 'accessorio' ? 'background:#eef0f2; color:#6b7280;' : '' %>"><%= b.importanzaEtichetta %></span>
+      </h2>
+      <% if (!b.valutato) { %>
+        <p class="muted">Quest'area non è stata valutata (passaggio saltato o dati non disponibili).</p>
+      <% } else if (!b.punti.length) { %>
+        <p class="muted">Nessun punto debole rilevato in quest'area.</p>
+      <% } else { %>
+        <ul class="result-bullet">
+          <% b.punti.forEach(function(testo) { %><li><%= testo %></li><% }) %>
+        </ul>
+      <% } %>
+    <% }) %>
+  <% } %>
+</div>
+
+<div class="card avatar-box">
+  <span class="avatar-circle">AV<img src="/andrea.jpg" alt="" onerror="this.style.display='none';" /></span>
+  <p style="margin:0;">Andrea Valle lavora da oltre 25 anni in ambito web marketing e ha realizzato questa piattaforma di audit per aiutarti a migliorare questi aspetti.</p>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0;">Contatta Andrea</h2>
+  <p class="lead" style="margin-top:0;">Compila i tuoi dati: il messaggio qui sotto si aggiorna da solo, e puoi modificarlo liberamente prima di inviarlo.</p>
+  <form id="form-contatto" novalidate>
+    <label for="contatto-nome">Nome</label>
+    <input type="text" id="contatto-nome" autocomplete="given-name" required />
+
+    <label for="contatto-cognome">Cognome <span class="muted" style="font-weight:400;">(dirigente di <%= sessione.scuola %>)</span></label>
+    <input type="text" id="contatto-cognome" autocomplete="family-name" required />
+
+    <label for="contatto-telefono">Telefono</label>
+    <input type="text" id="contatto-telefono" autocomplete="tel" required />
+
+    <label for="contatto-messaggio">Messaggio</label>
+    <textarea id="contatto-messaggio" rows="7"></textarea>
+
+    <p class="text-bad" id="contatto-errore" style="display:none;">Compila nome, cognome e telefono prima di inviare.</p>
+
+    <div class="actions" style="margin-top:0;">
+      <button type="submit" class="btn-principale">Invia</button>
+    </div>
+    <p class="muted" style="margin-top:14px;">Si apre il tuo programma di posta con il messaggio già scritto: dovrai confermare l'invio da lì (serve un programma di posta configurato sul dispositivo).</p>
+  </form>
+</div>
+
+<div class="actions">
+  <a class="btn secondary" href="/giudizio/<%= sessione.id %>">← Indietro</a>
+</div>
+
+<script>
+(function () {
+  var SCUOLA = <%- JSON.stringify(sessione.scuola) %>;
+  var EMAIL_ANDREA = <%- JSON.stringify(emailAndrea) %>;
+
+  var campoNome = document.getElementById('contatto-nome');
+  var campoCognome = document.getElementById('contatto-cognome');
+  var campoTelefono = document.getElementById('contatto-telefono');
+  var campoMessaggio = document.getElementById('contatto-messaggio');
+  var errore = document.getElementById('contatto-errore');
+
+  function messaggioPrecompilato() {
+    var firma = [campoNome.value.trim(), campoCognome.value.trim()].filter(Boolean).join(' ') || '[nome] [cognome]';
+    var righe = [
+      'Buongiorno Andrea, sono interessato a valutare una collaborazione tra te e la nostra scuola.',
+      'Attendo di ricevere un tuo contatto per fissare una riunione conoscitiva.',
+      '',
+      'Grazie,',
+      firma,
+      campoTelefono.value.trim() || '[telefono]',
+    ];
+    return righe.join('\n');
+  }
+
+  // Il messaggio si aggiorna da solo finché l'utente non lo modifica a mano (poi resta quello che ha scritto).
+  var modificatoAMano = false;
+  campoMessaggio.addEventListener('input', function () { modificatoAMano = true; });
+  function aggiornaMessaggio() {
+    if (!modificatoAMano) campoMessaggio.value = messaggioPrecompilato();
+  }
+  campoNome.addEventListener('input', aggiornaMessaggio);
+  campoCognome.addEventListener('input', aggiornaMessaggio);
+  campoTelefono.addEventListener('input', aggiornaMessaggio);
+  aggiornaMessaggio();
+
+  document.getElementById('form-contatto').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!campoNome.value.trim() || !campoCognome.value.trim() || !campoTelefono.value.trim()) {
+      errore.style.display = 'block';
+      return;
+    }
+    errore.style.display = 'none';
+    var oggetto = 'Richiesta di contatto da ' + SCUOLA;
+    var link = 'mailto:' + EMAIL_ANDREA + '?subject=' + encodeURIComponent(oggetto) + '&body=' + encodeURIComponent(campoMessaggio.value);
+    window.location.href = link;
+  });
+})();
+</script>
+
+<%- include('partials/layout-bottom', { step: 13, sessione: sessione }) %>

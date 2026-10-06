@@ -1,9 +1,75 @@
+## Stato al 2026-10-06 (sessione schedulata) — nuovo passaggio 13 "Punti deboli e contatto" implementato
+
+Sessione schedulata: repo già presente in questa sandbox (nessun `add_repo`/clone necessario, solo `git pull`,
+nessuna novità rispetto all'ultimo commit `12bd887`). Letto TASKS.md per intero prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare — in ordine di priorità")**:
+      ri-confermati completi, agganciati e deployati da sessioni precedenti (nessuna novità) — nessuna azione
+      necessaria. La voce davvero azionabile in cima al file era la nuova schermata "Punti deboli e contatto",
+      segnata come priorità assoluta dalla sessione precedente: realizzata in questa sessione (vedi sotto).
+- [x] **Nuovo passaggio 13 (ultimo del percorso) "Punti deboli e contatto"**, implementato per intero (non un
+      incremento parziale: la feature è completa e collegata al wizard, quindi deployata — vedi "Come deployare").
+  - **`lib/giudizio.js`**: estratta la costruzione dei 3 blocchi ordinati per importanza in una funzione
+        `blocchiOrdinati(p)` esportata (prima era inline dentro `costruisciGiudizio`), ed esportata anche
+        `dettaglioIndicatore` — entrambe riusate dal nuovo modulo senza duplicare nessuna logica di calcolo.
+  - **Nuovo `lib/contatto.js`** (`puntiDeboliPerBlocco`, `nessunPuntoDebole`): per ciascuno dei 3 blocchi
+        (stesso ordine di importanza del giudizio), elenco delle frasi di `dettaglioIndicatore` per gli
+        indicatori con voto interno < 50 (costante `SOGLIA_PUNTO_DEBOLE`, diversa dalla soglia "bassa" 40 di
+        `lib/punteggi.js` — qui si vuole un elenco più ampio, come richiesto). Nessun voto numerico esposto.
+        4 nuovi test (`lib/contatto.test.js`, 99 totali verdi).
+  - **Rotta `GET /contatto/:id`** (`server.js`), stessa guardia del giudizio (`sessione.audit`); **nessuna
+        rotta POST**: l'invio è interamente lato client (`mailto:`), non c'è nulla da salvare in sessione.
+  - **Vista `views/contatto.ejs`**: lista dei punti deboli per blocco (pill di importanza come nel giudizio;
+        blocco non valutato o senza punti deboli → messaggio dedicato; nessun punto debole in nessun blocco →
+        messaggio di conferma, schermata utile solo per il contatto); box avatar + testo su Andrea; modulo
+        Nome/Cognome (con la dicitura "dirigente di {scuola}")/Telefono + messaggio precompilato che si
+        aggiorna da solo finché l'utente non lo modifica a mano (poi resta quello scritto da lui); pulsante
+        "Invia" che valida nome/cognome/telefono (JS, nessun submit al server) e apre `mailto:` con oggetto e
+        corpo già scritti (`encodeURIComponent` solo su oggetto/corpo, non sull'indirizzo).
+  - **Avatar segnaposto**: nuova cartella `public/` servita con `express.static` (`server.js`); l'immagine vera
+        la fornirà Andrea (`public/andrea.jpg`, non presente in questo commit — solo un `.gitkeep` per tenere
+        la cartella in git) — **nel frattempo la vista mostra un cerchio con le iniziali "AV"** (il cerchio è
+        sempre renderizzato, l'`<img>` sta sopra e si nasconde con `onerror` se il file non esiste, rivelando le
+        iniziali sotto). **Promemoria per Andrea**: quando fornirà la foto basterà aggiungere il file
+        `public/andrea.jpg` nella cartella `public/` del repo — nessuna modifica di codice necessaria.
+  - **Indirizzo e-mail di Andrea**: letto da `process.env.EMAIL_CONTATTO_ANDREA` se impostata su Vercel,
+        altrimenti l'indirizzo noto `andrea.valle.1973@gmail.com` come valore di default nel codice (non è un
+        segreto, è l'indirizzo a cui arrivano le e-mail dei dirigenti). **Da confermare con Andrea** (come
+        chiedeva la spec originale) se è l'indirizzo giusto per i contatti commerciali, o se ne preferisce un
+        altro: in tal caso basta impostare `EMAIL_CONTATTO_ANDREA` su Vercel, senza toccare il codice.
+  - **Contatore passaggi**: "di 12" → "di 13" in `views/partials/layout-bottom.ejs` (entrambi i rami, con e
+        senza sessione); aggiunto il 13º segmento nello stepper di `views/partials/layout-top.ejs`; aggiunto il
+        pulsante "Continua →" (verso `/contatto/:id`) in `views/giudizio.ejs`, che prima non ne aveva uno
+        essendo l'ultimo passaggio — ora lo è il 13.
+  - **Interpretazione presa su un punto della spec** (non ambiguo, ma degno di nota): "Cognome (con la dicitura
+        'dirigente di ...')" è stato implementato come testo attenuato di fianco all'etichetta del campo
+        Cognome (`Cognome (dirigente di {scuola})`), non come parte del messaggio precompilato (che resta
+        quello letterale indicato dalla spec, con solo nome/cognome/telefono in firma).
+- [x] **Verificato prima del deploy**: 99 test unitari verdi (95 esistenti + 4 nuovi di `lib/contatto.test.js`),
+      `npm install` (node_modules mancanti in questa sessione), `require('./server.js')` pulito, rendering con
+      `ejs.renderFile` di `views/contatto.ejs` su 3 casi (punti deboli presenti, nessun punto debole, nessun dato
+      disponibile/blocchi non valutati) e di `views/giudizio.ejs` con il nuovo pulsante "Continua", verifica
+      puntuale dell'HTML prodotto (avatar con `/andrea.jpg` presente, dicitura "dirigente di ..." presente,
+      `mailto:` presente nello script, nessun campo con `name=` nel modulo — coerente con "nessun submit al
+      server") e dello stepper/contatore (13 segmenti, "di 13" in entrambi i rami di `layout-bottom.ejs`).
+- [x] **Commit, push e deploy**: (dettagli completati a fine sessione, vedi sotto dopo la verifica del deploy).
+
 ## ✅ Tolta la casella "Aperto di recente (meno di 6 mesi)" dai canali social (2026-10-05, richiesta di Andrea)
 - Rimossa da passaggio 7 (canali trovati sul sito) e 8 (altri canali), dal salvataggio in `server.js`, dal testo di
   `views/social-analisi.ejs` e dalle ramificazioni `meno6mesi` in `lib/social.js` e `lib/social/assess.js`.
   Ora il follower indicato (fascia, rilevato o automatico) viene sempre considerato nel giudizio. 82 test verdi.
 
-## ▶️ DA FARE ALLA PROSSIMA AZIONE PROGRAMMATA (richiesta di Andrea, 2026-10-05) — nuova schermata "Punti deboli e contatto"
+## ✅ FATTA il 2026-10-06 (sessione schedulata) — nuova schermata "Punti deboli e contatto" (passaggio 13, ultimo)
+
+Vedi "Stato al 2026-10-06" in cima al file per il dettaglio completo di implementazione/verifica/deploy.
+Riepilogo: nuovo passaggio 13 (ultimo del percorso, dopo il giudizio) con la lista dei punti deboli per blocco
+(riuso di `calcolaPunteggi`/`dettaglioIndicatore`, nessun voto mostrato), il box con l'avatar segnaposto di
+Andrea e il modulo di contatto con messaggio precompilato che si apre nel programma di posta del dirigente
+(`mailto:`). **Promemoria per Andrea, come richiesto dal punto 5 qui sotto: il sito resta bloccato ai motori di
+ricerca** (vedi la nota dedicata più sotto in questo file) — nessuna modifica fatta su questo in questa sessione.
+
+<details>
+<summary>Spec originale richiesta da Andrea il 2026-10-05, per riferimento storico</summary>
 
 **Priorità assoluta per la prossima sessione schedulata: realizzare questo passaggio.** Nuova schermata dopo il giudizio
 (passaggio 12 → nuovo passaggio **13**, il percorso passa a 13 passaggi: aggiornare "di 12" → "di 13" in
@@ -37,6 +103,8 @@ come per il passaggio 12: rotta `GET /contatto/:id` + vista `views/contatto.ejs`
    l'indirizzo e-mail di lui. Validare i campi prima dell'invio (nome, cognome e telefono obbligatori).
 5. Aggiornare questo TASKS.md (segnare fatto con data e dettagli), eseguire i test, fare commit/push, promuovere il deployment come
    sempre e **ricordare ad Andrea che il sito è bloccato ai motori di ricerca**.
+
+</details>
 
 ## 📌 DA FARE — Privacy policy (richiesta di Andrea, 2026-10-05)
 

@@ -20,12 +20,17 @@ const { consentito } = require('./lib/social/rateLimit');
 const { analizzaGBP } = require('./lib/social/gbp');
 const { OBIETTIVI, normalizzaObiettivi } = require('./lib/obiettivi');
 const { costruisciGiudizio } = require('./lib/giudizio');
+const { puntiDeboliPerBlocco, nessunPuntoDebole } = require('./lib/contatto');
 
 const app = express();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: '8mb' }));
+// Passaggio 13 (avatar segnaposto di Andrea, richiesta di Andrea 2026-10-05): cartella sostituibile, oggi vuota
+// (fallback alle iniziali "AV" in views/contatto.ejs). Quando Andrea fornirà la foto, basta aggiungere
+// public/andrea.jpg: nessuna modifica di codice necessaria.
+app.use(express.static(__dirname + '/public'));
 
 // Express 5 (a differenza della 4) lascia `req.body` a `undefined`, anziché `{}`, quando il
 // corpo della richiesta è vuoto (es. un form POST senza alcun campo, come succede nel passaggio
@@ -779,6 +784,27 @@ app.get('/giudizio/:id', (req, res) => {
   if (!sessione.audit) return res.redirect(`/audit/${sessione.id}`);
 
   res.render('giudizio', { sessione, g: costruisciGiudizio(sessione) });
+});
+
+// Passaggio 13 (ultimo, richiesta di Andrea, 2026-10-05): "Punti deboli e contatto". Stesso calcolo del
+// giudizio (passaggio 12, stessa guardia `sessione.audit`): elenco dei punti deboli per blocco (indicatori con
+// voto < 50, frasi riusate da dettaglioIndicatore) + modulo di contatto verso Andrea. Il modulo invia via
+// mailto: lato client (views/contatto.ejs): non c'è nessun dato da salvare in sessione qui, quindi nessuna
+// rotta POST.
+app.get('/contatto/:id', (req, res) => {
+  const sessione = getSessione(req.params.id);
+  if (!sessione) return res.redirect('/');
+  if (!sessione.audit) return res.redirect(`/audit/${sessione.id}`);
+
+  const blocchi = puntiDeboliPerBlocco(sessione);
+  res.render('contatto', {
+    sessione,
+    blocchi,
+    nessunPuntoDebole: nessunPuntoDebole(blocchi),
+    // Indirizzo di Andrea per i contatti commerciali: letto da env var se impostata (EMAIL_CONTATTO_ANDREA),
+    // altrimenti l'indirizzo noto (da confermare con Andrea se è quello giusto per questo uso, vedi TASKS.md).
+    emailAndrea: process.env.EMAIL_CONTATTO_ANDREA || 'andrea.valle.1973@gmail.com',
+  });
 });
 
 app.post('/api/social/assess', async (req, res) => {
