@@ -52,7 +52,34 @@ nessuna novità rispetto all'ultimo commit `12bd887`). Letto TASKS.md per intero
       puntuale dell'HTML prodotto (avatar con `/andrea.jpg` presente, dicitura "dirigente di ..." presente,
       `mailto:` presente nello script, nessun campo con `name=` nel modulo — coerente con "nessun submit al
       server") e dello stepper/contatore (13 segmenti, "di 13" in entrambi i rami di `layout-bottom.ejs`).
-- [x] **Commit, push e deploy**: (dettagli completati a fine sessione, vedi sotto dopo la verifica del deploy).
+- [x] **Commit, push e deploy**: commit `8d500ee`, push su `main` senza conflitti (`git fetch origin main` prima
+      del commit, confermato nessuna sessione concorrente: HEAD remoto fermo a `12bd887`). Deploy automatico via
+      Git integration: `dpl_BRS1nRHo4KddhdcRKFT3uSiqjNHk`, `READY` (commit `8d500eeb...` confermato in
+      `githubCommitSha` tramite `list_deployments`). **Promosso in produzione**: `list_aliases` prima del cambio
+      mostrava l'alias primario `autoanalisi-scuole.vercel.app` ancora sul deployment precedente
+      (`dpl_AEjjv45dCtLk9NPKKAtM41gAkr82`, commit `4ba76e6` — l'alias automatico non l'aveva aggiornato, stesso
+      comportamento inaffidabile già documentato più volte in questo file; l'alias `-git-main-osky2` invece
+      risultava già corretto), poi `assign_alias` manuale (`oldDeploymentId` di ritorno uguale a quanto atteso),
+      verificato stabile con un secondo `list_aliases`. Alias di fallback `-osky2` non toccato (resta il redirect
+      permanente verso l'alias primario). Deploy via Git integration (non il vecchio meccanismo "by file list"):
+      nessun rischio del troncamento di `list_deployment_files` (che infatti su un deployment Git risponde "File
+      tree not found", confermato — il meccanismo di verifica file-per-file descritto in "Come deployare" si
+      applica solo al vecchio metodo). **Non è stato possibile un controllo HTTP diretto dal vivo**: `WebFetch`
+      su `autoanalisi-scuole.vercel.app` ha restituito `PROVENANCE_REQUIRED` (richiede l'approvazione di un
+      utente presente, assente in questa sessione schedulata, stesso limite di tutte le sessioni schedulate
+      precedenti) — verifica basata su `readyState: READY`, sulla corrispondenza esatta del commit SHA nel
+      deployment, sui 99 test locali e sui rendering EJS descritti sopra.
+- **Promemoria per Andrea** (come richiesto esplicitamente dal punto 5 della spec originale): il sito resta
+  **bloccato ai motori di ricerca** (nessuna modifica fatta su questo, vedi la nota dedicata più sotto in questo
+  file) — da togliere solo quando Andrea lo chiederà esplicitamente. Inoltre: l'avatar di Andrea nella nuova
+  schermata è oggi un segnaposto con le iniziali "AV" — basterà aggiungere un file `public/andrea.jpg` nel repo
+  per mostrare la foto vera, senza alcuna modifica di codice; e l'indirizzo e-mail usato dal modulo di contatto
+  è `andrea.valle.1973@gmail.com` (lo stesso già noto), da confermare se è quello giusto per i contatti
+  commerciali o da sostituire impostando `EMAIL_CONTATTO_ANDREA` su Vercel.
+- **Prossima voce utile per la prossima sessione**: la "Privacy policy" (sezione dedicata più sotto in questo
+  file) è ora ancora più pertinente, visto che il modulo di contatto appena realizzato raccoglie nome, cognome e
+  telefono — resta comunque esplicitamente in attesa di un confronto con Andrea sui punti elencati in quella
+  sezione (titolare del trattamento, base giuridica, ecc.) prima di poter scrivere il testo.
 
 ## ✅ Tolta la casella "Aperto di recente (meno di 6 mesi)" dai canali social (2026-10-05, richiesta di Andrea)
 - Rimossa da passaggio 7 (canali trovati sul sito) e 8 (altri canali), dal salvataggio in `server.js`, dal testo di
