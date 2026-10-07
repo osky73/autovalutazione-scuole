@@ -45,6 +45,12 @@ richiesto.
   sotto in questo file), ancora in attesa di un confronto con Andrea sui punti elencati (titolare del
   trattamento, base giuridica, conservazione dei dati, ecc.) — oppure, se Andrea preferisce, qualunque
   altra delle voci sopra su cui deciderà di dare un'indicazione.
+- **Nota finale**: il push di questo stesso aggiornamento di `TASKS.md` ha generato, come sempre con
+  la Git integration, un nuovo deployment di produzione (`dpl_549SnVKfsFHX4rjLRiuzchLDLV6o`, commit
+  `c66a364`, codice applicativo identico — solo `TASKS.md` è cambiato). Stavolta, a differenza di
+  diverse sessioni precedenti, **l'alias automatico ha funzionato**: `list_aliases` subito dopo mostra
+  sia `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` già puntati al
+  nuovo deployment, senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2` non toccato.
 
 ## Stato al 2026-10-06 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; trovato e corretto un bug nello script di test; deploy del fix NON promosso in produzione (permesso negato)
 
