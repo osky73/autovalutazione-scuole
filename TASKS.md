@@ -1,3 +1,47 @@
+## Stato al 2026-10-07 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata, probabilmente la seconda di oggi sullo stesso trigger (vedi sessione precedente
+subito sotto). Repo già presente in questa sandbox, ma di nuovo con `HEAD` scollegato (fermo a
+`b076ee5`, lo stesso commit descritto come ultimo dalla sessione precedente) e il branch locale `main`
+indietro di 42 commit rispetto a quel punto — stesso tipo di artefatto già documentato ieri (probabile
+modo in cui questa sandbox viene preparata, non una sessione concorrente: nessun commit nuovo tra
+`9b77535`/`main` locale e l'`HEAD` scollegato). Rimesso su `main` e fatto `git pull --ff-only`: solo
+fast-forward, nessun conflitto. Letto TASKS.md per intero (inclusa la spec completa dei due criteri
+blog/contenuti e newsletter, la sezione "Da fare", le 5 nuove voci, la voce "andamento social" e la
+voce 5 revisione testi/UX) prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare — in ordine di
+      priorità")**: ri-confermati completi, agganciati al wizard (dentro `runAudit.js`) e già in
+      produzione — nessuna azione necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione), `npm test` → **99/99 test unitari verdi**, `node -e
+      "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in `lib/`, `views/` o
+      `server.js`.
+- [x] **Verificato lo stato di produzione**: `list_deployments` (target `production`) mostra come
+      deployment più recente `dpl_32DSpkdj69NgtZByaToDe8TGrax8`, commit `b076ee5` confermato in
+      `githubCommitSha` — **esattamente l'`HEAD` locale di `main`** dopo il pull. `list_aliases`
+      conferma che sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a questo stesso deployment. Nessun
+      `assign_alias` necessario, nessun deploy necessario: la produzione è già allineata a `main`.
+      Alias di fallback `-osky2` non toccato (resta il redirect).
+- **Ricontrollata per intero la sezione "Da fare" e le altre voci aperte — nessuna voce azionabile
+  senza il contributo di Andrea trovata**, stessa conclusione della sessione precedente di oggi e di
+  quelle dei giorni scorsi: privacy policy (in attesa delle risposte di Andrea su titolare/base
+  giuridica/conservazione), le "5 nuove voci" (domande dirette, punteggi/report finale, firme,
+  ingaggio commerciale, inclusa la "schermata successiva" del passaggio Obiettivi), andamento social 3
+  mesi (livello di automazione da decidere), voce 5/punto 2 (box "dato peggiore", ambiguo da quando
+  l'indicatore è stato rimosso), voce 5/punto 4 (accorpamento passaggi 4+5), voce 5/punto 5 (checkbox
+  canale trovato, funzione di esclusione omonimi) e voce 5/punto 6 (multi-plessi GBP, aggregazione
+  punteggio da decidere). `ESP_NOTI` non arricchito preventivamente, stesso motivo delle sessioni
+  precedenti (si aggiunge solo quando si incontra un caso reale).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Nessun
+  deploy necessario, come verificato sopra — se il solo push di questo file genera comunque un nuovo
+  deployment via Git integration (comportamento ormai noto), va verificato con `list_aliases` dopo il
+  push e corretto con `assign_alias` solo se l'alias primario non si fosse aggiornato da solo.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
+  sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
+  cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-07 (sessione schedulata) — nessuna voce di backlog azionabile; alias primario già risolto da solo; solo verifiche, nessuna riga di codice toccata
 
 Sessione schedulata: repo già presente in questa sandbox. Il checkout locale era però fermo con `HEAD`
