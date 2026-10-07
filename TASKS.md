@@ -1,3 +1,51 @@
+## Stato al 2026-10-07 (sessione schedulata) — nessuna voce di backlog azionabile; alias primario già risolto da solo; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata: repo già presente in questa sandbox. Il checkout locale era però fermo con `HEAD`
+scollegato (`detached`) al commit `9b77535` della sessione precedente, 40 commit indietro rispetto a
+`origin/main` (probabilmente un artefatto di come questa sandbox era stata preparata, non di una
+sessione concorrente: nessun commit nuovo da nessuno tra quello e l'`HEAD` attuale di `main`).
+Rimesso su `main` e fatto `git pull --ff-only`: nessun conflitto, solo un fast-forward che ha portato il
+checkout locale allo stesso punto di `origin/main`. Letto TASKS.md per intero prima di iniziare, come
+richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare — in ordine di
+      priorità")**: ri-confermati completi, agganciati al wizard (dentro `runAudit.js`) e già in
+      produzione — nessuna azione necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione), `npm test` → **99/99 test unitari verdi** (il fix del comando di
+      test della sessione precedente, `"test": "node --test"`, funziona correttamente e scopre tutti
+      i file `*.test.js`), `node -e "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in
+      `lib/`, `views/` o `server.js`.
+- [x] **Verificato lo stato dell'alias di produzione, segnalato come bloccato dalla sessione
+      precedente**: la sessione del 2026-10-06 (seconda) aveva trovato il tentativo di `assign_alias`
+      negato dal classificatore di permessi ("Production Deploy") e aveva lasciato l'alias primario
+      `autoanalisi-scuole.vercel.app` sul deployment del commit precedente. Controllato ora con
+      `list_aliases` + `get_deployment`: **l'alias primario e quello `-git-main-osky2` puntano già
+      entrambi al deployment del commit più recente (`9b77535`, lo stesso fix del test)** —
+      evidentemente risolto da un intervento successivo a quella sessione (manuale o con permessi
+      diversi), non da questa sessione. Nessuna azione necessaria: niente da promuovere, il codice in
+      produzione corrisponde già all'ultimo commit su `main`. Alias di fallback `-osky2` non toccato.
+- **Ricontrollata per intero la sezione "Da fare" e le altre voci aperte — nessun'altra voce
+  azionabile senza il contributo di Andrea trovata**, stessa conclusione delle ultime sessioni:
+  privacy policy (in attesa delle risposte di Andrea su titolare/base giuridica/conservazione), le "5
+  nuove voci" (domande dirette, punteggi/report finale, firme, ingaggio commerciale — tutte richiedono
+  esplicitamente un confronto con Andrea, inclusa la "schermata successiva" del passaggio Obiettivi che
+  collega attività e obiettivi, non ancora costruita), andamento social 3 mesi (serve decidere il
+  livello di automazione), voce 5/punto 2 (box "dato peggiore", ambiguo), voce 5/punto 4 (accorpamento
+  passaggi 4+5, ristrutturazione non pianificata), voce 5/punto 5 (checkbox canale trovato, funzione di
+  esclusione omonimi) e voce 5/punto 6 (multi-plessi GBP, serve decidere l'aggregazione del punteggio).
+  Scartata di proposito anche l'idea di arricchire `ESP_NOTI` (criterio newsletter) con altri ESP
+  italiani/locali in via preventiva: la spec chiede di aggiungerli "man mano che si incontrano" su un
+  sito reale, non di indovinare pattern mai verificati — farlo senza un caso reale rischierebbe di
+  introdurre falsi positivi/negativi arbitrari.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md` (commit
+  e push su `main` dopo `git fetch origin main` per confermare nessuna sessione concorrente). Nessun
+  deploy necessario: la produzione corrisponde già a `main`, come verificato sopra.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
+  sotto in questo file), ancora in attesa di un confronto con Andrea sui punti elencati (titolare del
+  trattamento, base giuridica, conservazione dei dati, ecc.) — oppure, se Andrea preferisce, qualunque
+  altra delle voci sopra su cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-06 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; trovato e corretto un bug nello script di test; deploy del fix NON promosso in produzione (permesso negato)
 
 Sessione schedulata: repo già presente, `git pull` senza novità rispetto all'ultimo commit (`3e51204`,
