@@ -35,9 +35,13 @@ voce 5 revisione testi/UX) prima di iniziare, come richiesto.
   punteggio da decidere). `ESP_NOTI` non arricchito preventivamente, stesso motivo delle sessioni
   precedenti (si aggiunge solo quando si incontra un caso reale).
 - **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Nessun
-  deploy necessario, come verificato sopra — se il solo push di questo file genera comunque un nuovo
-  deployment via Git integration (comportamento ormai noto), va verificato con `list_aliases` dopo il
-  push e corretto con `assign_alias` solo se l'alias primario non si fosse aggiornato da solo.
+  deploy necessario, come verificato sopra. **Nota a posteriori**: come sempre con la Git integration,
+  il push di questo stesso aggiornamento ha comunque generato un nuovo deployment di produzione
+  (`dpl_CpSsauyDRPG27iPTufrXF6uULhts`, commit `cb53f41`, codice applicativo identico — solo `TASKS.md`
+  è cambiato), confermato `READY` ~14s dopo il push; stavolta **l'alias automatico ha funzionato**:
+  `list_aliases` subito dopo mostra sia `autoanalisi-scuole.vercel.app` sia
+  `autoanalisi-scuole-git-main-osky2.vercel.app` già puntati al nuovo deployment, senza bisogno di
+  `assign_alias` manuale. Alias di fallback `-osky2` non toccato.
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
   sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
   cui deciderà di dare un'indicazione.
