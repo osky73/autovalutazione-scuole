@@ -42,6 +42,18 @@ testi/UX) prima di iniziare, come richiesto.
   ~20s dopo il push). **L'alias automatico ha funzionato**: `list_aliases` subito dopo mostra sia
   `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` già puntati al
   nuovo deployment, senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2` non toccato.
+- **Nota**: il commit successivo, di sola documentazione (il paragrafo precedente, commit `ed63f87`),
+  ha generato come sempre con la Git integration un altro deployment di produzione
+  (`dpl_5w4MBzbr8LgxyDsVJAz26YR9Tr6N`, commit `ed63f87` confermato in `githubCommitSha`, `READY`,
+  codice applicativo identico — solo `TASKS.md` è cambiato). Anche questo è stato aliasato in
+  automatico (verificato con `list_aliases`: sia `autoanalisi-scuole.vercel.app` sia
+  `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a questo deployment), senza bisogno di
+  `assign_alias` manuale. **L'alias primario in produzione punta quindi, a fine sessione, a
+  `dpl_5w4MBzbr8LgxyDsVJAz26YR9Tr6N`**. Questo stesso commit finale (quello che aggiunge questo
+  paragrafo) genererà a sua volta un ulteriore deployment via Git integration — non verificato oltre
+  per evitare un inseguimento senza fine della stessa cascata (stesso comportamento già documentato
+  nelle sessioni precedenti): il codice applicativo resta comunque identico in tutta la cascata, solo
+  `TASKS.md` cambia, quindi nessun rischio per il wizard in produzione.
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
   sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
   cui deciderà di dare un'indicazione.
