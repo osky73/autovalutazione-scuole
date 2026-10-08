@@ -33,11 +33,14 @@ social" e la voce 5 revisione testi/UX) prima di iniziare, come richiesto.
   omonimi) e voce 5/punto 6 (multi-plessi GBP, aggregazione punteggio da decidere). `ESP_NOTI` non
   arricchito preventivamente, stesso motivo delle sessioni precedenti (si aggiunge solo quando si
   incontra un caso reale).
-- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Nessun
-  deploy applicativo necessario, come verificato sopra (il push di questo stesso aggiornamento
-  genererà comunque, come sempre con la Git integration, un nuovo deployment di produzione con
-  codice applicativo identico — da verificare con `list_aliases` dopo il push, come da abitudine
-  ormai consolidata, e riassegnare a mano se l'alias automatico non si aggiorna da solo).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md` (commit
+  `67073f3`). Nessun deploy applicativo necessario (codice identico), ma come sempre con la Git
+  integration il push ha comunque generato un nuovo deployment di produzione
+  (`dpl_9ouSsEfQtsBGU8z4oqjR9fYzVgt4`, commit `67073f3` confermato in `githubCommitSha`, `READY`
+  ~20s dopo il push). **Stavolta l'alias automatico ha funzionato**: `list_aliases` subito dopo
+  mostra sia `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` già
+  puntati al nuovo deployment, senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2`
+  non toccato.
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
   sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
   cui deciderà di dare un'indicazione.
