@@ -44,6 +44,12 @@ social" e la voce 5 revisione testi/UX) prima di iniziare, come richiesto.
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
   sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
   cui deciderà di dare un'indicazione.
+- **Nota finale**: anche il commit successivo, di sola documentazione (questo stesso paragrafo), ha
+  generato come sempre un altro deployment via Git integration (`dpl_8VHvsp9DsDmjZqCzoQNfHpXgps2E`,
+  commit `05e2bfd`, `READY`, codice applicativo identico — solo `TASKS.md` è cambiato), anch'esso
+  aliasato in automatico senza bisogno di `assign_alias` manuale (verificato con `list_aliases`).
+  **L'alias primario in produzione punta quindi, a fine sessione, a
+  `dpl_8VHvsp9DsDmjZqCzoQNfHpXgps2E`**.
 
 ## Stato al 2026-10-07 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
