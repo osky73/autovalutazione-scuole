@@ -45,10 +45,15 @@ social" e la voce 5 revisione testi/UX) prima di iniziare, come richiesto.
   inviato una notifica diretta con l'elenco delle decisioni che servirebbero per sbloccare nuovo
   lavoro — nessuna novità da segnalare rispetto a poche ore fa, una seconda notifica identica
   sarebbe solo rumore.
-- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Come
-  sempre con la Git integration, questo stesso push genererà comunque un nuovo deployment di
-  produzione (codice applicativo identico, `TASKS.md` non è servito dall'app) — verificato con
-  `list_aliases` dopo il push, vedi nota sotto se è servito un `assign_alias` manuale.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md` (commit
+  `515b12c`). Come sempre con la Git integration, il push ha comunque generato un nuovo deployment
+  di produzione (`dpl_FMPwXoQP9oihkkHw8pHhHppfTDnS`, commit `515b12c` confermato in
+  `githubCommitSha`, `READY` in ~15s, codice applicativo identico — solo `TASKS.md` è cambiato).
+  **L'alias automatico ha funzionato anche questa volta**: `list_aliases` subito dopo mostra sia
+  `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` già puntati al
+  nuovo deployment, senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2` non toccato.
+  **L'alias primario in produzione punta quindi, a fine sessione, a
+  `dpl_FMPwXoQP9oihkkHw8pHhHppfTDnS`.**
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
   sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
   cui deciderà di dare un'indicazione.
