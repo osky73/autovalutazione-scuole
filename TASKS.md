@@ -1,4 +1,57 @@
-## Stato al 2026-10-09 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+## Stato al 2026-10-09 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata (trigger "pomeriggio 14:30"), seconda di oggi dopo quella del mattino (vedi
+subito sotto, "Stato al 2026-10-09 (sessione schedulata)", commit `ed881b6`/`6f00a38`). Repo già
+presente in questa sandbox, di nuovo con lo stesso tipo di artefatto già documentato nelle ultime
+sessioni: `HEAD` scollegato fermo a `6f00a38` (l'ultimo commit della sessione del mattino) e il
+branch locale `main` non antenato di quel punto (`git fetch`/`git pull` → "forced update" su
+`origin/main`, poi "divergent branches", 50 commit diversi su entrambi i lati). Working tree pulito
+(verificato con `git status` prima di qualunque comando distruttivo). Risolto con
+`git reset --hard origin/main`, che ha riportato `main` esattamente sull'`HEAD` scollegato/
+`origin/main` (`6f00a38`), nessuna perdita di lavoro — nessuna sessione concorrente individuata, il
+commit più recente su `origin/main` è ancora quello del mattino. Letto TASKS.md per intero (inclusa
+la spec completa dei due criteri blog/contenuti e newsletter, l'intera sezione "Da fare — in ordine
+di priorità" riletta punto per punto contro il codice attuale, le "5 nuove voci", la voce "andamento
+social" e la voce 5 revisione testi/UX) prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati al wizard (dentro `runAudit.js`) e già in produzione — nessuna azione
+      necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione, 114 pacchetti), `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in `lib/`, `views/`
+      o `server.js`.
+- [x] **Verificato lo stato di produzione**: `list_deployments` (target `production`) mostra come
+      deployment più recente `dpl_4rGKgzutto8c9AQ55DGVcWwkUtF4`, commit `6f00a38` confermato in
+      `githubCommitSha` — **esattamente l'`HEAD` locale di `main`** dopo il reset (lo stesso commit
+      finale della sessione del mattino). `list_aliases` conferma che sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già
+      a questo stesso deployment — **l'alias automatico ha funzionato da solo anche questa volta**,
+      nessun `assign_alias` necessario, nessun deploy necessario: la produzione è già allineata a
+      `main`. Alias di fallback `-osky2` non toccato (resta il redirect).
+- **Ricontrollata per intero la sezione "Da fare" (item per item, 0-5) e le "5 nuove voci" in cima
+  al file — nessuna voce azionabile senza il contributo di Andrea trovata**, stessa conclusione
+  della sessione del mattino e di tutte quelle dei giorni precedenti (dal 2026-10-06 in poi): voce 0
+  (bug sessione in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi,
+  livello di automazione da decidere), voce 4 (obsoleta), voce 5 residua (box "dato peggiore"
+  ambiguo; accorpamento passaggi 4+5; checkbox canale trovato/esclusione omonimi; multi-plessi GBP),
+  privacy policy (in attesa delle risposte di Andrea su titolare/base giuridica/conservazione), le
+  "5 nuove voci" (domande dirette al dirigente; "schermata successiva" obiettivi↔attività; report
+  finale scaricabile; firme; dinamiche di ingaggio commerciale — distinte dal passaggio 13
+  "contatto" già fatto, che è solo un primo canale di contatto via `mailto:`, non un funnel
+  commerciale completo). `ESP_NOTI` non arricchito preventivamente, stesso motivo delle sessioni
+  precedenti.
+- **Nessuna nuova notifica inviata ad Andrea in questa sessione**: la sessione del mattino ha già
+  inviato una notifica diretta con l'elenco delle decisioni che servirebbero per sbloccare nuovo
+  lavoro — nessuna novità da segnalare rispetto a poche ore fa, una seconda notifica identica
+  sarebbe solo rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Come
+  sempre con la Git integration, questo stesso push genererà comunque un nuovo deployment di
+  produzione (codice applicativo identico, `TASKS.md` non è servito dall'app) — verificato con
+  `list_aliases` dopo il push, vedi nota sotto se è servito un `assign_alias` manuale.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
+  sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
+  cui deciderà di dare un'indicazione.
 
 Sessione schedulata: repo già presente in questa sandbox, ma stavolta con una divergenza più profonda
 del solito — `HEAD` scollegato fermo a `20fa13b` (stesso commit descritto come ultimo dalla sessione
