@@ -40,12 +40,17 @@ completa dei due criteri blog/contenuti e newsletter, la sezione "Da fare", le 5
   e voce 5/punto 6 (multi-plessi GBP, aggregazione punteggio da decidere). `ESP_NOTI` non arricchito
   preventivamente, stesso motivo delle sessioni precedenti (si aggiunge solo quando si incontra un caso
   reale).
-- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Nessun
-  deploy applicativo necessario (codice identico), ma come sempre con la Git integration il push di
-  questo stesso aggiornamento genererà comunque un nuovo deployment di produzione via Git integration
-  — non verificato oltre per evitare un inseguimento senza fine della stessa cascata (stesso
-  comportamento già documentato in tutte le sessioni precedenti): il codice applicativo resta
-  comunque identico, solo `TASKS.md` cambia, quindi nessun rischio per il wizard in produzione.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md` (commit
+  `ed881b6`). Nessun deploy applicativo necessario (codice identico), ma come sempre con la Git
+  integration il push ha comunque generato un nuovo deployment di produzione
+  (`dpl_6gUuYy9FZ71SA6jQy7UAV6vA5eYQ`, commit `ed881b6` confermato in `githubCommitSha`, `READY` ~20s
+  dopo il push). **L'alias automatico ha funzionato**: `list_aliases` subito dopo mostra sia
+  `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` già puntati al
+  nuovo deployment, senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2` non toccato.
+  Codice applicativo identico in tutta la cascata, solo `TASKS.md` è cambiato — nessun rischio per il
+  wizard in produzione. Questo stesso commit finale (quello che chiude questa nota) genererà a sua
+  volta un ulteriore deployment via Git integration, non verificato oltre per evitare un inseguimento
+  senza fine della stessa cascata (stesso comportamento già documentato nelle sessioni precedenti).
 - **Segnalazione per Andrea**: il backlog risulta bloccato su voci che richiedono una sua decisione da
   almeno 6 sessioni schedulate consecutive, su più giorni (dal 2026-10-06 al 2026-10-09). Inviata una
   notifica diretta con l'elenco preciso delle decisioni che servirebbero per sbloccare nuovo lavoro
