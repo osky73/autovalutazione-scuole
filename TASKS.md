@@ -1,3 +1,59 @@
+## Stato al 2026-10-09 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata: repo già presente in questa sandbox, ma stavolta con una divergenza più profonda
+del solito — `HEAD` scollegato fermo a `20fa13b` (stesso commit descritto come ultimo dalla sessione
+precedente del 2026-10-08) e il branch locale `main` **non antenato** di quel punto (fermo a `2cfab46`,
+un commit di molti giorni prima: `git fetch` ha riportato "forced update" sul ref di `origin/main`).
+Non un semplice ritardo di qualche commit come nelle sessioni precedenti (dove bastava
+`git pull --ff-only`), ma una divergenza totale che `git checkout main && git pull` ha rifiutato
+("Not possible to fast-forward"). Working tree pulito (nessuna modifica locale in sospeso, verificato
+con `git status` prima di qualunque comando distruttivo, come da regola): risolto con
+`git reset --hard origin/main`, che ha riportato `main` esattamente sull'`HEAD` scollegato/`origin/main`
+(`20fa13b`), nessuna perdita di lavoro. Stesso tipo di artefatto già documentato nelle ultime sessioni
+(probabile modo in cui questa sandbox viene preparata), solo più pronunciato stavolta — non è stata
+individuata nessuna sessione concorrente nel frattempo. Letto TASKS.md per intero (inclusa la spec
+completa dei due criteri blog/contenuti e newsletter, la sezione "Da fare", le 5 nuove voci, la voce
+"andamento social" e la voce 5 revisione testi/UX) prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare — in ordine di
+      priorità")**: ri-confermati completi, agganciati al wizard (dentro `runAudit.js`) e già in
+      produzione — nessuna azione necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione), `npm test` → **99/99 test unitari verdi**, `node -e
+      "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in `lib/`, `views/` o
+      `server.js`.
+- [x] **Verificato lo stato di produzione**: `list_deployments` (target `production`) mostra come
+      deployment più recente `dpl_BaDrFSDGBSTyrwba21A2nZ9Urmrb`, commit `20fa13b` confermato in
+      `githubCommitSha` — **esattamente l'`HEAD` locale di `main`** dopo il reset. `list_aliases`
+      conferma che sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a questo stesso deployment. Nessun
+      `assign_alias` necessario, nessun deploy necessario: la produzione è già allineata a `main`.
+      Alias di fallback `-osky2` non toccato (resta il redirect).
+- **Ricontrollata per intero la sezione "Da fare" e le altre voci aperte (incluse le "5 nuove voci",
+  privacy policy, andamento social, voce 5 revisione testi/UX) — nessuna voce azionabile senza il
+  contributo di Andrea trovata**, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi: privacy
+  policy (in attesa delle risposte di Andrea su titolare/base giuridica/conservazione), le "5 nuove
+  voci" (domande dirette, punteggi/report finale, firme, ingaggio commerciale, inclusa la "schermata
+  successiva" del passaggio Obiettivi), andamento social 3 mesi (livello di automazione da decidere),
+  voce 5/punto 2 (box "dato peggiore", ambiguo da quando l'indicatore è stato rimosso), voce 5/punto 4
+  (accorpamento passaggi 4+5), voce 5/punto 5 (checkbox canale trovato, funzione di esclusione omonimi)
+  e voce 5/punto 6 (multi-plessi GBP, aggregazione punteggio da decidere). `ESP_NOTI` non arricchito
+  preventivamente, stesso motivo delle sessioni precedenti (si aggiunge solo quando si incontra un caso
+  reale).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Nessun
+  deploy applicativo necessario (codice identico), ma come sempre con la Git integration il push di
+  questo stesso aggiornamento genererà comunque un nuovo deployment di produzione via Git integration
+  — non verificato oltre per evitare un inseguimento senza fine della stessa cascata (stesso
+  comportamento già documentato in tutte le sessioni precedenti): il codice applicativo resta
+  comunque identico, solo `TASKS.md` cambia, quindi nessun rischio per il wizard in produzione.
+- **Segnalazione per Andrea**: il backlog risulta bloccato su voci che richiedono una sua decisione da
+  almeno 6 sessioni schedulate consecutive, su più giorni (dal 2026-10-06 al 2026-10-09). Inviata una
+  notifica diretta con l'elenco preciso delle decisioni che servirebbero per sbloccare nuovo lavoro
+  automatizzato (privacy policy, le 5 nuove voci, andamento social, i punti residui della voce 5).
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
+  sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
+  cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-08 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Sessione schedulata, seconda di oggi sullo stesso trigger (vedi sessione precedente subito sotto).
