@@ -1,3 +1,48 @@
+## Stato al 2026-10-12 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Seconda sessione schedulata della stessa giornata, circa 1h30 dopo quella precedente ("sessione
+schedulata" delle 12:32 UTC circa, vedi sezione subito sotto). Repo già presente in questa sandbox,
+`git status` puliva, `main` già allineato a `origin/main` (`git pull` → fast-forward di un solo
+commit, esattamente l'aggiornamento di `TASKS.md` della sessione precedente). Letto per intero
+`TASKS.md` (spec dei due criteri, intera sezione "Da fare", "DA FARE — nuovi pezzi di sviluppo",
+privacy policy, voce "andamento social", voce 5 revisione testi/UX) prima di iniziare.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermati
+      completi, agganciati al wizard e in produzione — nessuna azione necessaria (invariato dalla
+      sessione precedente).
+- [x] **Verificata la salute del codice, nessuna modifica**: `npm install` (node_modules mancanti in
+      questa sessione, 114 pacchetti), `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      mostrano come deployment più recente `dpl_JCe4ovdqvpqMuEUekosezF6m8uPj`, commit
+      `6c0dec356f28576ee40c09e61e52fba3992b4410` confermato in `githubCommitSha` — **esattamente
+      l'`HEAD` locale di `main`** (il commit della sessione precedente). Entrambi gli alias
+      (`autoanalisi-scuole.vercel.app` e `autoanalisi-scuole-git-main-osky2.vercel.app`) già
+      nell'elenco `alias` dello stesso deployment, `aliasError: null` — alias automatico di nuovo
+      funzionante, nessuna azione necessaria. Alias di fallback `-osky2` non toccato.
+- **Ricontrollata la sezione "Da fare" (voci 0-5) e le "5 nuove voci" in "DA FARE — nuovi pezzi di
+  sviluppo" — nessuna voce azionabile senza il contributo di Andrea trovata**, stessa conclusione
+  della sessione precedente (e di tutte quelle dal 2026-10-06 in poi): voce 0 (decisa, lasciare
+  com'è), voce 3 (andamento social 3 mesi, livello di automazione da decidere con Andrea), voce 4
+  (obsoleta), voce 5 residua (box "dato peggiore" ambiguo; accorpamento passaggi 4+5; checkbox
+  canale trovato; multi-plessi GBP), privacy policy (in attesa di titolare/base giuridica/
+  conservazione), "nuovi pezzi di sviluppo" (domande dirette al dirigente; firme; report scaricabile;
+  dinamiche di ingaggio commerciale).
+  - **Nota su un punto controllato più a fondo stavolta**: l'item "Definire i punteggi" era segnato
+    `[~]` con la nota "funzioni pure, NON ancora collegate a nessuna schermata" (scritta la mattina
+    del 2026-10-05) — verificato leggendo `lib/giudizio.js` che questo NON è più vero: il passaggio
+    12 "Giudizio sull'efficacia" (fatto lo stesso giorno, poche ore dopo) chiama già
+    `calcolaPunteggi()` da `lib/punteggi.js` per scegliere i testi. La nota nella sezione "nuovi pezzi
+    di sviluppo" è quindi obsoleta/superata dalla cronologia del file stesso, non un lavoro mancante
+    — non modificata qui per non toccare testo storico di un'altra voce, segnalata per chiarezza.
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione già segnalata nelle sessioni
+  precedenti (nessuna novità nelle ultime ore), ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
+  genererà comunque un nuovo deployment (Git integration) — verificare l'alias con `list_aliases`/
+  `get_deployment` nella prossima sessione se non già auto-promosso.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", in attesa di un
+  confronto con Andrea — oppure qualunque altra voce sopra su cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-12 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Sessione schedulata, prima dopo un intervallo di circa 3 giorni dall'ultima (2026-10-09 pomeriggio).
