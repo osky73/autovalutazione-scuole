@@ -1,3 +1,54 @@
+## Stato al 2026-10-12 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata, prima dopo un intervallo di circa 3 giorni dall'ultima (2026-10-09 pomeriggio).
+Repo già presente in questa sandbox e stavolta senza l'artefatto "HEAD scollegato" documentato nelle
+sessioni precedenti: `git status` puliva, `main` già allineato a `origin/main` (`git pull` →
+"Already up to date"). Notata una nuova ref remota apparsa col fetch, `origin/debug-serper-temp`: non
+è una divergenza di `main` né un artefatto della sandbox, ma un branch a parte, nettamente INDIETRO
+rispetto a `main` (diff di quasi 3000 righe in meno: manca per intero il passaggio 13 contatto, il
+passaggio obiettivi, varie viste e `lib/temi.js` più recenti) — probabile branch di debug abbandonato
+da una sessione precedente non documentata qui. Non toccato (non menzionato in nessuna voce di questo
+file, non è compito di questa sessione decidere se vada eliminato). Letto TASKS.md per intero (inclusa
+la spec completa dei due criteri blog/contenuti e newsletter, l'intera sezione "Da fare" punto per
+punto, le "5 nuove voci" in "DA FARE — nuovi pezzi di sviluppo", la voce "andamento social" e la voce 5
+revisione testi/UX) prima di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati al wizard (dentro `runAudit.js`) e già in produzione — nessuna azione
+      necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione, 114 pacchetti), `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in `lib/`, `views/` o
+      `server.js`.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      mostrano come deployment più recente `dpl_Evr4mtAU1wz7QJ6MDMVTiZLFc56H`, commit
+      `06088c59e3087c4600b828c0c189a4f1313b77d4` confermato in `githubCommitSha` — **esattamente
+      l'`HEAD` locale di `main`**. Entrambi gli alias (`autoanalisi-scuole.vercel.app` e
+      `autoanalisi-scuole-git-main-osky2.vercel.app`) risultano già nell'elenco `alias` dello stesso
+      deployment, `aliasError: null` — **l'alias automatico ha funzionato da solo**, nessun
+      `assign_alias` necessario, nessun deploy necessario: la produzione è già allineata a `main`.
+      Alias di fallback `-osky2` non toccato.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5) e le "5 nuove voci" in
+  "DA FARE — nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di Andrea
+  trovata**, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi: voce 0 (bug sessione
+  in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi, livello di
+  automazione da decidere), voce 4 (obsoleta), voce 5 residua (box "dato peggiore" ambiguo;
+  accorpamento passaggi 4+5; checkbox canale trovato/esclusione omonimi; multi-plessi GBP), privacy
+  policy (in attesa delle risposte di Andrea su titolare/base giuridica/conservazione), le "5 nuove
+  voci" (domande dirette al dirigente; "schermata successiva" obiettivi↔attività; report finale
+  scaricabile; firme; dinamiche di ingaggio commerciale). `ESP_NOTI` non arricchito preventivamente,
+  stesso motivo delle sessioni precedenti.
+- **Nessuna nuova notifica inviata ad Andrea in questa sessione**: la situazione non è cambiata
+  rispetto alla notifica già inviata nelle sessioni precedenti (stesse voci bloccate, nessuna novità
+  nei 3 giorni trascorsi) — ripeterla sarebbe solo rumore; si rimanda una nuova segnalazione a quando
+  emergerà qualcosa di diverso (una risposta di Andrea, o un nuovo sintomo).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Come
+  sempre con la Git integration, il push genererà comunque un nuovo deployment di produzione — da
+  verificare con `list_aliases`/`get_deployment` nella prossima sessione se non già auto-promosso.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy" (sezione dedicata più
+  sotto in questo file), in attesa di un confronto con Andrea — oppure qualunque altra voce sopra su
+  cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-09 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Sessione schedulata (trigger "pomeriggio 14:30"), seconda di oggi dopo quella del mattino (vedi
