@@ -1,3 +1,51 @@
+## Stato al 2026-10-13 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Prima sessione schedulata dopo un intervallo di circa 20 ore dall'ultima (2026-10-12 pomeriggio).
+Repo già presente in questa sandbox, `HEAD` scollegato fermo su `8b7f452` (l'ultimo commit della
+sessione precedente) — stesso tipo di artefatto già documentato nelle sessioni precedenti. Risolto
+con `git checkout main && git pull origin main` (fast-forward di 4 commit, nessun conflitto, nessuna
+sessione concorrente: i 4 commit erano tutti già quelli delle sessioni precedenti). Letto per intero
+`TASKS.md` (spec completa dei due criteri blog/contenuti e newsletter, intera sezione "Da fare" punti
+0-5, "DA FARE — nuovi pezzi di sviluppo", privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO") prima
+di iniziare, come richiesto.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: ri-confermati
+      completi, agganciati al wizard (dentro `runAudit.js`) e già in produzione — nessuna azione
+      necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (node_modules
+      mancanti in questa sessione, 114 pacchetti), `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. Nessun `TODO`/`FIXME` residuo in `lib/`, `views/` o
+      `server.js`.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      mostrano come deployment più recente `dpl_J7rcwdnCzfZ6BCZ7m1MkFDjxDq24`, commit
+      `8b7f452d10ac7c4d226f3d6f264c69db9ccd141b` confermato in `githubCommitSha` — **esattamente
+      l'`HEAD` locale di `main`** (il commit della sessione precedente). `list_aliases` conferma che
+      sia l'alias primario `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.
+      vercel.app` puntano già a questo stesso deployment, `aliasError: null` — alias automatico
+      funzionante, nessun `assign_alias` necessario, nessun deploy necessario: la produzione è già
+      allineata a `main`. Alias di fallback `-osky2` non toccato (resta il redirect). Notato anche
+      l'alias di un branch di debug (`autoanalisi-scuole-git-debug-serper-temp-osky2.vercel.app`,
+      puntato a un deployment vecchio, non in produzione) — stesso branch `origin/debug-serper-temp`
+      già segnalato come abbandonato dalla sessione del 2026-10-12 (sessione schedulata), non toccato
+      per lo stesso motivo (non è compito di questa sessione deciderne la cancellazione).
+- **Ricontrollata la sezione "Da fare" (voci 0-5) e le "5 nuove voci" in "DA FARE — nuovi pezzi di
+  sviluppo" — nessuna voce azionabile senza il contributo di Andrea trovata**, stessa conclusione di
+  tutte le sessioni dal 2026-10-06 in poi: voce 0 (decisa, lasciare com'è), voce 3 (andamento social 3
+  mesi, livello di automazione da decidere con Andrea), voce 4 (obsoleta), voce 5 residua (box "dato
+  peggiore" ambiguo; accorpamento passaggi 4+5; checkbox canale trovato; multi-plessi GBP), privacy
+  policy (in attesa di titolare/base giuridica/conservazione da parte di Andrea), "nuovi pezzi di
+  sviluppo" (domande dirette al dirigente; report finale scaricabile; firme; dinamiche di ingaggio
+  commerciale), "DA VALUTARE IN UN SECONDO MOMENTO" (invio e-mail dal server, segnato esplicitamente
+  "non iniziare senza Andrea").
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione già segnalata nelle sessioni
+  precedenti (nessuna novità rispetto a ieri), ripeterla sarebbe rumore — si rimanda a quando emergerà
+  qualcosa di diverso (una risposta di Andrea, o un nuovo sintomo).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
+  genererà comunque un nuovo deployment (Git integration) — verificare l'alias con `list_aliases`/
+  `get_deployment` nella prossima sessione se non già auto-promosso.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", in attesa di un
+  confronto con Andrea — oppure qualunque altra voce sopra su cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-12 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Seconda sessione schedulata della stessa giornata, circa 1h30 dopo quella precedente ("sessione
