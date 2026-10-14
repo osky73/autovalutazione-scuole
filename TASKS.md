@@ -1,3 +1,59 @@
+## Stato al 2026-10-14 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Seconda sessione schedulata della stessa giornata (vedi sezione subito sotto, prima sessione di oggi,
+commit `386b107`). Repo già presente in questa sandbox, `HEAD` di nuovo scollegato fermo sull'ultimo
+commit della sessione precedente (`e297a6a`) — stesso tipo di artefatto già documentato in tutte le
+sessioni precedenti. Risolto con `git checkout main && git pull` (fast-forward pulito, nessun
+conflitto, nessun commit nuovo rispetto a `e297a6a`: nessuna sessione concorrente nel frattempo).
+
+Seguita la procedura indicata: letto per intero `TASKS.md` prima di iniziare — in particolare il
+testo integrale e verbatim delle due spec dei criteri blog/contenuti e newsletter (sezione "Da fare",
+voci 1 e 2), non solo i riassunti delle sessioni precedenti, per verificare di persona lo stato
+anziché fidarsi delle note ereditate.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato,
+      rileggendo il testo integrale delle due spec e controllando direttamente il codice (non solo le
+      note), che sono **entrambi completamente implementati e in produzione**: `lib/contenuti.js` +
+      `lib/newsletter.js` esistono con i rispettivi test (`contenuti.test.js`, `newsletter.test.js`),
+      entrambi agganciati in background dentro `lib/runAudit.js` durante l'audit tecnico (step 2 del
+      wizard), con viste dedicate (`views/contenuti.ejs`, `views/contenuti-cadenza.ejs`,
+      `views/newsletter.ejs`, `views/newsletter-importanza.ejs`) e le domande dichiarative "Avete un
+      piano editoriale..." e "Considerate la newsletter uno strumento importante?" presenti nel
+      passaggio di dichiarazione. Nessuna riga di codice nuova necessaria per queste due voci: la
+      prossima voce utile della sezione "Da fare" resta bloccata in attesa di Andrea (vedi sotto),
+      quindi questa sessione si è limitata a verifiche, come già capitato in tutte le sessioni
+      schedulate dal 2026-10-06 in poi.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (114 pacchetti),
+      `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito.
+- [x] **Verificato lo stato di produzione**: `get_project`/`get_deployment` (con `withGitRepoInfo`)
+      confermano `githubCommitSha: e297a6a9cc333884afae0976413a89e25cc01414` — esattamente l'`HEAD`
+      locale di `main` dopo il pull, deployment `dpl_G4H9QNjgBoULmeH3tVczNNjQxVnC`, `readyState: READY`,
+      `aliasError: null`. `list_aliases` conferma che sia l'alias primario `autoanalisi-scuole.vercel.app`
+      sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a questo stesso deployment —
+      produzione già allineata a `main`, nessun deploy necessario. Alias di fallback `-osky2` non
+      toccato (resta il redirect). Alias del branch di debug abbandonato
+      (`autoanalisi-scuole-git-debug-serper-temp-osky2.vercel.app`) ancora presente, non toccato per lo
+      stesso motivo di sempre.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), "DA FARE — nuovi pezzi di sviluppo",
+  privacy policy e "DA VALUTARE IN UN SECONDO MOMENTO" — nessuna voce azionabile senza il contributo di
+  Andrea trovata**, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi (vedi le note
+  identiche nelle sessioni precedenti per il detaglio punto per punto). Una sola osservazione nuova,
+  solo di documentazione, nessuna azione di codice: nella sezione "nuovi pezzi di sviluppo", la voce
+  "Definire i punteggi" (segnata `[~]`, con la nota "funzioni pure, NON ancora collegate a nessuna
+  schermata" datata 2026-10-05) risulta in realtà già collegata — verificato con un semplice `grep` che
+  `lib/giudizio.js` chiama `calcolaPunteggi()` di `lib/punteggi.js` (riga 144) per scegliere i testi
+  della schermata "Giudizio sull'efficacia della comunicazione" (passaggio 12, già segnata FATTA nella
+  stessa sezione). Non corretta la spunta per non riscrivere di testa mia una sezione fuori dall'ambito
+  di questa sessione (le due voci blog/newsletter indicate dalle istruzioni) — lasciata questa nota per
+  chi la riprenderà.
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione già segnalata nella sessione di poche
+  ore fa (nessuna novità), ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
+  genererà comunque un nuovo deployment (Git integration) — verificato subito dopo con `list_aliases`/
+  `get_deployment`, vedi nota in fondo.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", in attesa di un
+  confronto con Andrea — oppure qualunque altra voce sopra su cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-14 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Sessione schedulata, circa 24 ore dopo l'ultima (2026-10-13, seconda). Repo già presente in questa
