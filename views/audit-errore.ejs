@@ -6,6 +6,9 @@
     <strong>Non riusciamo a raggiungere il sito.</strong><br />
     <%= errore %>
   </div>
+  <% if (/codice (403|406|429|503)/.test(errore)) { %>
+  <p class="muted">Il sito sembra proteggersi dalle richieste automatiche (firewall o anti-bot): non è un errore dell'indirizzo. Se sei tu a gestirlo, chiedi di consentire temporaneamente l'accesso per l'analisi.</p>
+  <% } %>
   <p class="muted">Verifica che l'indirizzo <%= sessione.url %> sia corretto e riprova.</p>
   <a class="btn" href="/">← Torna alla landing</a>
 </div>
