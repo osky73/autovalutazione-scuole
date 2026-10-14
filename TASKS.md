@@ -50,6 +50,17 @@ conclusioni delle sessioni precedenti fossero ancora valide e non solo ereditate
   `get_deployment` nella prossima sessione se non già auto-promosso.
 - **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", in attesa di un
   confronto con Andrea — oppure qualunque altra voce sopra su cui deciderà di dare un'indicazione.
+- **Nota a posteriori sul push di questo stesso aggiornamento**: come sempre con la Git integration,
+  il push ha generato un nuovo deployment di produzione (`dpl_FD2XaGqQNCqSXMuvucRxrWGABgmt`, commit
+  `386b107` confermato in `githubCommitSha`, `READY` ~13s dopo il push, codice applicativo identico —
+  solo `TASKS.md` è cambiato). **L'alias automatico ha funzionato anche questa volta**: `list_aliases`
+  subito dopo mostra già sia `autoanalisi-scuole.vercel.app` sia
+  `autoanalisi-scuole-git-main-osky2.vercel.app` puntati al nuovo deployment, senza bisogno di
+  `assign_alias` manuale. Alias di fallback `-osky2` non toccato. Questo stesso commit finale (quello
+  che chiude questa nota) genererà a sua volta un ulteriore deployment via Git integration, non
+  verificato oltre per evitare un inseguimento senza fine della stessa cascata (stesso comportamento
+  già documentato nelle sessioni precedenti): il codice applicativo resta comunque identico in tutta
+  la cascata, solo `TASKS.md` cambia.
 
 ## Stato al 2026-10-13 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
