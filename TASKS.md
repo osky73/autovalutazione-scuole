@@ -1,3 +1,56 @@
+## Stato al 2026-10-14 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Sessione schedulata, circa 24 ore dopo l'ultima (2026-10-13, seconda). Repo già presente in questa
+sandbox, `HEAD` scollegato fermo sull'ultimo commit della sessione precedente (`3776277`) — stesso
+tipo di artefatto già documentato in tutte le sessioni precedenti. Risolto con
+`git checkout main && git pull` (fast-forward pulito, nessun conflitto, nessun commit nuovo rispetto a
+`3776277`: nessuna sessione concorrente nel frattempo). Letto per intero `TASKS.md` prima di iniziare,
+come richiesto: la spec completa verbatim dei due criteri blog/contenuti e newsletter (sezione
+"Da fare", voci 1 e 2, testo integrale, non solo i riassunti delle sessioni precedenti), l'intera
+sezione "Da fare" (voci 0-5, punto per punto), tutta la sezione "DA FARE — nuovi pezzi di sviluppo",
+la sezione privacy policy e "DA VALUTARE IN UN SECONDO MOMENTO", per verificare di persona che le
+conclusioni delle sessioni precedenti fossero ancora valide e non solo ereditate.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: rilette per intero
+      le due spec verbatim — entrambe risultano completamente implementate (raccolta dati, giudizio,
+      aggancio a `runAudit.js` in background durante l'audit tecnico, viste dedicate, domande
+      dichiarative aggiunte, falso negativo de La Zolla risolto) e già in produzione. Nessuna azione
+      necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (114 pacchetti),
+      `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. Nessun
+      `TODO`/`FIXME` residuo in `lib/`, `views/` o `server.js`.
+- [x] **Verificato lo stato di produzione**: `get_project` mostra come deployment più recente
+      `dpl_4MyM95jNqk6FaCGdciQDmMnvdUgA`, `get_deployment` (con `withGitRepoInfo`) conferma
+      `githubCommitSha: 37762777319975760eea02517fb3586bb4860104` — **esattamente l'`HEAD` locale di
+      `main`** dopo il pull. `list_aliases` conferma che sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a
+      questo stesso deployment, `aliasError: null` — alias automatico funzionante, nessun
+      `assign_alias` necessario, nessun deploy necessario: la produzione è già allineata a `main`.
+      Alias di fallback `-osky2` non toccato (resta il redirect). Alias del branch di debug
+      (`autoanalisi-scuole-git-debug-serper-temp-osky2.vercel.app`) ancora presente, puntato a un
+      deployment vecchio non in produzione — stesso branch abbandonato segnalato dalle sessioni
+      precedenti, non toccato per lo stesso motivo.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5) e l'intera sezione "DA FARE — nuovi pezzi
+  di sviluppo" — nessuna voce azionabile senza il contributo di Andrea trovata**, stessa conclusione di
+  tutte le sessioni dal 2026-10-06 in poi: voce 0 (bug sessione in-memory, Andrea ha deciso di lasciare
+  com'è), voce 3 (andamento social 3 mesi, livello di automazione da decidere con Andrea), voce 4
+  (obsoleta, indicatore rimosso), voce 5 residua (punto 2: box "dato peggiore" ambiguo da quando
+  l'indicatore "Ultimo contenuto pubblicato" è stato rimosso; punto 4: accorpamento passaggi 4+5,
+  ristrutturazione di schermate non pianificata; punto 5: checkbox canale trovato, serve conferma di
+  Andrea; punto 6: multi-plessi GBP, aggregazione punteggio su più schede da decidere), privacy policy
+  (in attesa di titolare/base giuridica/conservazione da parte di Andrea), "nuovi pezzi di sviluppo"
+  (domande dirette al dirigente; report finale scaricabile; firme; dinamiche di ingaggio commerciale),
+  "DA VALUTARE IN UN SECONDO MOMENTO" (invio e-mail dal server, segnato esplicitamente "non iniziare
+  senza Andrea").
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione già segnalata nelle sessioni
+  precedenti (nessuna novità rispetto a ieri), ripeterla sarebbe rumore — si rimanda a quando emergerà
+  qualcosa di diverso (una risposta di Andrea, o un nuovo sintomo).
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
+  genererà comunque un nuovo deployment (Git integration) — verificare l'alias con `list_aliases`/
+  `get_deployment` nella prossima sessione se non già auto-promosso.
+- **Prossima voce utile per la prossima sessione**: resta la "Privacy policy", in attesa di un
+  confronto con Andrea — oppure qualunque altra voce sopra su cui deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-13 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Seconda sessione schedulata della stessa giornata (vedi sezione subito sotto, prima sessione di oggi,
