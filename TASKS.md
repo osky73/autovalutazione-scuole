@@ -41,9 +41,15 @@ fondo.
 - **Nessuna nuova notifica inviata ad Andrea**: stessa situazione di tutte le sessioni precedenti
   (nessuna novità, nessun commit umano nella storia git da inizio ottobre, nessun issue/PR aperto),
   ripeterla sarebbe rumore.
-- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
-  genererà comunque un nuovo deployment (Git integration) — verificato subito dopo in questa stessa
-  sessione (vedi nota di esito più sotto in cima, se presente) o da verificare nella prossima.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`.
+- **Esito del push di questo aggiornamento (verificato nella stessa sessione)**: come sempre con la
+  Git integration, il push ha generato un nuovo deployment di produzione
+  (`dpl_2EA4JVN1cinLYs55iSQAxCm2TBs8`, commit `027c9c9` confermato in `githubCommitSha`, `READY` in
+  circa 10 secondi, codice applicativo identico — solo `TASKS.md` è cambiato). **L'alias automatico
+  ha funzionato anche questa volta**: la risposta di `get_deployment` sul nuovo deployment mostra già
+  sia `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntati a
+  questo deployment (`aliasError: null`), senza bisogno di `assign_alias` manuale. Alias di fallback
+  `-osky2` non toccato.
 - **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o qualunque
   altra voce sopra su cui Andrea deciderà di dare un'indicazione.
 
