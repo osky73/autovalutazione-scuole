@@ -1,3 +1,52 @@
+## Stato al 2026-10-15 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Seconda sessione schedulata di oggi, circa 4 ore dopo la precedente (commit `c5319b5`, 08:34 UTC —
+questa sessione parte alle 12:34 UTC circa). Repo già presente in questa sandbox, già su `main` e già
+aggiornato (nessun `add_repo`/clone necessario, `git pull` non ha portato nulla di nuovo: `c5319b5` è
+già `HEAD`).
+
+Letta per intero `TASKS.md` prima di iniziare, come richiesto: la sezione di stato in cima (questa
+voce precedente), l'intera voce 0, le spec verbatim complete delle voci 1 e 2 (blog/contenuti e
+newsletter) con tutto il relativo storico di implementazione/fix, la voce 3, la voce 4 (obsoleta), la
+voce 5 punto per punto, "DA FARE — nuovi pezzi di sviluppo" (non presente come sezione a parte,
+verificato che sia solo un titolo di riferimento nella numerazione di Andrea), la sezione privacy
+policy e "DA VALUTARE IN UN SECONDO MOMENTO", e "Note per le sessioni schedulate automatiche" in
+fondo.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato di
+      nuovo che sono completamente implementati e in produzione (`lib/contenuti.js` +
+      `lib/newsletter.js`, agganciati in `lib/runAudit.js`, viste dedicate, domande dichiarative nel
+      passaggio 3) — nessuna azione necessaria, nessuna novità rispetto alla sessione precedente.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (nessun nuovo
+      pacchetto), `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"`
+      pulito.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      confermano `githubCommitSha: c5319b5f12ac7bbd8023e62292e1089654881942` — esattamente l'`HEAD`
+      locale di `main`, deployment `dpl_8wRL3UuLQoqA7P779nZPy3PPLDvq`, `readyState: READY`,
+      `aliasError: null`. `list_aliases` conferma che sia l'alias primario `autoanalisi-scuole.vercel.app`
+      sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano già a questo stesso deployment —
+      produzione già allineata a `main`, nessun deploy necessario. Alias di fallback `-osky2` non
+      toccato (resta il redirect). Alias del branch di debug abbandonato ancora presente, non toccato.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy e "DA VALUTARE IN UN
+  SECONDO MOMENTO" — nessuna voce azionabile senza il contributo di Andrea trovata**, stessa
+  conclusione di tutte le sessioni dal 2026-10-06 in poi e della sessione precedente di oggi: voce 0
+  (bug sessione in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi,
+  livello di automazione da decidere con Andrea), voce 4 (obsoleta), voce 5 residua (box "dato
+  peggiore" ambiguo, accorpamento passaggi 4+5, checkbox canale trovato, multi-plessi GBP — tutti da
+  decidere con Andrea), privacy policy (titolare/base giuridica/conservazione in attesa di Andrea),
+  "DA VALUTARE IN UN SECONDO MOMENTO" (invio e-mail dal server, segnato esplicitamente "non iniziare
+  senza Andrea").
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione di tutte le sessioni precedenti
+  (nessuna novità, nessun commit umano nella storia git da inizio ottobre, nessun issue/PR aperto),
+  ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`. Il push
+  genererà comunque un nuovo deployment (Git integration) — verificato subito dopo in questa stessa
+  sessione (vedi nota di esito più sotto in cima, se presente) o da verificare nella prossima.
+- **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o qualunque
+  altra voce sopra su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-15 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Prima sessione schedulata dopo un intervallo di circa un giorno dall'ultima (2026-10-14, seconda,
