@@ -1,3 +1,59 @@
+## Stato al 2026-10-16 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Seconda sessione schedulata della stessa giornata (vedi sezione subito sotto, prima sessione di oggi,
+commit `494bce3`, 12:33 UTC circa). Repo già presente in questa sandbox, `HEAD` scollegato fermo su un
+commit vecchio (`06088c5`, di diverse sessioni fa — non l'ultimo commit della sessione precedente,
+segno che questa sandbox non era stata riusata da un po'). Risolto con
+`git checkout main && git pull origin main` (fast-forward pulito di 18 commit, nessun conflitto,
+nessuna sessione concorrente: tutti i 18 commit erano già quelli delle sessioni precedenti, incluso
+`e297a6a`, "Audit: retry con intestazioni browser su 403/429/503 e messaggio chiaro anti-bot", fatto
+in una sessione interattiva separata non documentata in questo file con una voce propria — verificato
+con `git log` che non è una sessione schedulata di questa serie).
+
+Letta per intero `TASKS.md` prima di iniziare, come richiesto: la sezione di stato in cima (la voce
+precedente di oggi), l'intera voce 0, le spec verbatim complete delle voci 1 e 2 (blog/contenuti e
+newsletter) con tutto lo storico di implementazione/fix, la voce 3, la voce 4 (obsoleta), la voce 5
+punto per punto, la sezione privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO" e l'intera sezione
+"DA FARE — nuovi pezzi di sviluppo" — non solo i riassunti ereditati, ma il testo delle voci stesse.
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
+      una volta che sono completamente implementati, agganciati al wizard (in background nello step di
+      audit tecnico, dentro `lib/runAudit.js`) e in produzione (`lib/contenuti.js` + `lib/newsletter.js`,
+      viste dedicate ai passaggi 9/10, domande dichiarative nel passaggio 3) — nessuna azione necessaria,
+      nessuna novità rispetto alla sessione precedente di oggi.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (114 pacchetti),
+      `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. Nessun
+      `TODO`/`FIXME` residuo in `lib/`, `views/` o `server.js`.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      confermano `githubCommitSha: 494bce366fd8617ea5767989fbf5f452d4d8703a` — esattamente l'`HEAD`
+      locale di `main` dopo il pull, deployment `dpl_2yLAXvsCDQZTtneBwXghei1WWyes`, `readyState: READY`,
+      `aliasError: null`. `list_aliases` conferma che sia l'alias primario `autoanalisi-scuole.vercel.app`
+      sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment — produzione
+      già allineata a `main`, nessun deploy necessario. Alias di fallback `-osky2` non toccato (resta il
+      redirect). Alias del branch di debug abbandonato (`debug-serper-temp`) ancora presente, non toccato.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di Andrea
+  trovata**, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi: voce 0 (bug sessione
+  in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi, livello di
+  automazione da decidere con Andrea), voce 4 (obsoleta), voce 5 residua (box "dato peggiore" ambiguo
+  da quando l'indicatore "ultimo contenuto pubblicato" è stato rimosso, accorpamento passaggi 4+5,
+  checkbox canale trovato, multi-plessi GBP — tutti da decidere con Andrea), privacy policy (titolare/
+  base giuridica/conservazione in attesa di Andrea), "DA VALUTARE IN UN SECONDO MOMENTO" (invio e-mail
+  dal server, segnato esplicitamente "non iniziare senza Andrea"), "nuovi pezzi di sviluppo" (domande
+  dirette al dirigente, report finale scaricabile, firme, dinamiche di ingaggio commerciale — tutte da
+  definire con Andrea; notato di nuovo, solo come osservazione documentale senza toccare codice, che
+  "Definire i punteggi" risulta segnata `[~]` ma è in realtà già collegata a `lib/giudizio.js`, stessa
+  osservazione già fatta e volutamente non corretta dalla sessione del 2026-10-14 per restare
+  nell'ambito di questa sessione).
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione di tutte le sessioni precedenti
+  (nessuna novità rispetto a poche ore fa, nessun commit umano nella storia git da inizio ottobre,
+  nessun issue/PR aperto), ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`.
+- **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o qualunque
+  altra voce sopra su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-16 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Repo già presente in questa sandbox da una sessione precedente (nessun `add_repo`/clone necessario);
