@@ -1,3 +1,49 @@
+## Stato al 2026-10-19 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Repo già presente in questa sandbox, `HEAD` scollegato fermo su `ea3fe6b` (ultimo commit della sessione
+del 2026-10-16). Risolto con `git checkout main && git pull origin main` (fast-forward, nessun commit
+nuovo da allineare: `ea3fe6b` era già l'ultimo commit su `origin/main`, nessuna sessione concorrente
+nel frattempo).
+
+Letta per intero `TASKS.md` prima di iniziare (sezione di stato in cima, voce 0, le spec verbatim
+complete delle voci 1 e 2 con tutto lo storico, voce 3, voce 4 obsoleta, voce 5 punto per punto,
+privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO", "DA FARE — nuovi pezzi di sviluppo").
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
+      una volta che sono completamente implementati, agganciati al wizard (in background nello step di
+      audit tecnico, dentro `lib/runAudit.js`) e in produzione (`lib/contenuti.js` + `lib/newsletter.js`,
+      viste dedicate ai passaggi 9/10, domande dichiarative nel passaggio 3) — nessuna azione necessaria,
+      stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Verificata la salute del codice attuale, nessuna modifica**: `npm install` (nessun pacchetto
+      nuovo), `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito.
+      `git status` pulito (nessun file modificato/non tracciato prima di questa sessione).
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      confermano `githubCommitSha: ea3fe6b300d183105b2c9f8fe66cad591854f8bd` — esattamente l'`HEAD`
+      locale di `main` dopo il pull, deployment `dpl_ECBvnoSWKqacJtPiQPHKeaCQpQoT`, `readyState: READY`,
+      `aliasError: null`. `list_aliases` conferma che sia l'alias primario `autoanalisi-scuole.vercel.app`
+      sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment — produzione
+      già allineata a `main`, nessun deploy necessario. Alias di fallback `-osky2` non toccato (resta il
+      redirect). Alias del branch di debug abbandonato (`debug-serper-temp`) ancora presente, non toccato.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di Andrea
+  trovata**, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi: voce 0 (bug sessione
+  in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi, livello di
+  automazione da decidere con Andrea), voce 4 (obsoleta), voce 5 residua (box "dato peggiore" ambiguo
+  da quando l'indicatore "ultimo contenuto pubblicato" è stato rimosso, accorpamento passaggi 4+5,
+  checkbox canale trovato, multi-plessi GBP — tutti da decidere con Andrea), privacy policy (titolare/
+  base giuridica/conservazione in attesa di Andrea), "DA VALUTARE IN UN SECONDO MOMENTO" (invio e-mail
+  dal server, segnato esplicitamente "non iniziare senza Andrea"), "nuovi pezzi di sviluppo" (domande
+  dirette al dirigente, report finale scaricabile, firme, dinamiche di ingaggio commerciale — tutte da
+  definire con Andrea).
+- **Nessuna nuova notifica inviata ad Andrea**: stessa situazione di tutte le sessioni precedenti
+  (nessuna novità rispetto a tre giorni fa, nessun commit umano nella storia git da inizio ottobre,
+  nessun issue/PR aperto), ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`.
+- **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o qualunque
+  altra voce sopra su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-16 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Seconda sessione schedulata della stessa giornata (vedi sezione subito sotto, prima sessione di oggi,
