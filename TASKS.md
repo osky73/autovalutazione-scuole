@@ -42,6 +42,14 @@ complete delle voci 1 e 2, voce 3, voce 4 obsoleta, voce 5 punto per punto, priv
 - **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`.
 - **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o qualunque
   altra voce sopra su cui Andrea deciderà di dare un'indicazione.
+- **Esito del push di questo aggiornamento (verificato nella stessa sessione)**: come sempre con la
+  Git integration, il push ha generato un nuovo deployment di produzione
+  (`dpl_Fu7pzcrFrE469E43u8sPqUUoBeHV`, commit `07e69ca` confermato in `meta.githubCommitSha`, `READY`
+  in pochi secondi, codice applicativo identico — solo `TASKS.md` è cambiato). **L'alias automatico ha
+  funzionato anche questa volta**: `list_aliases` subito dopo mostra già sia
+  `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntati al nuovo
+  deployment (`aliasError: null`), senza bisogno di `assign_alias` manuale. Alias di fallback `-osky2`
+  non toccato.
 
 ## Stato al 2026-10-19 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
