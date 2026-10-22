@@ -1,3 +1,44 @@
+## Stato al 2026-10-22 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Seconda sessione schedulata della stessa giornata (la precedente, "sessione schedulata" senza
+suffisso, aveva già concluso la stessa cosa poche ore prima). Repo già presente, già su `main`,
+`git pull` non ha trovato nulla di nuovo (nessun commit umano nel frattempo).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voci 1/2 con le spec
+      verbatim, voce 0/3/4/5, privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO", "nuovi pezzi di
+      sviluppo") per cercare qualunque voce azionabile senza il contributo di Andrea diventata
+      disponibile nel frattempo — nessuna trovata, stessa conclusione della sessione di questa
+      mattina e di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
+      una volta che sono completamente implementati, agganciati al wizard (`lib/runAudit.js`) e in
+      produzione (`lib/contenuti.js` + `lib/newsletter.js`, viste dedicate ai passaggi 9/10, domande
+      dichiarative nel passaggio 3) — nessuna azione necessaria, nulla da aggiungere rispetto a
+      questa mattina.
+- [x] **Verificata la salute del codice, nessuna modifica**: `npm install` (nessun pacchetto nuovo),
+      `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. `git
+      status` pulito prima di questa sessione.
+- [x] **Verificato lo stato di produzione**: `get_project` + `get_deployment` (con `withGitRepoInfo`)
+      confermano `githubCommitSha: 9cbe710bf1e930f330cf1119e81544c4171cd5a3` — esattamente l'`HEAD`
+      locale di `main` (la nota di chiusura della sessione di questa mattina), deployment
+      `dpl_6o3cpSks2zHXNC8VthgehGxuZmny`, `readyState: READY`, `aliasError: null`. `list_aliases`
+      conferma che sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment — produzione
+      già allineata a `main`, nessun deploy necessario. Alias di fallback
+      `autoanalisi-scuole-osky2.vercel.app` non toccato (resta il redirect). Alias del branch di
+      debug abbandonato (`debug-serper-temp`) ancora presente, non toccato.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Nessuna nuova notifica inviata ad Andrea**: nessuna novità rispetto alla sessione di questa
+  mattina (stesso commit in produzione, nessun issue/PR aperto, nessun commit umano nella storia
+  git) — ripeterla sarebbe rumore.
+- **Nessun commit di codice in questa sessione**: solo questo aggiornamento di `TASKS.md`.
+- **Prossima voce utile per la prossima sessione**: invariata, resta la "Privacy policy" o
+  qualunque altra voce sopra su cui Andrea deciderà di dare un'indicazione (in particolare, tra le
+  voci non ancora chiuse: "Definire i punteggi" ha `lib/punteggi.js` scritto e testato ma NON ancora
+  agganciato alla schermata "Giudizio sull'efficacia" né al report finale — non è stata toccata in
+  questa sessione perché fuori dall'ambito richiesto per questa run (solo criteri blog/newsletter),
+  ma potrebbe essere un buon candidato per la prossima sessione se Andrea confermerà la priorità).
+
 ## Stato al 2026-10-22 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Repo già presente in questa sandbox, allineata a `origin/main` con `git checkout main && git pull`
