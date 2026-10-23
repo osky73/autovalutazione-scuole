@@ -1,3 +1,41 @@
+## Stato al 2026-10-23 (sessione schedulata) — rimosso il box "Il dato peggiore" dalla schermata di audit tecnico (punto 2 della voce 5), deployato in produzione
+
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
+      una volta che sono completamente implementati, agganciati al wizard e in produzione — nessuna
+      azione necessaria, come nelle sessioni precedenti dal 2026-10-06 in poi.
+- [x] **Trovata una voce azionabile senza bisogno del contributo di Andrea**: nella sezione 5
+      ("Revisione testi e UX del wizard"), il punto 2 ("Passaggio con l'ultimo contenuto pubblicato")
+      non era ancora spuntato. La parte sull'etichetta negativa era già risolta indirettamente (quel
+      vecchio indicatore è stato rimosso dal punteggio il 2026-10-02), ma il box
+      `<div class="worst">Il dato peggiore: ...</div>` nella schermata di audit tecnico
+      (`views/audit.ejs`, step 3 del wizard) era ancora presente — esattamente l'esempio citato da
+      Andrea ("Il dato peggiore: Scheda Google..."). **Rimosso** (commit `f044e82`): tolto solo il
+      box dalla vista, NON la logica di calcolo in `lib/score.js` (il campo `audit.worst` resta usato
+      internamente da `lib/giudizio.js` per la schermata finale "punti deboli e contatto", passaggio
+      13).
+- [x] **Verificato prima del deploy**: 99 test unitari verdi (`npm test`, nessuna regressione),
+      `require('./server.js')` pulito, rendering di `views/audit.ejs` con `ejs.renderFile` (dati di
+      esempio con `audit.worst` popolato) per confermare che il box non compare più e il resto della
+      pagina (punteggio, dettaglio indicatori) resta intatto.
+- [x] **Commit e push su `main`** (commit `f044e82`).
+- [x] **Deployato in produzione automaticamente dal push** (progetto collegato via Git integration,
+      vedi "Come deployare"): verificato con `get_project`/`get_deployment` che il nuovo deployment
+      `dpl_6s2xAhGVfjR963Eixpq2rxQa4v8E` corrisponde esattamente al commit `f044e82`,
+      `readyState: READY`, `aliasError: null`. Confermato con `list_aliases` che sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a
+      questo deployment, e che `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect (non
+      toccato). Non è stato possibile fare una verifica HTTP diretta del sito (rete della sandbox
+      bloccata verso `vercel.app`, stesso limite delle sessioni precedenti) — la verifica si basa su
+      quanto sopra più i test locali.
+- **Spuntato qui sotto** (sezione "Da fare", voce 5, punto 2) il bullet corrispondente.
+- **Prossima voce utile per la prossima sessione**: nella voce 5 restano solo punti che richiedono
+  conferma/decisione di Andrea (checkbox canale social trovato, gestione multi-plessi GBP, numerazione
+  mancante del punto 7, accorpamento schermate) o ristrutturazioni più ampie — non azionabili senza il
+  suo contributo. La voce 3 ("andamento social ultimi 3 mesi") è ferma per lo stesso motivo. Come
+  indicato dalla sessione del 2026-10-22 pomeriggio, un buon candidato se Andrea confermerà la priorità
+  resta agganciare `lib/punteggi.js` (già scritto e testato) alla schermata "Giudizio sull'efficacia" e
+  al report finale.
+
 ## Stato al 2026-10-22 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Seconda sessione schedulata della stessa giornata (la precedente, "sessione schedulata" senza
@@ -3478,8 +3516,14 @@ implementa).
   non ancora spuntato qui — verificato di nuovo il 2026-10-05 (sessione schedulata, seconda)
   rileggendo il file attuale: `<h1>La tua scuola c'è?<br>(sul web)</h1>` e
   `<button type="submit" class="btn-principale">Iniziamo</button>`, esattamente come richiesto.
-- **2) Passaggio con l'ultimo contenuto pubblicato** — L'etichetta negativa deve diventare
-  "Troppo vecchio". Togliere il box "Il dato peggiore: Scheda Google...".
+- [x] **2) Passaggio con l'ultimo contenuto pubblicato** — L'etichetta negativa deve diventare
+  "Troppo vecchio". Togliere il box "Il dato peggiore: Scheda Google...". **FATTO il 2026-10-23
+  (sessione schedulata)**: la parte sull'etichetta negativa era già risolta indirettamente (il
+  vecchio indicatore "Ultimo contenuto pubblicato" è stato rimosso dal punteggio il 2026-10-02, non
+  esiste più alcuna etichetta negativa da rinominare); il box "Il dato peggiore" è stato rimosso da
+  `views/audit.ejs` (commit `f044e82`, deployato in produzione) — vedi sezione di stato in cima al
+  file per i dettagli. La logica di calcolo (`audit.worst` in `lib/score.js`) resta invariata, perché
+  usata internamente dalla schermata finale "punti deboli e contatto".
 - [x] **3) Passaggio dichiarazione competenze** — Titolo: "Quali competenze o specificità comunichi
   sul sito della tua scuola?". **FATTO il 2026-10-04** (`views/dichiarazione.ejs`).
 - **4) Passaggio conferma competenze + risultati ricerche (da accorpare)**:
