@@ -1,3 +1,73 @@
+## Stato al 2026-10-23 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; chiarita/corretta una confusione ricorrente su `lib/punteggi.js`; nessuna riga di codice applicativo toccata
+
+Seconda sessione schedulata della giornata (la precedente, "sessione schedulata" senza suffisso,
+aveva rimosso il box "Il dato peggiore" poche ore prima — commit `f044e82`/`32de066`). Repo già
+presente in questa sandbox su `main`, `git pull` ha trovato un fast-forward senza commit nuovi
+rispetto a quanto già scaricato (`32de066` già `HEAD` di `origin/main`, nessun commit umano nel
+frattempo); notato anche il branch remoto `debug-serper-temp` (già noto, abbandonato, non toccato).
+`node_modules` non presente in questa sandbox (ambiente nuovo) — reinstallato con `npm install`
+(nessuna dipendenza nuova, solo necessario per poter eseguire i test).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2, voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy
+      policy, "DA VALUTARE IN UN SECONDO MOMENTO", "nuovi pezzi di sviluppo") per cercare qualunque
+      voce azionabile senza il contributo di Andrea diventata disponibile nel frattempo — nessuna
+      trovata, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
+      una volta che sono completamente implementati, agganciati al wizard (in background nello step
+      di audit tecnico, dentro `lib/runAudit.js`) e in produzione (`lib/contenuti.js` +
+      `lib/newsletter.js`, viste dedicate ai passaggi 9/10, domande dichiarative nel passaggio 3) —
+      nessuna azione necessaria.
+- [x] **Chiarita/corretta una confusione ricorrente su `lib/punteggi.js`**: diverse note in questo
+      file (la più recente, in cima prima di questa modifica, scritta questa mattina — "un buon
+      candidato se Andrea confermerà la priorità resta agganciare `lib/punteggi.js` ... alla
+      schermata 'Giudizio sull'efficacia' e al report finale") ripetevano una frase ormai superata
+      della sessione del 2026-10-22 pomeriggio, senza riverificarla a livello di codice. **Verificato
+      di nuovo direttamente sul codice** (con `grep` su `calcolaPunteggi` in tutto il repo, non solo
+      leggendo le note): `lib/giudizio.js` (riga 4 e 144) e `lib/contatto.js` (righe 5 e 17)
+      importano e chiamano entrambi `calcolaPunteggi()` di `lib/punteggi.js` — è **già agganciato**
+      alla schermata "Giudizio sull'efficacia della comunicazione" (passaggio 12) fin dal
+      2026-10-05, esattamente come la sessione del 2026-10-20 aveva già verificato e annotato (righe
+      253-256 più sotto in questo file) prima che la nota del 2026-10-22 pomeriggio reintroducesse la
+      confusione senza un controllo a livello di codice. **Non c'è quindi nulla da agganciare**:
+      l'unico pezzo realmente non iniziato e collegato a questo tema è il "Report finale scaricabile"
+      (voce separata nella sezione "nuovi pezzi di sviluppo" più sotto, segnata `[ ]`) — che però fa
+      parte delle "5 nuove voci" per cui, come scritto esplicitamente in quella sezione, serve comunque
+      prima un confronto con Andrea (formato del documento, firme, collocazione nel percorso) prima di
+      iniziare a scriverne il codice: non è quindi avviabile autonomamente in questa sessione.
+- [x] **Verificata la salute del codice attuale, nessuna modifica applicativa**: `npm install`
+      (nessun pacchetto nuovo, solo necessario perché `node_modules` non era presente in questa
+      sandbox), `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito.
+      `git status` pulito prima di questa sessione.
+- [x] **Verificato lo stato di produzione**: `list_projects`/`list_deployments`/`list_aliases`
+      confermano che l'ultimo deployment di produzione (`dpl_7YwvTF2hW2uEt43dGTQGwMH9VjNF`) ha
+      `githubCommitSha: 32de066c18c62988f18206a1754c0cd26b54a913` — esattamente l'`HEAD` locale di
+      `main` (la stessa sessione di questa mattina) — e `state: READY`. Sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a
+      questo stesso deployment; `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect
+      (non toccato). Produzione già allineata a `main`, nessun deploy necessario in questa sessione.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di
+  Andrea trovata**: voce 0 (bug sessione in-memory, Andrea ha deciso di lasciare com'è), voce 3
+  (andamento social 3 mesi, livello di automazione da decidere con Andrea), voce 4 (obsoleta), voce 5
+  residua (accorpamento passaggi 4+5, checkbox canale trovato, multi-plessi GBP — tutti da decidere
+  con Andrea), privacy policy (titolare/base giuridica/conservazione in attesa di Andrea), "DA
+  VALUTARE IN UN SECONDO MOMENTO" (invio e-mail dal server, segnato esplicitamente "non iniziare
+  senza Andrea"), "nuovi pezzi di sviluppo" (domande dirette al dirigente, report finale scaricabile,
+  firme, dinamiche di ingaggio commerciale — tutte da definire con Andrea prima di iniziare).
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md` (nessun deploy conseguente necessario, il codice applicativo non è cambiato).
+- **Nessuna nuova notifica inviata ad Andrea**: nessuna novità rispetto alla sessione di questa
+  mattina (stesso commit in produzione, nessun issue/PR aperto, nessun commit umano nella storia
+  git) — ripeterla sarebbe rumore.
+- **Prossima voce utile per la prossima sessione**: invariata rispetto a questa mattina — resta la
+  "Privacy policy" o qualunque altra voce sopra su cui Andrea deciderà di dare un'indicazione. **Nota
+  per le prossime sessioni**: `lib/punteggi.js` è già completamente agganciato (vedi sopra) — non
+  riproporlo come "da agganciare" senza prima rifare il controllo a livello di codice (`grep
+  calcolaPunteggi lib/*.js`), per evitare di ripetere la stessa confusione una terza volta.
+
 ## Stato al 2026-10-23 (sessione schedulata) — rimosso il box "Il dato peggiore" dalla schermata di audit tecnico (punto 2 della voce 5), deployato in produzione
 
 - [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: confermato ancora
