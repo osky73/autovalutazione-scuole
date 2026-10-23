@@ -10,10 +10,6 @@
   </div>
   <p class="muted">Basato su <%= audit.pagineTestate %> pagine testate su <%= audit.pagineTotali %> (mediana tra le pagine, per evitare falsi positivi).</p>
 
-  <div class="worst">
-    <strong>Il dato peggiore:</strong> <%= audit.worst.label %> — <%= audit.worst.dettaglio %>
-  </div>
-
   <h2>Dettaglio indicatori</h2>
   <% audit.indicators.forEach(function(ind) { %>
     <div class="indicator-row">
