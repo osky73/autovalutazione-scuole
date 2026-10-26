@@ -1,3 +1,49 @@
+## Stato al 2026-10-26 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
+
+Repo già presente in questa sandbox su `main`, `git pull` ha trovato solo il nuovo branch remoto
+`debug-serper-temp` (già noto, abbandonato dalla sessione del 2026-10-02, non toccato) — nessun
+commit umano nuovo rispetto a `9d400f1` (`HEAD` di `origin/main`, già scaricato dalla sessione del
+2026-10-23 pomeriggio).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2, voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy
+      policy, "DA VALUTARE IN UN SECONDO MOMENTO", "nuovi pezzi di sviluppo") per cercare qualunque
+      voce azionabile senza il contributo di Andrea diventata disponibile nel frattempo — nessuna
+      trovata, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: riconfermati
+      completamente implementati, agganciati al wizard (in background nello step di audit tecnico,
+      dentro `lib/runAudit.js`) e in produzione (`lib/contenuti.js` + `lib/newsletter.js`, viste
+      dedicate ai passaggi 9/10, domande dichiarative nel passaggio 3) — nessuna azione necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica applicativa**: `npm install`
+      (node_modules non presente in questa sandbox, nessuna dipendenza nuova), `npm test` →
+      **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. `git status` pulito
+      prima di questa sessione.
+- [x] **Verificato lo stato di produzione**: `list_projects`/`list_deployments`/`list_aliases`
+      confermano che l'ultimo deployment di produzione (`dpl_2G9oFqqMBFXjEKLr12xC4GatvmqT`) ha
+      `githubCommitSha: 9d400f135168d53fc8dd1cfaec750fae131c3a2c` — esattamente l'`HEAD` locale di
+      `main` — e `state: READY`. Sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment;
+      `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect (non toccato). Produzione
+      già allineata a `main`, nessun deploy necessario in questa sessione.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di
+  Andrea trovata**: voce 0 (bug sessione in-memory, Andrea ha deciso di lasciare com'è), voce 3
+  (andamento social 3 mesi, livello di automazione da decidere con Andrea), voce 4 (obsoleta), voce 5
+  residua (accorpamento passaggi 4+5, checkbox canale trovato, multi-plessi GBP — tutti da decidere
+  con Andrea), privacy policy (titolare/base giuridica/conservazione in attesa di Andrea), "DA
+  VALUTARE IN UN SECONDO MOMENTO" (invio e-mail dal server, segnato esplicitamente "non iniziare
+  senza Andrea"), "nuovi pezzi di sviluppo" (domande dirette al dirigente, report finale scaricabile,
+  firme, dinamiche di ingaggio commerciale — tutte da definire con Andrea prima di iniziare).
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md` (nessun deploy conseguente necessario, il codice applicativo non è cambiato).
+- **Nessuna nuova notifica inviata ad Andrea**: nessuna novità rispetto alla sessione del
+  2026-10-23 (stesso commit in produzione, nessun issue/PR aperto, nessun commit umano nella storia
+  git) — ripeterla sarebbe rumore.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce sopra su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-23 (sessione schedulata, pomeriggio) — nessuna voce di backlog azionabile; produzione già allineata a `main`; chiarita/corretta una confusione ricorrente su `lib/punteggi.js`; nessuna riga di codice applicativo toccata
 
 Seconda sessione schedulata della giornata (la precedente, "sessione schedulata" senza suffisso,
