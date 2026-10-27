@@ -1,3 +1,36 @@
+## Stato al 2026-10-27 (sessione schedulata, seconda) — nessuna novità rispetto alla sessione di poco prima; solo verifiche, nessuna riga di codice toccata
+
+Seconda esecuzione dello stesso trigger schedulato nella stessa giornata (poche minuti dopo la
+precedente, voce subito sotto). Nessun cambiamento rispetto a quanto appena verificato.
+
+- [x] **`git pull`**: nessun commit umano nuovo, `HEAD` ancora `2313021` (lo stesso commit scritto
+      dalla sessione precedente di oggi). Nessun nuovo branch remoto oltre a `debug-serper-temp`
+      (già noto, abbandonato).
+- [x] **Riletta `TASKS.md`** (stato più recente, voce 0, spec verbatim di voci 1 e 2 — già complete e
+      in produzione —, voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy policy, "DA VALUTARE
+      IN UN SECONDO MOMENTO"): stessa conclusione di tutte le sessioni dal 2026-10-06 in poi, nessuna
+      voce azionabile senza il contributo di Andrea diventata disponibile nel frattempo.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicata dal prompt)**: riconfermati
+      completi, agganciati al wizard in background nell'audit tecnico e in produzione — nessuna azione
+      necessaria.
+- [x] **Salute del codice**: `npm install` (eseguito di nuovo, sandbox nuova senza `node_modules`),
+      `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito.
+- [x] **Stato di produzione verificato**: `list_deployments` del progetto Vercel `autoanalisi-scuole`
+      confermano che l'ultimo deployment di produzione (`dpl_DedJXJDYVRk9X8AryjzSqkP8PT1p`) ha
+      `githubCommitSha: 2313021a2fae515ac27e5d91ecd70025cb5e71d5` — esattamente l'`HEAD` di `main` —
+      e `state: READY` (creato automaticamente dall'integrazione Git di Vercel al push della sessione
+      precedente, nessun deploy manuale necessario). Sia l'alias primario `autoanalisi-scuole.vercel.app`
+      sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo deployment;
+      `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect (non toccato).
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md`, nessun deploy manuale necessario (l'integrazione Git di Vercel farà comunque un
+  deployment automatico di questo stesso commit, identico per contenuto applicativo).
+- **Nessuna notifica inviata ad Andrea**: nessuna novità rispetto alla sessione precedente di oggi,
+  ripeterla sarebbe rumore.
+- **Prossima voce utile**: invariata — resta la "Privacy policy" o qualunque altra voce del backlog
+  su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-27 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice toccata
 
 Repo già presente in questa sandbox su `main`, `git pull` ha trovato solo il branch remoto
