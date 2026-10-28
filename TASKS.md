@@ -1,3 +1,48 @@
+## Stato al 2026-10-28 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; inviata una notifica ad Andrea per lo stallo prolungato; nessuna riga di codice applicativo toccata
+
+Repo già presente in questa sandbox su `main`, `git pull` (fast-forward, nessun commit nuovo oltre a
+`b0ee153` scritto dalla sessione precedente di oggi). Nessun branch remoto nuovo oltre al solito
+`debug-serper-temp` (già noto, abbandonato dal 2026-10-02, non toccato).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2, voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy
+      policy, "DA VALUTARE IN UN SECONDO MOMENTO", "DA FARE — nuovi pezzi di sviluppo") per cercare
+      qualunque voce azionabile senza il contributo di Andrea diventata disponibile nel frattempo —
+      nessuna trovata.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicate dal prompt)**: riconfermati
+      completamente implementati, agganciati al wizard in background nello step di audit tecnico
+      (`lib/runAudit.js`, moduli `lib/contenuti.js` + `lib/newsletter.js`) e in produzione — nessuna
+      azione necessaria.
+- [x] **Salute del codice**: `npm install` (`node_modules` non presente in questa sandbox), `npm test`
+      → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito.
+- [x] **Stato di produzione verificato**: ultimo deployment di produzione (`dpl_8nFtLphPb4d8g2UeaQUqCcxKTNza`)
+      ha `githubCommitSha: b0ee15306eb3756aaf6064b2803fbcf291a84bf9` — esattamente l'`HEAD` di `main` —
+      e `state: READY`. Alias primario `autoanalisi-scuole.vercel.app` e
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo deployment;
+      `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect. Nessun deploy necessario.
+- [x] **Issue/PR GitHub**: nessuno aperto.
+- **Ricalcolata per questa sessione da quanto tempo il backlog è fermo senza contributo umano**:
+  nessun commit di Andrea nella storia `git` dal 2026-10-05/06 in poi; tutte le sessioni schedulate
+  da allora (circa 3 settimane, più esecuzioni al giorno) arrivano alla stessa conclusione — i due
+  criteri indicati come priorità (blog/contenuti, newsletter) sono completi e in produzione dal
+  2026-10-02, e tutto il resto del backlog (voce 3 "andamento social", voce 5 residua, privacy
+  policy, "DA VALUTARE IN UN SECONDO MOMENTO", "nuovi pezzi di sviluppo") richiede esplicitamente
+  una decisione di Andrea prima di poter scrivere una riga di codice.
+- **Inviata una notifica ad Andrea in questa sessione** (push/e-mail, non solo questa nota in
+  `TASKS.md`): a differenza delle sessioni precedenti dal 2026-10-06 in poi (che correttamente non
+  hanno ripetuto una notifica per "nessuna novità"), si è valutato che la **durata** dello stallo
+  (circa 3 settimane di esecuzioni schedulate senza alcun progresso possibile) fosse di per sé
+  un'informazione nuova e utile da segnalare, insieme all'elenco puntuale delle decisioni che
+  servono per sbloccare il lavoro. Non ripetere questa notifica nelle prossime sessioni finché la
+  situazione non cambia (nuovo commit umano, risposta di Andrea, o nuova voce di backlog) — lo
+  stesso criterio di "nessuna novità = nessun rumore" delle sessioni precedenti vale anche dopo
+  questo avviso.
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md`, nessun deploy manuale necessario.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce del backlog su cui Andrea deciderà di dare un'indicazione; se Andrea risponde
+  alla notifica di questa sessione, la sua risposta sarà la novità da cercare per prima.
+
 ## Stato al 2026-10-28 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice applicativo toccata
 
 Repo già presente in questa sandbox su `main`, `git pull` ha trovato solo il branch remoto
