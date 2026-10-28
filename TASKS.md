@@ -1,3 +1,48 @@
+## Stato al 2026-10-28 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; solo verifiche, nessuna riga di codice applicativo toccata
+
+Repo già presente in questa sandbox su `main`, `git pull` ha trovato solo il branch remoto
+`debug-serper-temp` (già noto, abbandonato dal 2026-10-02, non toccato) — nessun commit umano nuovo
+rispetto a `1e8a79d` (`HEAD` di `origin/main`, già scaricato dalla sessione precedente del 2026-10-27).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2 — indicate come priorità dal prompt di questa sessione —,
+      voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO") per cercare qualunque voce azionabile senza il contributo di Andrea diventata
+      disponibile nel frattempo — nessuna trovata, stessa conclusione di tutte le sessioni dal
+      2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2 della sezione "Da fare")**: riconfermati
+      completamente implementati, agganciati al wizard in background nello step di audit tecnico
+      (`lib/runAudit.js`, moduli `lib/contenuti.js` + `lib/newsletter.js`) e in produzione, con le
+      domande dichiarative "Nurturing" nel passaggio 3 e le viste dedicate ai passaggi 9/10 — nessuna
+      azione necessaria.
+- [x] **Verificata la salute del codice attuale, nessuna modifica applicativa**: `npm install`
+      (`node_modules` non presente in questa sandbox, nessuna dipendenza nuova), `npm test` →
+      **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. `git status` pulito
+      prima di questa sessione.
+- [x] **Verificato lo stato di produzione**: `list_projects`/`list_deployments`/`list_aliases`
+      confermano che l'ultimo deployment di produzione (`dpl_DQYyW6meo3oF8LHAzEDaptQUtntT`) ha
+      `githubCommitSha: 1e8a79d824f85feedc28886c3049cae819e8b16f` — esattamente l'`HEAD` locale di
+      `main` — e `state: READY`. Sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment;
+      `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect (non toccato). Produzione già
+      allineata a `main`, nessun deploy necessario in questa sessione.
+- [x] **Controllati Issue/PR GitHub aperti sul repo**: nessuno (`list_issues`/`list_pull_requests`
+      entrambi vuoti) — nessuna richiesta nuova arrivata da quel canale.
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy e "DA VALUTARE IN UN
+  SECONDO MOMENTO" — nessuna voce azionabile senza il contributo di Andrea trovata**: voce 0 (bug
+  sessione in-memory, Andrea ha deciso di lasciare com'è), voce 3 (andamento social 3 mesi, livello di
+  automazione da decidere con Andrea), voce 4 (obsoleta), voce 5 residua (accorpamento passaggi 4+5,
+  checkbox canale trovato, multi-plessi GBP — tutti da decidere con Andrea), privacy policy
+  (titolare/base giuridica/conservazione in attesa di Andrea), "DA VALUTARE IN UN SECONDO MOMENTO"
+  (invio e-mail dal server, segnato esplicitamente "non iniziare senza Andrea").
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md` (nessun deploy conseguente necessario, il codice applicativo non è cambiato).
+- **Nessuna notifica inviata ad Andrea**: nessuna novità rispetto alle sessioni precedenti (stesso
+  commit in produzione, nessun issue/PR aperto, nessun commit umano nella storia git) — ripeterla
+  sarebbe rumore.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce del backlog su cui Andrea deciderà di dare un'indicazione.
+
 ## Stato al 2026-10-27 (sessione schedulata, seconda) — nessuna novità rispetto alla sessione di poco prima; solo verifiche, nessuna riga di codice toccata
 
 Seconda esecuzione dello stesso trigger schedulato nella stessa giornata (poche minuti dopo la
