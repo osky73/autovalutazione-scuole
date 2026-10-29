@@ -1,3 +1,49 @@
+## Stato al 2026-10-29 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto alla sessione di questa mattina)
+
+Repo già presente in questa sandbox su `main`, trovato in stato "detached HEAD" all'avvio (nessun
+commit perso: `git checkout main && git pull` ha fatto solo un fast-forward che ha scaricato il
+commit scritto dalla sessione di questa mattina, `cbf562e`, già noto). Nessun branch remoto nuovo
+oltre al solito `debug-serper-temp` (già noto, abbandonato dal 2026-10-02, non toccato).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2 — indicate come priorità dal prompt di questa sessione —,
+      voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO") per cercare qualunque voce azionabile senza il contributo di Andrea diventata
+      disponibile nel frattempo — nessuna trovata, stessa conclusione di tutte le sessioni dal
+      2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicate dal prompt)**: riconfermati
+      completamente implementati, agganciati al wizard in background nello step di audit tecnico
+      (`lib/runAudit.js`, moduli `lib/contenuti.js` + `lib/newsletter.js`) e in produzione — nessuna
+      azione necessaria.
+- [x] **Salute del codice**: `npm install` (`node_modules` non presente in questa sandbox, nessuna
+      dipendenza nuova), `npm test` → **99/99 test unitari verdi**, `node -e "require('./server.js')"`
+      pulito. `git status` pulito prima di questa sessione.
+- [x] **Stato di produzione verificato**: `list_deployments`/`list_aliases` confermano che l'ultimo
+      deployment di produzione (`dpl_3ukVGdBfLHaJ5qQftiEdFcFxMvAU`, creato dalla sessione di questa
+      mattina) ha `githubCommitSha: cbf562eae1a8979d7e310129c0a25e76d206a4b1` — esattamente l'`HEAD`
+      di `main` prima di questa sessione — e `state: READY`. Alias primario
+      `autoanalisi-scuole.vercel.app` e `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a
+      questo deployment; `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect. Nessun
+      deploy necessario.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" — nessuna voce azionabile senza il contributo di Andrea trovata**: stessa identica
+  conclusione, punto per punto, della sessione di questa mattina e di tutte le precedenti (voce 0
+  decisa da Andrea di lasciare com'è; voce 3 in attesa del livello di automazione da concordare;
+  voce 4 obsoleta; voce 5 residua — checkbox canale trovato, accorpamento passaggi 4+5, multi-plessi
+  GBP — tutte da decidere con Andrea; privacy policy in attesa del titolare/base giuridica/
+  conservazione; "DA VALUTARE" segnata esplicitamente "non iniziare senza Andrea").
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md`, nessun deploy manuale necessario (il codice applicativo non è cambiato; un push di
+  solo `TASKS.md` genera comunque un nuovo deployment via Git integration — verificato dopo il push
+  che l'alias primario resti sul commit giusto, vedi fine sessione).
+- **Nessuna notifica inviata ad Andrea**: nessuna novità rispetto alla sessione di questa mattina
+  (stesso commit in produzione, nessun issue/PR aperto, nessun commit umano nella storia git) —
+  ripetere la notifica sullo stallo di ieri sarebbe rumore, come già deciso dalla sessione precedente.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce del backlog su cui Andrea deciderà di dare un'indicazione; se Andrea risponde
+  alla notifica dello stallo del 2026-10-28, la sua risposta sarà la novità da cercare per prima.
+
 ## Stato al 2026-10-29 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato ieri)
 
 Repo già presente in questa sandbox su `main`, trovato in stato "detached HEAD" all'avvio (nessun
