@@ -1,3 +1,60 @@
+## Stato al 2026-10-30 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28)
+
+Sandbox nuova per questa sessione (niente `node_modules`, a differenza della sessione di questa
+mattina): `npm install` rieseguito senza problemi (nessuna dipendenza nuova, stesso `package.json`;
+l'assenza di `node_modules` era solo perché questa sandbox non condivide lo stato con quella di
+questa mattina, non un problema del progetto).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (sezione di stato più recente, voce 0, le spec
+      verbatim complete delle voci 1 e 2 — indicate come priorità dal prompt di questa sessione —,
+      voce 3, voce 4 obsoleta, voce 5 punto per punto, privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO", "DA FARE — nuovi pezzi di sviluppo") per cercare qualunque voce azionabile senza il
+      contributo di Andrea diventata disponibile nelle ~4 ore dall'ultima sessione (09:39 UTC) — nessuna
+      trovata, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicate dal prompt)**: riconfermati
+      completamente implementati, agganciati al wizard in background nello step di audit tecnico
+      (`lib/runAudit.js`, moduli `lib/contenuti.js` + `lib/newsletter.js`) e in produzione — nessuna
+      azione necessaria.
+- [x] **Salute del codice**: `npm install` (eseguito, sandbox nuova senza `node_modules`), `npm test`
+      → **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. `git status` pulito
+      prima e dopo i test.
+- [x] **Stato di produzione verificato**: `list_deployments` (senza `teamId`, che dava 403 in questa
+      sessione — vedi nota tecnica sotto) confermano che l'ultimo deployment di produzione
+      (`dpl_8vXUWUEGsrf78hxDJwYRapnWTqiK`) ha `githubCommitSha: 33b04f5cc4f845142544edd03bd04b59ae6c8471`
+      — esattamente l'`HEAD` di `main` prima di questa sessione — e `state: READY`. `list_aliases`
+      confermano che sia l'alias primario `autoanalisi-scuole.vercel.app` sia
+      `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a questo stesso deployment;
+      `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect. Nessun deploy necessario.
+- **Nota tecnica**: in questa sessione `mcp__Vercel__list_deployments`/`list_aliases` con `teamId`
+  esplicito (`team_vONC0GCHsFw9JnJLgwABI1V7`, lo stesso usato con successo da sessioni precedenti)
+  rispondevano `403 forbidden`; omettendo `teamId` (lasciando solo `projectId`) le stesse chiamate
+  funzionano normalmente. Possibile variazione nei permessi del token MCP tra sessioni — da tenere
+  d'occhio, non bloccante per ora.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo di
+  Andrea trovata**: stessa identica conclusione, punto per punto, di tutte le sessioni precedenti
+  (voce 0 decisa da Andrea di lasciare com'è; voce 3 in attesa del livello di automazione da
+  concordare; voce 4 obsoleta; voce 5 residua — checkbox canale trovato, accorpamento passaggi 4+5,
+  multi-plessi GBP — tutte da decidere con Andrea; privacy policy in attesa del titolare/base
+  giuridica/conservazione; "DA VALUTARE" segnata esplicitamente "non iniziare senza Andrea"; le 5
+  voci nuove di Andrea del 2026-10-03 — domande dirette, report finale, firme, ingaggio commerciale —
+  richiedono tutte un confronto con lui prima di scrivere altro codice).
+- **Nessun commit umano nella storia `git` da verificare**: l'intera cronologia dei commit dal
+  2026-10-06 in poi continua a essere composta solo da aggiornamenti di questo file scritti dalle
+  sessioni schedulate — nessuna risposta di Andrea alla notifica di stallo del 2026-10-28.
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di
+  `TASKS.md`, nessun deploy manuale necessario (il codice applicativo non è cambiato; un push di
+  solo `TASKS.md` genera comunque un nuovo deployment via Git integration — verificato dopo il push
+  che l'alias primario resti sul commit giusto, vedi fine sessione).
+- **Nessuna notifica inviata ad Andrea**: come deciso dalla sessione del 2026-10-28 che ha segnalato
+  lo stallo, la notifica non va ripetuta finché la situazione non cambia (nuovo commit umano,
+  risposta di Andrea, o nuova voce di backlog) — nessuna di queste condizioni si è verificata oggi,
+  ripeterla sarebbe rumore.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce del backlog su cui Andrea deciderà di dare un'indicazione; se Andrea risponde
+  alla notifica del 2026-10-28, la sua risposta sarà la novità da cercare per prima.
+
 ## Stato al 2026-10-30 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28)
 
 Repo già presente in questa sandbox su `main`, trovato in stato "detached HEAD" all'avvio (nessun
