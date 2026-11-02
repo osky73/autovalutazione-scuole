@@ -45,8 +45,12 @@ sessione precedente di oggi, `35f6384`, già noto). Nessun branch remoto nuovo o
   sessioni schedulate — nessuna risposta di Andrea alla notifica di stallo del 2026-10-28.
 - **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di `TASKS.md`,
   nessun deploy manuale necessario (il codice applicativo non è cambiato; un push di solo `TASKS.md`
-  genera comunque un nuovo deployment via Git integration — da verificare a fine sessione che l'alias
-  primario resti sul commit giusto).
+  genera comunque un nuovo deployment via Git integration). **Verificato dopo il push** (commit
+  `d86f990`): il deployment automatico `dpl_4Svyuv98JEbGFuHrNQrX66C978xg` (`githubCommitSha` corrispondente
+  a `d86f990`) è `READY`, e questa volta l'alias automatico ha funzionato correttamente — sia
+  `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntavano già a
+  questo deployment senza bisogno di un `assign_alias` manuale (verificato con `list_aliases`).
+  `autoanalisi-scuole-osky2.vercel.app` non toccato, resta il redirect.
 - **Nessuna notifica inviata ad Andrea**: come deciso dalla sessione del 2026-10-28 che ha segnalato lo
   stallo, la notifica non va ripetuta finché la situazione non cambia (nuovo commit umano, risposta di
   Andrea, o nuova voce di backlog) — nessuna di queste condizioni si è verificata, ripeterla sarebbe
