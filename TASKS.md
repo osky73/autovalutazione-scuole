@@ -1,3 +1,12 @@
+## Esito deploy sessione 2026-11-03 (seconda) — alias auto-aggiornato
+
+Push del solo aggiornamento di `TASKS.md` (commit `b7e8182`) ha generato, come previsto, un nuovo
+deployment via Git integration: `dpl_C6R7o8C7UJDNtvFueJ54odBHcq4D`, `githubCommitSha` corrispondente a
+`b7e8182`, `state: READY`. Verificato con `list_aliases` ~45 secondi dopo il push: sia l'alias primario
+`autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntavano già a
+questo deployment senza bisogno di un `assign_alias` manuale. `autoanalisi-scuole-osky2.vercel.app` non
+toccato, resta il redirect. Nessuna azione aggiuntiva necessaria.
+
 ## Stato al 2026-11-03 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 6 giorni)
 
 Repo già presente in questa sandbox su `main` (non in detached HEAD questa volta), `git status`
