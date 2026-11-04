@@ -1,3 +1,15 @@
+## Esito deploy sessione 2026-11-04 — alias auto-aggiornato (push riuscito dopo un errore transitorio di GitHub)
+
+Il primo tentativo di `git push origin main` ha fallito 3 volte di seguito con `Internal Server
+Error` lato GitHub (non un problema del proxy della sandbox: `__agentproxy/status` mostrava
+`recentRelayFailures: []`); riuscito al 4° tentativo, ~45s dopo il primo. Push del solo aggiornamento
+di `TASKS.md` (commit `1963228`) ha generato, come previsto, un nuovo deployment via Git integration:
+`dpl_8u9FGLrUbEJAQgTXu7yu2g3hjgVR`, `githubCommitSha` corrispondente a `1963228`, `state: READY`.
+Verificato con `list_aliases` ~20 secondi dopo il push: sia l'alias primario
+`autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntavano già a
+questo deployment senza bisogno di un `assign_alias` manuale. `autoanalisi-scuole-osky2.vercel.app`
+non toccato, resta il redirect. Nessuna azione aggiuntiva necessaria.
+
 ## Stato al 2026-11-04 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 7 giorni)
 
 Repo già presente in questa sandbox, trovata in stato "detached HEAD" all'avvio (nessun commit perso:
