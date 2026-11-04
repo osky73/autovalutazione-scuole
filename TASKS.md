@@ -1,3 +1,54 @@
+## Stato al 2026-11-04 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 7 giorni)
+
+Repo già presente in questa sandbox, trovata in stato "detached HEAD" all'avvio (nessun commit perso:
+`git checkout main && git pull` ha fatto solo un fast-forward di 9 commit, tutti già noti — gli
+aggiornamenti di `TASKS.md` delle sessioni precedenti, compresa quella di questa mattina
+(`1963228`/`42401fe`) — nessun commit umano). Nessun branch remoto nuovo oltre al solito
+`debug-serper-temp` (già noto, abbandonato dal 2026-10-02, non toccato).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (voce 0, spec verbatim complete delle voci 1 e 2 —
+      indicate come priorità dal prompt di questa sessione —, voce 3, voce 4 obsoleta, voce 5 punto per
+      punto, privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO", "DA FARE — nuovi pezzi di sviluppo")
+      per cercare qualunque voce azionabile senza il contributo di Andrea diventata disponibile dalla
+      sessione di questa mattina — nessuna trovata, stessa conclusione di tutte le sessioni dal
+      2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicate dal prompt)**: riverificato
+      di nuovo nel codice attuale (non solo nelle note) che `lib/contenuti.js` e `lib/newsletter.js`
+      sono entrambi richiesti da `lib/runAudit.js` (eseguiti in background insieme a sitemap/PageSpeed)
+      e mostrati nelle view dedicate del wizard — completamente implementati, agganciati e in
+      produzione, nessuna azione necessaria.
+- [x] **Voce "Definire i punteggi" (sezione "DA FARE — nuovi pezzi di sviluppo")**: verificato nel
+      codice che, contrariamente a quanto suggerisce una nota non aggiornata in quella sezione
+      ("NON ancora collegate a nessuna schermata"), `lib/giudizio.js` importa ed usa
+      `calcolaPunteggi` da `lib/punteggi.js` (`require('./punteggi')`, chiamata a riga 144) ed è a
+      sua volta usato da `server.js` (`costruisciGiudizio`, passaggio 12) — già agganciato, nessuna
+      azione necessaria. Le sole cose ancora aperte in quella voce (mostrare i voti di blocco
+      all'utente, collocazione definitiva della scheda GBP) restano esplicitamente "da decidere con
+      Andrea".
+- [x] **Salute del codice**: `npm install` (nessuna dipendenza nuova in `package.json`), `npm test` →
+      **99/99 test unitari verdi**, `node -e "require('./server.js')"` pulito. `git status` pulito
+      prima e dopo i test.
+- [x] **Stato di produzione verificato**: `mcp__Vercel__get_project` confermano che l'ultimo
+      deployment di produzione (`dpl_JAbek461Qj8u5kb4R715qb3j5eko`) ha `githubCommitSha: 42401fe...`
+      — esattamente l'`HEAD` di `main` prima di questa sessione — `readyState: READY`, ed è servito
+      su entrambi i domini del progetto (`autoanalisi-scuole.vercel.app`,
+      `autoanalisi-scuole-git-main-osky2.vercel.app`). Nessun deploy necessario.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo
+  di Andrea trovata**: stessa identica conclusione, punto per punto, della sessione di questa mattina e
+  di tutte le sessioni precedenti dal 2026-10-06 in poi.
+- **Nessun commit umano nella storia `git` da verificare**: l'intera cronologia dei commit dal
+  2026-10-06 in poi continua a essere composta solo da aggiornamenti di questo file scritti dalle
+  sessioni schedulate — nessuna risposta di Andrea alla notifica di stallo del 2026-10-28 (ora 7
+  giorni).
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di `TASKS.md`.
+- **Nessuna notifica inviata ad Andrea**: come deciso dalla sessione del 2026-10-28, non va ripetuta
+  finché la situazione non cambia (nuovo commit umano, risposta di Andrea, o nuova voce di backlog) —
+  nessuna di queste condizioni si è verificata rispetto alla sessione di questa mattina.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o qualunque
+  altra voce del backlog su cui Andrea deciderà di dare un'indicazione.
+
 ## Esito deploy sessione 2026-11-04 — alias auto-aggiornato (push riuscito dopo un errore transitorio di GitHub)
 
 Il primo tentativo di `git push origin main` ha fallito 3 volte di seguito con `Internal Server
