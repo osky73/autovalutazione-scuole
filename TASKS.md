@@ -1,3 +1,45 @@
+## Stato al 2026-11-05 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 8 giorni)
+
+Repo già presente in questa sandbox (`/home/claude/autovalutazione-scuole`); trovata in stato
+"detached HEAD" (probabilmente residuo di un `git clone`/checkout di una sessione precedente senza
+branch esplicito) — risolto con `git checkout main`, poi `git pull origin main` ha fatto solo un
+fast-forward dei commit della sessione schedulata precedente di oggi (`03c48ca`, `a381d16`), più la
+scoperta del branch `debug-serper-temp` (già noto, abbandonato dal 2026-10-02, nessun commit umano).
+
+- [x] **Letta di nuovo per intero `TASKS.md`** (stato più recente, voce 0, spec verbatim complete
+      delle voci 1 e 2 — indicate come priorità dal prompt di questa sessione —, voce 3, voce 4
+      obsoleta, voce 5 punto per punto, privacy policy, "DA VALUTARE IN UN SECONDO MOMENTO", "DA FARE
+      — nuovi pezzi di sviluppo") per cercare qualunque voce azionabile senza il contributo di Andrea
+      diventata disponibile dall'ultima sessione (di poco prima, stesso giorno) — nessuna trovata,
+      stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2, priorità indicate dal prompt)**: confermato
+      di nuovo che sono completamente implementati, agganciati a `lib/runAudit.js` e in produzione —
+      nessuna azione necessaria, nessuna regressione nel codice rispetto alla verifica di poco prima.
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. `git status` pulito prima e dopo i test.
+- [x] **Stato di produzione verificato**: `mcp__Vercel__list_deployments`/`list_aliases` (per
+      `projectId: prj_KT0BW5NzV1EeV8MPLdbhxOcIxDaJ`) confermano che l'ultimo deployment di produzione
+      (`dpl_E96TerecQpxMPSnncPsmFzHALEFC`) ha `githubCommitSha: a381d16...` — esattamente l'`HEAD` di
+      `main` prima di questa sessione — `state: READY`. Sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a
+      questo stesso deployment; `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect.
+      Nessun deploy necessario.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo" — nessuna voce azionabile senza il contributo
+  di Andrea trovata**: stessa identica conclusione, punto per punto, della sessione di poco prima e di
+  tutte le sessioni precedenti dal 2026-10-06 in poi.
+- **Nessun commit umano nella storia `git`**: l'intera cronologia dei commit dal 2026-10-06 in poi
+  continua a essere composta solo da aggiornamenti di questo file scritti dalle sessioni schedulate —
+  nessuna risposta di Andrea alla notifica di stallo del 2026-10-28 (ora 8 giorni).
+- **Nessun commit di codice applicativo in questa sessione**: solo questo aggiornamento di `TASKS.md`,
+  nessun deploy manuale necessario (il codice applicativo non è cambiato).
+- **Nessuna notifica inviata ad Andrea**: come deciso dalla sessione del 2026-10-28, non va ripetuta
+  finché la situazione non cambia (nuovo commit umano, risposta di Andrea, o nuova voce di backlog) —
+  nessuna di queste condizioni si è verificata rispetto alla sessione precedente.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o qualunque
+  altra voce del backlog su cui Andrea deciderà di dare un'indicazione.
+
 ## Esito deploy sessione 2026-11-05 — alias auto-aggiornato
 
 Push di solo `TASKS.md` (commit `03c48ca`, nessun codice applicativo modificato), che come sempre con
