@@ -1,3 +1,12 @@
+## Esito deploy sessione 2026-11-09 — alias auto-aggiornato
+
+Push di solo `TASKS.md` (commit `7e1fb0f`, nessun codice applicativo modificato), che come sempre con
+la Git integration genera comunque un nuovo deployment di produzione: `dpl_EemVYsbkLeEJCXGGZNbeBwTkBd8T`,
+`githubCommitSha` corrispondente a `7e1fb0f`, `state: READY`. Verificato con `list_aliases` subito dopo:
+sia l'alias primario `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app`
+puntavano già a questo deployment senza bisogno di un `assign_alias` manuale. `autoanalisi-scuole-osky2.vercel.app`
+non toccato, resta il redirect. Nessuna azione aggiuntiva necessaria.
+
 ## Stato al 2026-11-09 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 12 giorni)
 
 Repo già presente in questa sandbox (`/home/claude/autovalutazione-scuole`); trovata in stato
