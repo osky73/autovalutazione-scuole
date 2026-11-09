@@ -1,3 +1,52 @@
+## Stato al 2026-11-09 (sessione schedulata) — nessuna voce di backlog azionabile; produzione già allineata a `main`; nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità dallo stallo segnalato il 2026-10-28, ora a 12 giorni)
+
+Repo già presente in questa sandbox (`/home/claude/autovalutazione-scuole`); trovata in stato
+"detached HEAD" su `590a1eb` (stesso residuo già visto nelle sessioni precedenti) — risolto con
+`git checkout main` + `git reset --hard origin/main`, già allineato all'ultimo commit remoto
+(`590a1eb`, della sessione del 2026-11-06), nessun commit umano nel frattempo, nessuna sessione
+concorrente.
+
+- **Nota sul prompt di questa sessione**: il testo della sessione schedulata indica come priorità
+  "da implementare" i criteri 1 (blog/contenuti) e 2 (newsletter) della sezione "Da fare" — ma
+  entrambi risultano completi e in produzione già dal 2026-10-01/02 (vedi dettaglio nelle rispettive
+  sezioni più sotto in questo file). Il prompt sembra un testo fisso non aggiornato dopo il
+  completamento di queste due voci; questa sessione ha comunque reverificato tutto in modo
+  indipendente (non solo fidandosi delle note) prima di concludere che non c'è nulla da fare lì.
+- [x] **Letta di nuovo per intero `TASKS.md`** (stato più recente, intera sezione "Da fare" voci 0-5
+      con le spec verbatim complete delle voci 1 e 2, privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO", "DA FARE — nuovi pezzi di sviluppo" con le 5 voci che richiedono un confronto con
+      Andrea) per cercare in modo indipendente qualunque voce azionabile senza il contributo di
+      Andrea — nessuna trovata, stessa conclusione di tutte le sessioni dal 2026-10-06 in poi.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: verificato di nuovo anche nel codice
+      (non solo nelle note) che `lib/runAudit.js` importa e chiama `raccogliArticoli`/
+      `giudicaContenuti` (`lib/contenuti.js`) e `analizzaNewsletter` (`lib/newsletter.js`), entrambi
+      agganciati allo step di audit tecnico e in produzione — completamente implementati, nessuna
+      azione necessaria, nessuna regressione.
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. `git status` pulito prima e dopo i test (nessuna
+      modifica di codice applicativo in questa sessione).
+- [x] **Stato di produzione verificato**: `mcp__Vercel__list_deployments`/`list_aliases` (per
+      `projectId: prj_KT0BW5NzV1EeV8MPLdbhxOcIxDaJ`) confermano che l'ultimo deployment di produzione
+      (`dpl_EtfkbhzdMvQPQVc9apoHDiP5EgP9`) ha `githubCommitSha: 590a1eb...` — esattamente l'`HEAD` di
+      `main` prima di questa sessione — `state: READY`. Sia l'alias primario
+      `autoanalisi-scuole.vercel.app` sia `autoanalisi-scuole-git-main-osky2.vercel.app` puntano a
+      questo stesso deployment; `autoanalisi-scuole-osky2.vercel.app` resta intatto come redirect
+      permanente. Nessun deploy di codice necessario in questa sessione.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+  SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo" — nessuna voce azionabile senza il
+  contributo di Andrea trovata**: stessa identica conclusione, punto per punto, di tutte le sessioni
+  precedenti dal 2026-10-06 in poi.
+- **Nessun commit umano nella storia `git`**: l'intera cronologia dei commit dal 2026-10-06 in poi
+  continua a essere composta solo da aggiornamenti di questo file scritti dalle sessioni schedulate —
+  nessuna risposta di Andrea alla notifica di stallo del 2026-10-28 (ora 12 giorni), e nessuna
+  sessione schedulata risulta essere girata tra il 2026-11-06 e oggi.
+- **Nessuna notifica inviata ad Andrea**: come deciso dalla sessione del 2026-10-28, non va ripetuta
+  finché la situazione non cambia (nuovo commit umano, risposta di Andrea, o nuova voce di
+  backlog) — nessuna di queste condizioni si è verificata rispetto alla sessione precedente.
+- **Prossima voce utile per la prossima sessione**: invariata — resta la "Privacy policy" o
+  qualunque altra voce del backlog su cui Andrea deciderà di dare un'indicazione.
+
 ## Esito deploy sessione 2026-11-06 (seconda) — alias auto-aggiornato
 
 Push di solo `TASKS.md` (commit `8dcf0ec`, nessun codice applicativo modificato), che come sempre con
