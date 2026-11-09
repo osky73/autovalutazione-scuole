@@ -41,6 +41,12 @@ fast-forward pulito, nessun commit umano nel frattempo.
 - **Prossima voce utile per la prossima sessione**: verificare se il problema di accesso Vercel è
   stato risolto da Andrea; per il resto, invariata — "Privacy policy" o altra voce di backlog su cui
   Andrea darà un'indicazione.
+- **Nota aggiunta dopo il push di questo stesso aggiornamento**: come documentato più sotto in
+  questo file, con la Git integration ogni push su `main` (anche di solo `TASKS.md`) genera
+  comunque un nuovo deployment di produzione — quindi anche questo commit lo farà. Questa sessione
+  NON ha potuto verificarlo (stesso problema di accesso Vercel descritto sopra): la prossima
+  sessione dovrebbe controllare che l'alias primario punti al deployment più recente non appena il
+  connettore Vercel torni accessibile.
 
 ## Esito deploy sessione 2026-11-09 — alias auto-aggiornato
 
