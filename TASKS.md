@@ -1,3 +1,47 @@
+## Stato al 2026-11-09 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; connettore Vercel senza accesso al team (richiede autorizzazione di Andrea); nessuna riga di codice applicativo toccata; nessun deploy (nessuna modifica di codice); nessuna notifica di stallo ripetuta, ma inviata una notifica dedicata al problema di accesso Vercel
+
+Repo già presente in questa sandbox, trovata in stato "detached HEAD" su `3025445` (stesso tipo di
+residuo delle sessioni precedenti) — risolto con `git checkout main` + `git pull origin main`,
+fast-forward pulito, nessun commit umano nel frattempo.
+
+- **Nota sul prompt di questa sessione**: come nella sessione di questa mattina, il prompt indica
+  come priorità "da implementare" i criteri 1 (blog/contenuti) e 2 (newsletter) della sezione "Da
+  fare", ma entrambi risultano completi e in produzione dal 2026-10-01/02. Riverificato di nuovo in
+  modo indipendente (codice, non solo note) prima di concludere che non c'è nulla da fare lì.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: confermato ancora una volta nel codice
+      che `lib/runAudit.js` importa e chiama `raccogliArticoli`/`giudicaContenuti`
+      (`lib/contenuti.js`) e `analizzaNewsletter` (`lib/newsletter.js`), entrambi agganciati allo
+      step di audit tecnico — completamente implementati, nessuna azione necessaria.
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. `git status` pulito prima e dopo (nessuna modifica
+      di codice applicativo in questa sessione).
+- [x] **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+      SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo"**: stessa conclusione di tutte le
+      sessioni precedenti dal 2026-10-06 in poi — nessuna voce azionabile senza il contributo di
+      Andrea.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **⚠️ NUOVO PROBLEMA — connettore Vercel senza accesso al team "OSKY" in questa sessione**:
+  `mcp__Vercel__get_project`, `list_deployments`, `list_aliases` e `list_projects` (anche con
+  `teamId: team_vONC0GCHsFw9JnJLgwABI1V7` esplicito) restituiscono tutti 403/404 — `list_projects`
+  sul team, senza filtri, risponde con **zero progetti**, quindi non è un problema del singolo
+  progetto ma di autorizzazione dell'intero team. Tentato `mcp__Vercel__authorize_team_access`:
+  risposta `requires_user_action`, con un link di consenso Vercel valido 10 minuti da aprire e
+  approvare — non eseguibile da questa sessione schedulata senza supervisione. **Di conseguenza,
+  questa sessione NON ha potuto verificare lo stato di produzione** (ultimo deployment, alias
+  `autoanalisi-scuole.vercel.app` e `-git-main-osky2`) **né avrebbe potuto deployare** se ci fosse
+  stato codice da deployare (non ce n'era, quindi nessun lavoro è stato perso). **Da fare: Andrea
+  deve riautorizzare/riconnettere il connettore Vercel** (impostazioni dei connettori di Claude) —
+  finché non lo fa, le prossime sessioni schedulate potrebbero non riuscire a verificare o
+  promuovere la produzione. Inviata una notifica dedicata su questo (vedi sotto), perché è una
+  condizione nuova e diversa dallo stallo già segnalato il 2026-10-28 (sul quale non viene invece
+  ripetuta alcuna notifica, per decisione delle sessioni precedenti, non essendoci novità su quel
+  fronte).
+- **Nessun commit umano nella storia `git`**: invariato, stesso stallo segnalato il 2026-10-28 (ora
+  12+ giorni), nessuna novità su quel fronte.
+- **Prossima voce utile per la prossima sessione**: verificare se il problema di accesso Vercel è
+  stato risolto da Andrea; per il resto, invariata — "Privacy policy" o altra voce di backlog su cui
+  Andrea darà un'indicazione.
+
 ## Esito deploy sessione 2026-11-09 — alias auto-aggiornato
 
 Push di solo `TASKS.md` (commit `7e1fb0f`, nessun codice applicativo modificato), che come sempre con
