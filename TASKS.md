@@ -1,3 +1,45 @@
+## Stato al 2026-11-10 (sessione schedulata) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (stesso problema di ieri, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
+
+Repo già presente in questa sandbox, in stato "detached HEAD" su `3025445` (stesso tipo di residuo
+delle sessioni precedenti) — risolto con `git checkout main` + `git pull origin main`, fast-forward
+pulito di 8 commit, nessun commit umano nel frattempo.
+
+- **Nota sul prompt di questa sessione**: come nelle sessioni precedenti, il prompt indica come
+  priorità "da implementare" i criteri 1 (blog/contenuti) e 2 (newsletter) della sezione "Da fare",
+  ma entrambi risultano completi e in produzione dal 2026-10-01/02. Riverificato di nuovo in modo
+  indipendente (non solo le note) prima di concludere che non c'è nulla da fare lì.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: confermato nel codice che
+      `lib/runAudit.js` importa e chiama `raccogliArticoli`/`giudicaContenuti` (`lib/contenuti.js`)
+      e `analizzaNewsletter` (`lib/newsletter.js`), entrambi agganciati allo step di audit tecnico —
+      completamente implementati, nessuna azione necessaria.
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. `git status` pulito prima e dopo (nessuna modifica
+      di codice applicativo in questa sessione).
+- [x] **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+      SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo"**: stessa conclusione di tutte le
+      sessioni precedenti dal 2026-10-06 in poi — nessuna voce azionabile senza il contributo di
+      Andrea.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Connettore Vercel — stesso problema di ieri (2026-11-09), NON risolto**: `list_projects` (senza
+  filtri) risponde ancora con **zero progetti**, e `list_deployments` con
+  `projectId: prj_KT0BW5NzV1EeV8MPLdbhxOcIxDaJ` (team esplicito o no) risponde ancora `403
+  forbidden`. Riprovato `mcp__Vercel__authorize_team_access` per `team_vONC0GCHsFw9JnJLgwABI1V7`:
+  di nuovo `requires_user_action`, con un link di consenso Vercel valido 10 minuti — non eseguibile
+  da questa sessione schedulata senza supervisione. **Questa sessione NON ha potuto verificare lo
+  stato di produzione** né avrebbe potuto deployare se ci fosse stato codice da deployare (non ce
+  n'era, quindi nessun lavoro è andato perso). **Nessuna nuova notifica inviata** su questo punto:
+  non c'è novità rispetto a quanto già segnalato ad Andrea ieri (stesso problema, stessa richiesta
+  di riautorizzare/riconnettere il connettore Vercel) — resta valido quanto scritto ieri.
+- **Nessun commit umano nella storia `git`**: invariato, stesso stallo segnalato il 2026-10-28 (ora
+  13+ giorni), nessuna novità su quel fronte.
+- **Nessun deploy effettuato in questa sessione**: nessuna modifica di codice applicativo da
+  deployare; l'accesso Vercel comunque non lo avrebbe permesso (vedi sopra). Il solo push di questo
+  aggiornamento di `TASKS.md` genererà probabilmente un nuovo deployment via Git integration (come
+  nelle sessioni precedenti), ma questa sessione non può verificarlo per lo stesso motivo.
+- **Prossima voce utile per la prossima sessione**: verificare se il problema di accesso Vercel è
+  stato risolto da Andrea (ormai da 2 sessioni); per il resto, invariata — "Privacy policy" o altra
+  voce di backlog su cui Andrea darà un'indicazione.
+
 ## Stato al 2026-11-09 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; connettore Vercel senza accesso al team (richiede autorizzazione di Andrea); nessuna riga di codice applicativo toccata; nessun deploy (nessuna modifica di codice); nessuna notifica di stallo ripetuta, ma inviata una notifica dedicata al problema di accesso Vercel
 
 Repo già presente in questa sandbox, trovata in stato "detached HEAD" su `3025445` (stesso tipo di
