@@ -1,3 +1,49 @@
+## Stato al 2026-11-10 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (terza sessione di fila con lo stesso problema, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
+
+Repo già presente in questa sandbox, su `main`, già allineata all'ultimo commit (`64183ba`, della
+sessione di questa mattina) — `git pull` senza novità, nessun commit umano nel frattempo.
+
+- **Nota sul prompt di questa sessione**: identica alla nota già scritta nelle sessioni precedenti —
+  il prompt indica come priorità "da implementare" i criteri 1 (blog/contenuti) e 2 (newsletter)
+  della sezione "Da fare", ma entrambi risultano completi e in produzione dal 2026-10-01/02.
+  Riverificato di nuovo in modo indipendente (non solo le note) prima di concludere che non c'è nulla
+  da fare lì.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: confermato di nuovo nel codice che
+      `lib/runAudit.js` importa e chiama `raccogliArticoli`/`giudicaContenuti` (`lib/contenuti.js`,
+      righe 7 e 75/81) e `analizzaNewsletter` (`lib/newsletter.js`, righe 8 e 64), entrambi agganciati
+      allo step di audit tecnico — completamente implementati, nessuna azione necessaria.
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. `git status` pulito prima e dopo (nessuna modifica
+      di codice applicativo in questa sessione).
+- [x] **Ricontrollata per intero la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN
+      SECONDO MOMENTO" e "DA FARE — nuovi pezzi di sviluppo"**: stessa conclusione di tutte le
+      sessioni precedenti dal 2026-10-06 in poi, incluse quelle di oggi — nessuna voce azionabile
+      senza il contributo di Andrea. In particolare, verificato che la voce "Definire i punteggi"
+      (`lib/punteggi.js`) risulta già collegata alla schermata "Giudizio sull'efficacia" (passaggio
+      12, `lib/giudizio.js`), nonostante una nota più vecchia in questo file la segnalasse come non
+      ancora agganciata — nessun'altra azione necessaria lì, resta solo da decidere con Andrea se
+      mostrare i voti dei blocchi e la collocazione definitiva della scheda GBP.
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Connettore Vercel — stesso problema delle due sessioni precedenti (2026-11-09 e 2026-11-10
+  mattina), ancora NON risolto**: `list_projects` (team esplicito, senza filtri) risponde ancora con
+  **zero progetti**, e `list_deployments` con `projectId: prj_KT0BW5NzV1EeV8MPLdbhxOcIxDaJ` (team
+  esplicito) risponde ancora `403 forbidden`. Non ritentato `authorize_team_access` (già tentato due
+  volte nelle sessioni precedenti, richiede sempre un consenso umano non eseguibile da una sessione
+  schedulata). **Questa sessione NON ha potuto verificare lo stato di produzione** né avrebbe potuto
+  deployare se ci fosse stato codice da deployare (non ce n'era, quindi nessun lavoro è andato
+  perso). **Nessuna nuova notifica inviata**: non c'è novità rispetto a quanto già segnalato ad
+  Andrea il 2026-11-09 (stesso problema, stessa richiesta di riautorizzare/riconnettere il
+  connettore Vercel).
+- **Nessun commit umano nella storia `git`**: invariato, stesso stallo segnalato il 2026-10-28 (ora
+  13+ giorni), nessuna novità su quel fronte.
+- **Nessun deploy effettuato in questa sessione**: nessuna modifica di codice applicativo da
+  deployare; l'accesso Vercel comunque non lo avrebbe permesso (vedi sopra). Il solo push di questo
+  aggiornamento di `TASKS.md` genererà probabilmente un nuovo deployment via Git integration (come
+  nelle sessioni precedenti), ma questa sessione non può verificarlo per lo stesso motivo.
+- **Prossima voce utile per la prossima sessione**: verificare se il problema di accesso Vercel è
+  stato risolto da Andrea (ormai da 3 sessioni); per il resto, invariata — "Privacy policy" o altra
+  voce di backlog su cui Andrea darà un'indicazione.
+
 ## Stato al 2026-11-10 (sessione schedulata) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (stesso problema di ieri, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
 
 Repo già presente in questa sandbox, in stato "detached HEAD" su `3025445` (stesso tipo di residuo
