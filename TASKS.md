@@ -1,3 +1,45 @@
+## Stato al 2026-11-12 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (settima sessione di fila con lo stesso problema, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
+
+Repo presente in questa sandbox ma ferma a `f733cfc` (checkpoint di ieri pomeriggio): `git status`
+mostrava "HEAD detached"; `git checkout main && git pull origin main` ha riportato il branch locale
+in fast-forward fino a `5d7a34d` (il commit della sessione di questa mattina, 2026-11-12), nessun
+commit umano nel frattempo. Branch remoto `debug-serper-temp` ancora presente, non toccato.
+
+- **Nota sul prompt di questa sessione**: stessa nota ripetuta identica dal 2026-10-02 — il prompt
+  indica come priorità i criteri 1 (blog/contenuti) e 2 (newsletter), ma risultano completi e in
+  produzione da oltre un mese. Riverificato di nuovo anche il codice (non solo le note):
+  `lib/runAudit.js` importa e chiama `raccogliArticoli`/`giudicaContenuti` (`lib/contenuti.js`,
+  righe 7, 75, 81) e `analizzaNewsletter` (`lib/newsletter.js`, righe 8, 64) — nessuna azione
+  necessaria.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: confermato di nuovo, nessuna azione
+      necessaria (vedi sopra).
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. Nessuna modifica di codice applicativo in questa
+      sessione.
+- [x] **Ricontrollata la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO" e "DA FARE — nuovi pezzi di sviluppo"**: stessa conclusione delle sessioni precedenti
+      dal 2026-10-06 in poi — nessuna voce azionabile senza il contributo di Andrea (incluso il punto
+      ancora aperto "Domande dirette al dirigente: da definire quali domande e in quale punto del
+      percorso", che resta in sospeso in attesa di indicazioni).
+- [x] **Issue/PR GitHub**: nessuno aperto.
+- **Connettore Vercel — stesso problema delle sei sessioni precedenti (2026-11-09 x2, 2026-11-10 x2,
+  2026-11-11 x2, 2026-11-12 prima sessione), ancora NON risolto**: `list_teams` vede il team `osky2`
+  (`team_vONC0GCHsFw9JnJLgwABI1V7`), ma `list_projects` con quel `teamId` risponde di nuovo con
+  **zero progetti**, e `get_project` su `autoanalisi-scuole` risponde ancora `404 not_found`. Non
+  ritentato `authorize_team_access` (stesso motivo delle sessioni precedenti: il link di consenso
+  dura 10 minuti e non c'è un utente pronto a cliccarlo da una sessione schedulata). Nessun codice da
+  deployare in questa sessione comunque, quindi nessun lavoro perso. **Nessuna nuova notifica
+  inviata**: nessuna novità rispetto a quanto già segnalato ad Andrea il 2026-11-09 — ormai 7a
+  sessione di fila con lo stesso identico blocco.
+- **Nessun commit umano nella storia `git`**: invariato, stallo segnalato il 2026-10-28 ora a 15
+  giorni, nessuna novità.
+- **Prossima voce utile per la prossima sessione**: verificare se l'accesso Vercel è stato ripristinato;
+  per il resto, serve una decisione di Andrea su una delle voci di backlog realmente aperte (privacy
+  policy, domande dirette al dirigente, andamento social a 3 mesi, revisione testi wizard punto 5
+  residuo, o altro). Finché non arriva, le sessioni schedulate continueranno a concludersi senza
+  azione: vale la pena segnalarlo ad Andrea con un messaggio diretto (non solo tramite TASKS.md), più
+  che continuare a farlo notare qui ogni volta.
+
 ## Stato al 2026-11-12 (sessione schedulata) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (sesta sessione di fila con lo stesso problema, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
 
 Repo già presente in questa sandbox, già su `main` (non in "detached HEAD" questa volta). `git pull
