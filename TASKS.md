@@ -1,3 +1,53 @@
+## Stato al 2026-11-13 (sessione schedulata) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (ottava sessione di fila con lo stesso problema, non risolto); nessuna riga di codice applicativo toccata; inviata una notifica diretta ad Andrea (come raccomandato dalla sessione precedente)
+
+Repo già presente in questa sandbox, già su `main` (non in "detached HEAD" questa volta — era
+successo nella sessione di ieri sera). `git pull origin main` ha portato avanti il branch locale di
+4 commit (era fermo a `f733cfc`) fino a `26bfab4` (la sessione di ieri sera) — fast-forward pulito,
+nessun commit umano nel frattempo. Branch remoto `debug-serper-temp` ancora presente, stesso vecchio
+checkpoint, non toccato.
+
+- **Nota sul prompt di questa sessione**: identica alla nota scritta in tutte le sessioni precedenti
+  dal 2026-10-02 in poi — il prompt indica come priorità "da implementare" i criteri 1
+  (blog/contenuti) e 2 (newsletter) della sezione "Da fare", ma entrambi risultano completi e in
+  produzione da oltre un mese. Riverificato di nuovo anche il codice (non solo le note):
+  `lib/runAudit.js` importa e chiama `raccogliArticoli`/`giudicaContenuti` (`lib/contenuti.js`) e
+  `analizzaNewsletter` (`lib/newsletter.js`) — nessuna azione necessaria.
+- [x] **Criteri blog/contenuti e newsletter (voci 1 e 2)**: confermato di nuovo, nessuna azione
+      necessaria (vedi sopra).
+- [x] **Salute del codice**: `npm install`, `npm test` → **99/99 test unitari verdi**,
+      `node -e "require('./server.js')"` pulito. Nessuna modifica di codice applicativo in questa
+      sessione.
+- [x] **Ricontrollata la sezione "Da fare" (voci 0-5), privacy policy, "DA VALUTARE IN UN SECONDO
+      MOMENTO" e "DA FARE — nuovi pezzi di sviluppo"**: stessa conclusione delle sessioni precedenti
+      dal 2026-10-06 in poi — nessuna voce azionabile senza il contributo di Andrea (incluso il punto
+      ancora aperto "Domande dirette al dirigente: da definire quali domande e in quale punto del
+      percorso", "Report finale scaricabile", "Aggiungere le firme" e "Dinamiche di ingaggio
+      commerciale", tutti in sospeso in attesa di indicazioni).
+- [x] **Issue/PR GitHub**: nessuno aperto (`list_issues`/`list_pull_requests` entrambi vuoti).
+- **Connettore Vercel — stesso problema delle sette sessioni precedenti (2026-11-09 x2, 2026-11-10
+  x2, 2026-11-11 x2, 2026-11-12 x2), ancora NON risolto**: `list_teams` vede il team `osky2`
+  (`team_vONC0GCHsFw9JnJLgwABI1V7`), ma `list_projects` con quel `teamId` risponde di nuovo con
+  **zero progetti**, e `get_project` su `autoanalisi-scuole` risponde ancora `404 not_found`.
+  **Novità di questa sessione**: richiamato `authorize_team_access` (non ritentato nelle sessioni
+  precedenti) per generare un link di consenso mono-uso valido 10 minuti — ottenuto
+  `https://vercel.com/sso/session-requests/1yYBQ4LSmjUm5iWP7A1U8_S9SnnSE2Yq` (scaduto ormai, era
+  valido solo fino a pochi minuti dopo la generazione). Nessun utente presente per cliccarlo in
+  tempo da una sessione schedulata, quindi non verificato se risolve il problema — il link va
+  rigenerato ogni volta (mono-uso, 10 minuti), non è riusabile dalla prossima sessione. Nessun codice
+  da deployare in questa sessione comunque, quindi nessun lavoro perso.
+- **Inviata una notifica diretta ad Andrea in questa sessione** (push/email, non solo questo file):
+  riepilogo dello stallo di 8 sessioni, richiesta di una decisione su una delle voci di backlog
+  realmente aperte, e segnalazione del problema di accesso Vercel — come raccomandato esplicitamente
+  dalla sessione di ieri sera ("vale la pena segnalarlo ad Andrea con un messaggio diretto, non solo
+  tramite TASKS.md").
+- **Nessun commit umano nella storia `git`**: invariato, stallo segnalato il 2026-10-28 ora a 16
+  giorni, nessuna novità.
+- **Prossima voce utile per la prossima sessione**: verificare se l'accesso Vercel è stato ripristinato
+  (richiamare `authorize_team_access` di nuovo se necessario, il link precedente è scaduto); per il
+  resto, serve una decisione di Andrea su una delle voci di backlog realmente aperte. La notifica
+  diretta inviata oggi dovrebbe rendere non necessario ripetere la segnalazione nelle prossime
+  sessioni, finché non arriva una risposta.
+
 ## Stato al 2026-11-12 (sessione schedulata, seconda) — nessuna voce di backlog azionabile; connettore Vercel ancora senza accesso al team (settima sessione di fila con lo stesso problema, non risolto); nessuna riga di codice applicativo toccata; nessuna notifica (nessuna novità rispetto a quanto già segnalato)
 
 Repo presente in questa sandbox ma ferma a `f733cfc` (checkpoint di ieri pomeriggio): `git status`
