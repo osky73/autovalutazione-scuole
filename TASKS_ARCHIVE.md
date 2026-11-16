@@ -5189,3 +5189,34 @@ esattamente a quali view corrispondono i passaggi 1-8 nell'attuale flusso (`view
   che deployare codice a metà che referenzia funzioni non ancora scritte.
 - Deploy in produzione solo per incrementi che sono stati verificati (almeno con un require/smoke
   test locale) e che non rompono i passaggi esistenti del wizard.
+
+## Stato al 2026-11-13 (sessione schedulata, pomeriggio)
+
+- **Repo e ambiente**: clonato/aggiornato (`git pull` già allineato a `main`, nessun commit umano
+  nuovo), `npm install` eseguito (mancavano i moduli, prima installazione in questa sandbox), tutti i
+  **99 test unitari verdi** (`npm test`) e `node -e "require('./server.js')"` pulito — il codice in
+  produzione risulta sano, nessuna regressione.
+- **Verificato lo stato dei due criteri assegnati da questa automazione (blog/contenuti e
+  newsletter)**: **entrambi già completi e deployati in produzione** da sessioni precedenti
+  (2026-10-01/02, vedi `TASKS_ARCHIVE.md` per il dettaglio di implementazione/test/deploy) — tutte le
+  voci della sezione "Da fare" punti 1 e 2 sono spuntate `[x]`. **Nessuna voce di backlog azionabile
+  nello scope assegnato** (il prompt di questa automazione limita il lavoro di codice a questi due
+  criteri, saltando le voci già completate) — confermato leggendo `TASKS.md` per intero, non solo
+  fidandosi delle note delle sessioni precedenti.
+- **Connettore Vercel**: non raggiungibile anche in questa sessione, ma con un errore diverso dalle
+  sessioni precedenti (non più "accesso negato al team", ma un errore di connessione/dialing (502)
+  verso il server MCP — stesso tipo di errore su molti altri connettori contemporaneamente in questa
+  sessione, quindi probabilmente un problema infrastrutturale lato ambiente di questa sessione, non
+  necessariamente lo stesso problema di permessi segnalato nei giorni scorsi). **Nota importante
+  emersa rileggendo questo file per intero**: da quando il progetto Vercel è collegato via Git
+  integration (2026-10-02 sera, vedi "Come deployare" sotto), il connettore Vercel non è più
+  necessario per EFFETTUARE un deploy (basta `git push origin main`) — serve solo per VERIFICARE lo
+  stato del deployment e degli alias via API. Dato che in questa sessione non c'era comunque nessuna
+  modifica di codice da deployare, l'indisponibilità del connettore non ha bloccato nulla di
+  concreto oggi.
+- **Nessuna riga di codice applicativo toccata** (nessuna voce di backlog azionabile nello scope
+  assegnato). **Nessuna notifica inviata**: una sessione schedulata precedente di oggi ha già
+  avvisato Andrea dello stallo sul connettore Vercel; nessuna novità sostanziale da aggiungere
+  rispetto a quella notifica.
+- **Unico lavoro svolto in questa sessione**: la pulizia/riorganizzazione di questo file descritta
+  nella nota qui sopra (nessun impatto sul codice applicativo, nessun deploy necessario).
