@@ -51,6 +51,21 @@ e procedura di deploy. Le sessioni future:
   sfoltimento di questo file (la voce di stato del 2026-11-13, ormai storica, è stata spostata in
   `TASKS_ARCHIVE.md`).
 
+## Stato al 2026-11-16 (sessione schedulata, seconda)
+
+- **Repo**: `git pull` allineato a `main` (nessun commit umano nuovo rispetto alla sessione di questa
+  mattina). `npm install` + `npm test`: **99/99 verdi**, nessuna regressione. Nessun checkbox
+  `- [ ] ` residuo in tutto il file (verificato con una ricerca testuale).
+- **Stesso esito della sessione di questa mattina e di tutte le precedenti dal 2026-11-09**: i due
+  criteri in scope per questa automazione (blog/contenuti e newsletter, sezioni "Da fare" 1 e 2) sono
+  entrambi completi e in produzione da sessioni precedenti — **nessuna voce azionabile nello scope
+  assegnato**. Gli altri punti del backlog (voce 0 chiusa con decisione di Andrea di non intervenire,
+  voce 3 in attesa di conferma del cliente sul livello di automazione, voce 4 chiusa/obsoleta, voce 5
+  con i soli punti residui che richiedono esplicitamente una decisione di Andrea prima di procedere)
+  sono fuori dall'ordine indicato per questa automazione (prima blog, poi newsletter) e comunque non
+  procedibili autonomamente.
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale da segnalare rispetto a questa mattina).
 
 ## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
 
