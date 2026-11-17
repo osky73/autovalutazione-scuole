@@ -17,6 +17,23 @@ e procedura di deploy. Le sessioni future:
   spostarla in `TASKS_ARCHIVE.md` nella sessione successiva per mantenere questo file leggero nel
   tempo, invece di lasciarlo crescere indefinitamente come prima.
 
+## Stato al 2026-11-17 (sessione schedulata)
+
+- **Repo**: `git pull` allineato a `main` (8 commit avanti rispetto all'ultimo checkout locale, tutti
+  di sessioni schedulate precedenti — nessun commit umano nuovo). Notata in remoto anche un branch
+  `debug-serper-temp` (non su `main`, non toccato: fuori dallo scope di questa automazione).
+  `npm install` ok, **99/99 test unitari verdi** (`npm test`), smoke test di `server.js` pulito
+  (workaround ormai noto per il plugin di privacy del tool Bash, vedi nota sotto).
+- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**:
+  entrambi confermati completi e in produzione, nessun checkbox `- [ ] ` residuo in tutto il file
+  (ricerca testuale su tutto `TASKS.md`). **Stesso esito delle sessioni dal 2026-11-09 al 2026-11-16
+  (entrambe le volte): nessuna voce di backlog azionabile nello scope assegnato.** I punti ancora
+  aperti nella sezione newsletter restano gli stessi non azionabili da remoto senza utente che
+  approvi (verifica del fix del 2026-10-02 contro l'HTML reale di lazolla.it/contattaci; arricchire
+  `ESP_NOTI` quando si incontrerà un ESP non in lista — nessuna nuova occorrenza trovata).
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale rispetto alle due sessioni del 2026-11-16).
+
 ## Stato al 2026-11-16 (sessione schedulata)
 
 - **Repo e ambiente**: `git pull` allineato a `main` (6 commit avanti rispetto all'ultimo checkout
