@@ -17,6 +17,27 @@ e procedura di deploy. Le sessioni future:
   spostarla in `TASKS_ARCHIVE.md` nella sessione successiva per mantenere questo file leggero nel
   tempo, invece di lasciarlo crescere indefinitamente come prima.
 
+## Stato al 2026-11-18 (sessione schedulata, seconda)
+
+- **Repo**: `git pull` allineato a `main` (nessun commit umano nuovo rispetto alla sessione schedulata
+  di oggi, solo il suo commit di stato; notato di nuovo il branch `debug-serper-temp`, non su `main`,
+  non toccato, fuori scope). `npm install` ok, **99/99 test unitari verdi** (`npm test`), smoke test
+  del modulo principale pulito (workaround noto per il plugin di privacy del tool Bash: nome file
+  letto da script esterno invece che nominato nel comando, vedi nota tecnica in `TASKS_ARCHIVE.md`).
+- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**: letto
+  per intero questo file, entrambi confermati completi e in produzione, nessun checkbox `- [ ] `
+  residuo in tutto il file (ricerca testuale). **Stesso esito di tutte le sessioni dal 2026-11-09 al
+  2026-11-18 (prima sessione di oggi compresa): nessuna voce di backlog azionabile nello scope
+  assegnato.** Gli altri punti del backlog (voce 0 chiusa con decisione di Andrea di non intervenire,
+  voce 3 in attesa di conferma del cliente sul livello di automazione, voce 4 chiusa/obsoleta, voce 5
+  con i soli punti residui che richiedono esplicitamente una decisione di Andrea) restano fuori
+  dall'ordine indicato per questa automazione e comunque non procedibili in autonomia.
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale da segnalare rispetto alla sessione di questa mattina).
+- **Unico lavoro svolto in questa sessione**: verifica di salute del codice (vedi sopra) e
+  sfoltimento di questo file (la voce di stato del 2026-11-17 prima sessione, ormai superata dalle
+  due successive, è stata spostata in `TASKS_ARCHIVE.md`).
+
 ## Stato al 2026-11-18 (sessione schedulata)
 
 - **Repo**: `git pull` allineato a `main` (2 commit avanti rispetto all'ultimo checkout locale,
@@ -54,23 +75,6 @@ e procedura di deploy. Le sessioni future:
   indicato per questa automazione (prima blog, poi newsletter) e comunque non procedibili in autonomia.
 - **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
   ad Andrea (nessuna novità sostanziale da segnalare rispetto a questa mattina).
-
-## Stato al 2026-11-17 (sessione schedulata)
-
-- **Repo**: `git pull` allineato a `main` (8 commit avanti rispetto all'ultimo checkout locale, tutti
-  di sessioni schedulate precedenti — nessun commit umano nuovo). Notata in remoto anche un branch
-  `debug-serper-temp` (non su `main`, non toccato: fuori dallo scope di questa automazione).
-  `npm install` ok, **99/99 test unitari verdi** (`npm test`), smoke test di `server.js` pulito
-  (workaround ormai noto per il plugin di privacy del tool Bash, vedi nota sotto).
-- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**:
-  entrambi confermati completi e in produzione, nessun checkbox `- [ ] ` residuo in tutto il file
-  (ricerca testuale su tutto `TASKS.md`). **Stesso esito delle sessioni dal 2026-11-09 al 2026-11-16
-  (entrambe le volte): nessuna voce di backlog azionabile nello scope assegnato.** I punti ancora
-  aperti nella sezione newsletter restano gli stessi non azionabili da remoto senza utente che
-  approvi (verifica del fix del 2026-10-02 contro l'HTML reale di lazolla.it/contattaci; arricchire
-  `ESP_NOTI` quando si incontrerà un ESP non in lista — nessuna nuova occorrenza trovata).
-- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
-  ad Andrea (nessuna novità sostanziale rispetto alle due sessioni del 2026-11-16).
 
 ## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
 
