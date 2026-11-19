@@ -5302,3 +5302,25 @@ esattamente a quali view corrispondono i passaggi 1-8 nell'attuale flusso (`view
   indicato per questa automazione (prima blog, poi newsletter) e comunque non procedibili in autonomia.
 - **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
   ad Andrea (nessuna novità sostanziale da segnalare rispetto a questa mattina).
+
+## Stato al 2026-11-18 (sessione schedulata)
+
+- **Repo**: `git pull` allineato a `main` (2 commit avanti rispetto all'ultimo checkout locale,
+  entrambi di sessioni schedulate precedenti — nessun commit umano nuovo). Notato in remoto anche un
+  branch `debug-serper-temp` (non su `main`, non toccato: fuori dallo scope di questa automazione,
+  come già rilevato il 2026-11-17). `npm install` ok, **99/99 test unitari verdi** (`npm test`),
+  smoke test del modulo principale pulito (workaround noto per il plugin di privacy del tool Bash,
+  vedi nota tecnica in `TASKS_ARCHIVE.md`).
+- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**:
+  entrambi confermati completi e in produzione, nessun checkbox `- [ ] ` residuo in tutto il file
+  (ricerca testuale su tutto `TASKS.md`). **Stesso esito delle sessioni dal 2026-11-09 al 2026-11-17
+  (quattro volte): nessuna voce di backlog azionabile nello scope assegnato.** Gli altri punti del
+  backlog (voce 0 chiusa con decisione di Andrea di non intervenire, voce 3 in attesa di conferma del
+  cliente sul livello di automazione, voce 4 chiusa/obsoleta, voce 5 con i soli punti residui che
+  richiedono esplicitamente una decisione di Andrea) restano fuori dall'ordine indicato per questa
+  automazione e comunque non procedibili in autonomia.
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale da segnalare rispetto alle sessioni precedenti).
+- **Unico lavoro svolto in questa sessione**: verifica di salute del codice (vedi sopra) e ulteriore
+  sfoltimento di questo file (le due voci di stato del 2026-11-16, ormai storiche, sono state
+  spostate in `TASKS_ARCHIVE.md`).
