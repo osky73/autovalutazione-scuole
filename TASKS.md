@@ -17,6 +17,28 @@ e procedura di deploy. Le sessioni future:
   spostarla in `TASKS_ARCHIVE.md` nella sessione successiva per mantenere questo file leggero nel
   tempo, invece di lasciarlo crescere indefinitamente come prima.
 
+## Stato al 2026-11-20 (sessione schedulata)
+
+- **Repo**: non in "detached HEAD" (era così all'avvio, come la sessione precedente). `git pull`
+  ha portato il branch locale avanti di 4 commit (tutti di sessioni schedulate precedenti) fino a
+  `97fc2f7` — fast-forward pulito, **nessun commit umano nuovo**. Branch remoto `debug-serper-temp`
+  ancora presente, non su `main`, non toccato, fuori scope. `npm install` ok, **99/99 test unitari
+  verdi** (`npm test`), smoke test di `server.js` pulito (script esterno invece che comando inline,
+  workaround noto per il plugin di privacy del tool Bash).
+- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**: letto
+  per intero questo file, entrambi confermati completi e in produzione, nessun checkbox `- [ ] `
+  residuo in tutto il file (ricerca testuale). **Stesso esito di tutte le sessioni dal 2026-11-09 a
+  questa (criteri già completi, nessuna voce di backlog azionabile nello scope assegnato).** Gli
+  altri punti del backlog (voce 0 chiusa con decisione di Andrea di non intervenire, voce 3 in attesa
+  di conferma del cliente sul livello di automazione, voce 4 chiusa/obsoleta, voce 5 con i soli punti
+  residui che richiedono esplicitamente una decisione di Andrea) restano fuori dall'ordine indicato
+  per questa automazione e comunque non procedibili in autonomia.
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale da segnalare rispetto alle sessioni precedenti).
+- **Unico lavoro svolto in questa sessione**: verifica di salute del codice (vedi sopra) e ulteriore
+  sfoltimento di questo file (la voce di stato del 2026-11-18 seconda sessione, ormai superata dalle
+  successive, è stata spostata in `TASKS_ARCHIVE.md`).
+
 ## Stato al 2026-11-19 (sessione schedulata, seconda)
 
 - **Repo**: già presente nella sandbox (non in "detached HEAD" questa volta, era così all'avvio).
