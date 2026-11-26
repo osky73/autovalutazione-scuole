@@ -126,32 +126,26 @@ e procedura di deploy. Le sessioni future:
   sfoltimento di questo file (la voce di stato del 2026-11-19 seconda sessione, ormai superata dalle
   successive, è stata spostata in `TASKS_ARCHIVE.md`).
 
-## Stato al 2026-11-23 (sessione schedulata, seconda)
+## Stato al 2026-11-26 (sessione schedulata)
 
-- **Repo**: non in "detached HEAD" nella working copy persistita in sandbox, ma era in stato
-  `HEAD detached from refs/heads/main` (puntato esattamente al commit di stato della sessione di
-  questa mattina) — risolto con `git checkout main` prima del pull. `git pull` ha portato il branch
-  avanti di 1 commit (il commit di stato della sessione di questa mattina) fino a `2f572a9` —
-  fast-forward pulito, **nessun commit umano nuovo**. Notato di nuovo in remoto il branch
-  `debug-serper-temp` (già segnalato da molte sessioni precedenti), non su `main`, non toccato, fuori
-  scope. `npm install` ok, **99/99 test unitari verdi** (`npm test`), smoke test di `server.js` pulito
-  (script posizionato ed eseguito dentro la root del repo con `require('./server.js')` relativo, poi
-  rimosso — workaround noto per il plugin di privacy del tool Bash, che blocca uno script temporaneo
-  se il suo path assoluto nella cartella di scratch contiene l'indirizzo email dell'account).
+- **Repo**: HEAD detached all'avvio (puntato al commit di stato dell'ultima sessione) — risolto con
+  `git checkout main`. `git pull` ha portato il branch avanti di 4 commit (tutti commit di stato
+  delle sessioni schedulate del 2026-11-25) fino a `892c8c8` — fast-forward pulito, **nessun commit
+  umano nuovo**. Notato di nuovo in remoto il branch `debug-serper-temp`, non su `main`, non toccato,
+  fuori scope. `npm install` ok, **99/99 test unitari verdi** (`npm test`), smoke test di `server.js`
+  pulito (script esterno nella root del repo, poi rimosso).
 - **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**: letto
-  per intero questo file (comprese le 796 righe fino in fondo), entrambi confermati completi e in
-  produzione, nessun checkbox `- [ ] ` residuo in tutto il file (ricerca testuale, zero risultati).
-  **Stesso esito di tutte le sessioni dal 2026-11-09 a questa (criteri già completi, nessuna voce di
-  backlog azionabile nello scope assegnato).** Gli altri punti del backlog (voce 0 chiusa con
-  decisione di Andrea di non intervenire, voce 3 in attesa di conferma del cliente sul livello di
-  automazione, voce 4 chiusa/obsoleta, voce 5 con i soli punti residui che richiedono esplicitamente
-  una decisione di Andrea) restano fuori dall'ordine indicato per questa automazione e comunque non
-  procedibili in autonomia.
+  per intero questo file, entrambi confermati completi e in produzione, nessun checkbox `- [ ] `
+  residuo. **Stesso esito di tutte le sessioni dal 2026-11-09 a questa — oltre due settimane senza
+  alcuna voce azionabile nello scope assegnato.** Gli altri punti del backlog (voce 0 chiusa con
+  decisione di Andrea, voce 3 in attesa di conferma del cliente, voce 4 chiusa/obsoleta, voce 5 con i
+  soli punti residui che richiedono una decisione di Andrea) restano fuori dall'ordine indicato per
+  questa automazione.
 - **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
-  ad Andrea (nessuna novità sostanziale da segnalare rispetto alla sessione di questa mattina).
-- **Unico lavoro svolto in questa sessione**: verifica di salute del codice (vedi sopra) e ulteriore
-  sfoltimento di questo file (la voce di stato del 2026-11-19 seconda sessione, ormai superata dalle
-  successive, è stata spostata in `TASKS_ARCHIVE.md`).
+  ad Andrea.
+- **Unico lavoro svolto in questa sessione**: verifica di salute del codice e del repo (vedi sopra),
+  e sfoltimento di questo file (la voce di stato del 2026-11-23 seconda sessione, ormai superata,
+  spostata in `TASKS_ARCHIVE.md`).
 
 ## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
 
