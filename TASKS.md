@@ -17,6 +17,28 @@ e procedura di deploy. Le sessioni future:
   spostarla in `TASKS_ARCHIVE.md` nella sessione successiva per mantenere questo file leggero nel
   tempo, invece di lasciarlo crescere indefinitamente come prima.
 
+## Stato al 2026-11-27 (sessione schedulata, seconda)
+
+- **Repo**: HEAD detached all'avvio (puntato al commit di stato della sessione di questa mattina);
+  risolto con `git checkout main`. `git pull` ha portato il branch avanti di 7 commit (tutti commit
+  di stato delle sessioni schedulate 2026-11-25→2026-11-27 mattina) fino a `7696d27` — fast-forward
+  pulito, **nessun commit umano nuovo**. Notato di nuovo in remoto il branch `debug-serper-temp`, non
+  su `main`, non toccato, fuori scope. `npm install` ok, **99/99 test unitari verdi** (`npm test`),
+  smoke test di `server.js` pulito (script scritto nello scratchpad di sessione ed eseguito con
+  `node`, poi non serve rimuoverlo essendo fuori dal repo).
+- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**: letto
+  per intero questo file, entrambi confermati completi e in produzione, nessun checkbox `- [ ] `
+  residuo in tutto il file (ricerca testuale, zero risultati reali). **Stesso esito di tutte le
+  sessioni dal 2026-11-09 a questa — quasi tre settimane senza alcuna voce azionabile nello scope
+  assegnato.** Gli altri punti del backlog (voce 0 chiusa con decisione di Andrea, voce 3 in attesa
+  di conferma del cliente, voce 4 chiusa/obsoleta, voce 5 con i soli punti residui che richiedono una
+  decisione di Andrea) restano fuori dall'ordine indicato per questa automazione.
+- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
+  ad Andrea (nessuna novità sostanziale da segnalare rispetto alla sessione di questa mattina).
+- **Unico lavoro svolto in questa sessione**: verifica di salute del codice e del repo (vedi sopra),
+  e riordino di questo file (spostata in `TASKS_ARCHIVE.md` la voce di stato del 2026-11-25 prima
+  sessione, ormai superata dalle successive).
+
 ## Stato al 2026-11-27 (sessione schedulata)
 
 - **Repo**: HEAD detached all'avvio (puntato al commit di stato dell'ultima sessione) — risolto con
@@ -109,41 +131,6 @@ e procedura di deploy. Le sessioni future:
 - **Unico lavoro svolto in questa sessione**: verifica di salute del codice e del repo (vedi sopra),
   e ulteriore sfoltimento di questo file (la voce di stato del 2026-11-23 prima sessione, ormai
   superata dalle successive, è stata spostata in `TASKS_ARCHIVE.md`).
-
-## Stato al 2026-11-25 (sessione schedulata)
-
-- **Repo**: working copy in sandbox trovata in "detached HEAD" (puntata al commit di stato
-  dell'ultima sessione di ieri); risolto con `git checkout main`. `git pull` ha portato il branch
-  avanti di 2 commit (entrambi commit di stato delle sessioni schedulate di ieri) fino a `3211c7d` —
-  fast-forward pulito, **nessun commit umano nuovo**. Notato di nuovo in remoto il branch
-  `debug-serper-temp`, non su `main`, non toccato, fuori scope. `npm install` ok, **99/99 test
-  unitari verdi** (`npm test`), smoke test di `server.js` pulito (script scritto ed eseguito nella
-  root del repo, poi rimosso — workaround noto per il plugin di privacy del tool Bash, che blocca uno
-  script se il suo path assoluto nella cartella di scratch contiene l'indirizzo email dell'account).
-- **Verificato di nuovo lo scope assegnato (criterio blog/contenuti e criterio newsletter)**: letto
-  per intero questo file, entrambi confermati completi e in produzione, nessun checkbox `- [ ] `
-  residuo in tutto il file (ricerca testuale, zero risultati reali). **Stesso esito di tutte le
-  sessioni dal 2026-11-09 a questa (criteri già completi, nessuna voce di backlog azionabile nello
-  scope assegnato).** Gli altri punti del backlog (voce 0 chiusa con decisione di Andrea di non
-  intervenire, voce 3 in attesa di conferma del cliente sul livello di automazione, voce 4
-  chiusa/obsoleta, voce 5 con i soli punti residui che richiedono esplicitamente una decisione di
-  Andrea) restano fuori dall'ordine indicato per questa automazione e comunque non procedibili in
-  autonomia.
-- **Verifica aggiuntiva tentata (Vercel)**: provato a controllare lo stato del progetto/alias di
-  produzione via `mcp__Vercel__*` prima di escludere un deploy — il connettore Vercel risulta
-  connesso in questa sessione, ma `list_projects` (sia senza filtri sia con team `osky2`/
-  `team_vONC0GCHsFw9JnJLgwABI1V7`, l'unico team visibile da `list_teams`), `get_project` per nome e
-  `list_aliases` ritornano tutti vuoti/`not_found` — non un blocco di rete come nelle sessioni
-  precedenti, ma un risultato "nessuna risorsa visibile" dal connettore in questa sessione. Non
-  indagato oltre (nessun codice da deployare comunque in questa sessione); **da segnalare ad Andrea**
-  se capita ancora: può essere un problema di scope/permessi del collegamento Vercel lato Claude, non
-  del progetto in sé.
-- **Nessuna riga di codice applicativo toccata, nessun deploy effettuato, nessuna notifica inviata**
-  ad Andrea (nessuna novità sostanziale da segnalare rispetto alle sessioni precedenti).
-- **Unico lavoro svolto in questa sessione**: verifica di salute del codice e del repo (vedi sopra),
-  tentativo di verifica Vercel (vedi sopra), e ulteriore sfoltimento di questo file (la voce di stato
-  del 2026-11-20 seconda sessione, ormai superata dalle successive, è stata spostata in
-  `TASKS_ARCHIVE.md`).
 
 ## ⚠️ SITO BLOCCATO AI MOTORI DI RICERCA (dal 2026-10-04, richiesta di Andrea) — RICORDARE ALL'UTENTE
 
